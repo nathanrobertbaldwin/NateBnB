@@ -1,10 +1,14 @@
 const config = require("./index");
 
+function errorLogging() {}
+
 module.exports = {
   development: {
     storage: config.dbFile,
     dialect: "sqlite",
     seederStorage: "sequelize",
+    // benchmark: true,
+    logging: true,
     logQueryParameters: true,
     typeValidation: true,
   },
