@@ -12,7 +12,7 @@ options.tableName = "SpotImages";
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await SpotImage.bulkCreate(
+    await queryInterface.bulkInsert(
       options,
       [
         { spotId: 1, url: "www.somewhereHost.com/images", preview: true },

@@ -1,4 +1,5 @@
-// backend/routes/api/users.js
+// ================ IMPORTS ================ //
+
 const express = require("express");
 const bcrypt = require("bcryptjs");
 
@@ -9,6 +10,8 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 const router = express.Router();
+
+// ================ MIDDLEWARE ================ //
 
 const validateSignup = [
   check("email")
@@ -26,6 +29,9 @@ const validateSignup = [
     .withMessage("Password must be 6 characters or more."),
   handleValidationErrors,
 ];
+
+// ================ ROUTES ================ //
+// ----------- Create New User ------------ //
 
 router.post("/", validateSignup, async (req, res) => {
   const { email, password, username, firstName, lastName } = req.body;
@@ -51,15 +57,6 @@ router.post("/", validateSignup, async (req, res) => {
   return res.json({
     user: safeUser,
   });
-});
-
-router.get("/", async (req, res) => {
-  const users = await User.findAll({
-    include: [
-      { model: Spot, attributes: ["name"], through: { attributes: [] } },
-    ],
-  });
-  res.json(users);
 });
 
 module.exports = router;

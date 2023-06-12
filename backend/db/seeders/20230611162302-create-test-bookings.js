@@ -12,7 +12,7 @@ options.tableName = "Bookings";
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await Booking.bulkCreate(
+    await queryInterface.bulkInsert(
       options,
       [
         {

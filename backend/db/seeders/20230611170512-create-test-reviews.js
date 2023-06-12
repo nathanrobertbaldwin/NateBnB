@@ -12,12 +12,12 @@ options.tableName = "Reviews";
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await Review.bulkCreate(
+    await queryInterface.bulkInsert(
       options,
       [
         {
           spotId: 1,
-          userId: 2,
+          userId: 1,
           review: "This place is great!",
           stars: 5,
         },
@@ -29,7 +29,7 @@ module.exports = {
         },
         {
           spotId: 1,
-          userId: 2,
+          userId: 3,
           review: "This place is Okay!",
           stars: 3,
         },

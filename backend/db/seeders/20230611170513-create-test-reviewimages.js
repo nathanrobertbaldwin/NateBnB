@@ -12,7 +12,7 @@ options.tableName = "reviewImages";
 
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await ReviewImage.bulkCreate(
+    await queryInterface.bulkInsert(
       options,
       [
         { reviewId: 1, url: "www.somewhere.com/images" },
