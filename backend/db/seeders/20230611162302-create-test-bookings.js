@@ -2,10 +2,18 @@
 
 const { Booking } = require("../models");
 
-/** @type {import('sequelize-cli').Migration} */
+let options = {};
+
+if (process.env.NODE_ENV === "production") {
+  options.schema = process.env.SCHEMA; // define your schema in options object
+}
+
+options.tableName = "Bookings";
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await Booking.bulkCreate(
+      options,
       [
         {
           spotId: 1,
@@ -31,6 +39,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Bookings", { spotId: ["1", "2", "3"] });
+    await queryInterface.bulkDelete(options, { spotId: ["1", "2", "3"] });
   },
 };
