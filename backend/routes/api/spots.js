@@ -1,17 +1,32 @@
 const router = require("express").Router();
-const { Spot, User, Review } = require("../../db/models");
+const sequelize = require("sequelize");
+const { Spot, User, Review, SpotImage } = require("../../db/models");
 
 router.get("/current", async (req, res, next) => {
-  const users = await Spot.findAll({ include: User });
-  // const allSpots = await Spot.findAll({
-  //   include: [
-  //     {
-  //       model: User,
-  //       through: { exclude: [] },
-  //     },
-  //   ],
-  // });
-  res.json(users);
+  let spots = await Spot.findAll({
+    attributes: {
+      include: [
+        [sequelize.fn("count", sequelize.col("stars")), "countReviews"],
+        [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
+      ],
+    },
+    include: [
+      { model: Review, attributes: [] },
+      { model: SpotImage, attributes: ["url"], where: { preview: true } },
+    ],
+  });
+
+  spots = spots.map((spot) => (spot = spot.toJSON()));
+
+  spots.forEach((spot) => {
+    spot.aveReview = spot.sumReviews / spot.countReviews;
+    delete spot.sumReviews;
+    delete spot.countReviews;
+    spot.previewImage = spot.SpotImages[0].url;
+    delete spot.SpotImages;
+  });
+
+  res.json(spots);
 });
 
 router.use((req, res, next) => {
