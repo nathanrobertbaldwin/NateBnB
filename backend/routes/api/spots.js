@@ -2,6 +2,8 @@ const router = require("express").Router();
 const sequelize = require("sequelize");
 const { Spot, User, Review, SpotImage } = require("../../db/models");
 
+// COmment
+
 router.get("/current", async (req, res, next) => {
   let spots = await Spot.findAll({
     attributes: {
