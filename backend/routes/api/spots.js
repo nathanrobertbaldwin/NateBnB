@@ -256,6 +256,13 @@ router.delete("/:spotId", requireAuth, async (req, res, next) => {
   });
 });
 
+// ================ DELETE ROUTES ================ //
+
+// ----------- Delete A Review ------------ //
+
+router.delete("/")
+
+
 // router.use((err, req, res, next) => {
 //   const err = new Error;
 //   Error.message =
