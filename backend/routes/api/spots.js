@@ -242,6 +242,7 @@ router.put("/:spotId", requireAuth, async (req, res, next) => {
 // ----------- Delete A Spot ------------ //
 
 
+
 // router.use((err, req, res, next) => {
 //   const err = new Error;
 //   Error.message =
