@@ -221,10 +221,10 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
 
 router.post("/:spotId/images", requireAuth, async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId);
+  const ownerId = req.user.dataValues.id;
   if (ownerId !== spot.ownerId) {
     return next(new Error("Remember to write a new Error setup."));
   }
-  const ownerId = req.user.dataValues.id;
   const { url, preview } = req.body;
   const newSpotImage = SpotImage.build({ url, preview });
   await newSpotImage.save();

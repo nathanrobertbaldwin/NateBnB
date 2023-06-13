@@ -38,7 +38,18 @@ router.get("/current", requireAuth, async (req, res, next) => {
 // ================ POST ROUTES ================ //
 // ----------- Add an Image to a Review based on the Review's id ------------ //
 
-
+router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
+  const ownerId = req.user.dataValues.id;
+  const review = await Review.findByPk(req.params.reviewId);
+  if (!review) return next(new Error("Remember to write a new Error setup."));
+  if (ownerId !== review.userId)
+    return next(new Error("Remember to write a new Error setup."));
+  const { url } = req.body;
+  const reviewId = req.params.reviewId;
+  const newReviewImage = await ReviewImage.build({ url, reviewId });
+  await newReviewImage.save();
+  res.json(newReviewImage);
+});
 
 // ================ DELETE ROUTES ================ //
 // ----------- Delete A Review ------------ //
