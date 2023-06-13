@@ -83,7 +83,7 @@ const validateSpot = [
 // ================ GET ROUTES ================ //
 // ----------- Get All Spots ------------ //
 
-router.get("/current", async (req, res, next) => {
+router.get("/", async (req, res, next) => {
   let spots = await Spot.findAll({
     attributes: {
       include: [
@@ -116,11 +116,44 @@ router.get("/current", async (req, res, next) => {
   return res.json(spots);
 });
 
-// ----------- Get All Spots of Current User ------------ //
+// ----------- Get all Spots owned by the Current User ------------ //
 
-// router.get("/api/spots/current", async (req, res, next) => {});
+router.get("/current", requireAuth, async (req, res, next) => {
+  const ownerId = req.user.dataValues.id;
+  let Spots = await Spot.findAll({
+    where: { ownerId: ownerId },
+    attributes: {
+      include: [
+        [sequelize.fn("count", sequelize.col("stars")), "countReviews"],
+        [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
+      ],
+    },
+    include: [
+      { model: Review, attributes: [] },
+      { model: SpotImage, attributes: ["url"], where: { preview: true } },
+    ],
+    group: ["Spot.id", "Reviews.id", "SpotImages.id"],
+    // Note to self: postgres requires order statement referencing some
+    // column on the joined tables. Seems like this is only an issue when joining
+    // multiple tables?
+    // Also, for some inexplicable reason, the first table is actually the model name.
+    // Because using the Spot.findAll?
+  });
 
-// ----------- Get Spot Details By Spot ID ------------ //
+  Spots = Spots.map((spot) => (spot = spot.toJSON()));
+
+  Spots.forEach((spot) => {
+    spot.aveReview = spot.sumReviews / spot.countReviews;
+    delete spot.sumReviews;
+    delete spot.countReviews;
+    spot.previewImage = spot.SpotImages[0].url;
+    delete spot.SpotImages;
+  });
+
+  return res.json({ Spots });
+});
+
+// ----------- Get details for a Spot from an id ------------ //
 
 router.get("/:spotId", async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId, {
