@@ -2,7 +2,13 @@
 
 const router = require("express").Router();
 const sequelize = require("sequelize");
-const { Spot, Review, SpotImage, User } = require("../../db/models");
+const {
+  Spot,
+  Review,
+  SpotImage,
+  User,
+  ReviewImage,
+} = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
@@ -11,8 +17,21 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 // ================ GET ROUTES ================ //
 
-router.get("/reviews/current", requireAuth, async (req, res, next) => {
-  
+// ----------- Get all Reviews of the Current User ------------ //
+router.get("/current", requireAuth, async (req, res, next) => {
+  const userId = req.user.dataValues.id;
+  const reviews = await User.findByPk(userId, {
+    attributes: [],
+    include: {
+      model: Review,
+      include: [
+        { model: User, attributes: ["id", "firstName", "lastName"] },
+        { model: Spot },
+        { model: ReviewImage, attributes: ["id", "url"] },
+      ],
+    },
+  });
+  res.json(reviews);
 });
 // ================ DELETE ROUTES ================ //
 
