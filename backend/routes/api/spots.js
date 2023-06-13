@@ -2,7 +2,7 @@
 
 const router = require("express").Router();
 const sequelize = require("sequelize");
-const { Spot, Review, SpotImage } = require("../../db/models");
+const { Spot, Review, SpotImage, User } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
@@ -80,7 +80,7 @@ const validateSpot = [
   handleValidationErrors,
 ];
 
-// ================ ROUTES ================ //
+// ================ GET ROUTES ================ //
 // ----------- Get All Spots ------------ //
 
 router.get("/current", async (req, res, next) => {
@@ -113,9 +113,24 @@ router.get("/current", async (req, res, next) => {
     delete spot.SpotImages;
   });
 
-  res.json(spots);
+  return res.json(spots);
 });
 
+// ----------- Get All Spots of Current User ------------ //
+
+// router.get("/api/spots/current", async (req, res, next) => {});
+
+// ----------- Get Spot Details By Spot ID ------------ //
+
+router.get("/:spotId", async (req, res, next) => {
+  const spot = await Spot.findByPk(req.params.spotId, {
+    include: [{ model: SpotImage }, { model: User }],
+  });
+  if (!spot) return next(new Error("Specified spot does not exist"));
+  return res.json(spot);
+});
+
+// ================ POST ROUTES ================ //
 // ----------- Post New Spot ------------ //
 
 router.post("/", requireAuth, validateSpot, async (req, res, next) => {
@@ -138,14 +153,23 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
   });
 
   await newSpot.save();
-  res.json({
-    newSpot,
-  });
+
+  return res.json(newSpot);
 });
 
-// router.post("/:spotId/images", requireAuth, async (req, res, next) => {
-//   const ownerId = req.user.dataValues.id;
+// ----------- Post A New Spot Image ------------ //
 
+// router.post("/:spotId/images", async (req, res, next) => {
+//   const spot = await Spot.findByPk(req.params.spotId);
+//   if (!spot) return next(new Error{"Could not f"});
+//   const { url, preview } = req.body;
+//   const newImage = SpotImage.build(url, preview);
+//   res.json(newImage);
+// });
+
+// router.use((err, req, res, next) => {
+//   const err = new Error;
+//   Error.message =
 // });
 
 module.exports = router;
