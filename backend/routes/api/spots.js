@@ -166,6 +166,10 @@ router.get("/:spotId", async (req, res, next) => {
   return res.json(spot);
 });
 
+// ----------- Get all Reviews By Spot Id ------------ //
+
+router.get(":spotId/reviews");
+
 // ================ POST ROUTES ================ //
 // ----------- Post New Spot ------------ //
 
@@ -260,8 +264,7 @@ router.delete("/:spotId", requireAuth, async (req, res, next) => {
 
 // ----------- Delete A Review ------------ //
 
-router.delete("/")
-
+router.delete("/");
 
 // router.use((err, req, res, next) => {
 //   const err = new Error;
