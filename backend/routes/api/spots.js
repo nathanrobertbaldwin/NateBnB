@@ -8,6 +8,9 @@ const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
 
 // ================ MIDDLEWARE ================ //
+
+// ----------- Authorization to Edit ------------ //
+
 // ----------- Spot Input Validator ------------ //
 
 const validateSpot = [
@@ -159,7 +162,7 @@ router.get("/:spotId", async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId, {
     include: [{ model: SpotImage }, { model: User }],
   });
-  if (!spot) return next(new Error("Specified spot does not exist"));
+  if (!spot) return next(new Error("Remember to write a new Error setup."));
   return res.json(spot);
 });
 
