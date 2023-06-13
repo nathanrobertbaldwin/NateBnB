@@ -9,8 +9,11 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 // ================ MIDDLEWARE ================ //
 
+// ================ GET ROUTES ================ //
 
-
+router.get("/reviews/current", requireAuth, async (req, res, next) => {
+  
+});
 // ================ DELETE ROUTES ================ //
 
 // ----------- Delete A Review ------------ //
