@@ -159,7 +159,7 @@ router.get("/:spotId", async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId, {
     include: [{ model: SpotImage }, { model: User }],
   });
-  if (!spot) return next(new Error("Remember to write a new Error setup."));
+  if (!spot) return next(new Error("Specified spot does not exist"));
   return res.json(spot);
 });
 
@@ -192,17 +192,13 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
 
 // ----------- Post A New Spot Image ------------ //
 
-router.post("/:spotId/images", requireAuth, async (req, res, next) => {
-  const ownerId = req.user.dataValues.id;
-  const spot = await Spot.findByPk(req.params.spotId);
-  if (ownerId !== spot.ownerId) {
-    return next(new Error("Remember to write a new Error setup."));
-  }
-  const { url, preview } = req.body;
-  const newSpotImage = SpotImage.build({ url, preview });
-  newSpotImage.save();
-  return res.json(spot);
-});
+// router.post("/:spotId/images", async (req, res, next) => {
+//   const spot = await Spot.findByPk(req.params.spotId);
+//   if (!spot) return next(new Error{"Could not f"});
+//   const { url, preview } = req.body;
+//   const newImage = SpotImage.build(url, preview);
+//   res.json(newImage);
+// });
 
 // router.use((err, req, res, next) => {
 //   const err = new Error;
