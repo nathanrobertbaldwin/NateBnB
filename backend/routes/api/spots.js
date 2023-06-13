@@ -203,11 +203,12 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
   }
   const { url, preview } = req.body;
   const newSpotImage = SpotImage.build({ url, preview });
-  newSpotImage.save();
-  return res.json(spot);
+  await newSpotImage.save();
+  return res.json(newSpotImage);
 });
 
 // ================ PUT ROUTES ================ //
+
 // ----------- Edit A Spot ------------ //
 
 router.put("/:spotId", requireAuth, async (req, res, next) => {
