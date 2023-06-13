@@ -16,7 +16,6 @@ const { handleValidationErrors } = require("../../utils/validation");
 // ================ MIDDLEWARE ================ //
 
 // ================ GET ROUTES ================ //
-
 // ----------- Get all Reviews of the Current User ------------ //
 router.get("/current", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
@@ -35,8 +34,13 @@ router.get("/current", requireAuth, async (req, res, next) => {
   });
   res.json(reviews);
 });
-// ================ DELETE ROUTES ================ //
 
+// ================ POST ROUTES ================ //
+// ----------- Add an Image to a Review based on the Review's id ------------ //
+
+
+
+// ================ DELETE ROUTES ================ //
 // ----------- Delete A Review ------------ //
 
 router.delete("/:reviewId", requireAuth, async (req, res, next) => {
