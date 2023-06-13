@@ -2,7 +2,13 @@
 
 const router = require("express").Router();
 const sequelize = require("sequelize");
-const { Spot, Review, SpotImage, User } = require("../../db/models");
+const {
+  Spot,
+  Review,
+  SpotImage,
+  User,
+  ReviewImage,
+} = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
@@ -167,8 +173,21 @@ router.get("/:spotId", async (req, res, next) => {
 // ----------- Get all Reviews By Spot Id ------------ //
 
 router.get("/:spotId/reviews", async (req, res, next) => {
-  const reviewsBySpotId = await Review.findAll();
-  return res.json(reviewsBySpotId);
+  const spot = await Spot.findByPk(req.params.spotId, {
+    attributes: [],
+    include: [
+      {
+        model: Review,
+        include: [
+          { model: User, attributes: ["id", "firstName", "lastName"] },
+          { model: ReviewImage, attributes: ["id", "url"] },
+        ],
+      },
+    ],
+  });
+
+  if (!spot) return next(new Error("Remember to write a new Error setup."));
+  return res.json(spot);
 });
 
 // ================ POST ROUTES ================ //
@@ -210,6 +229,13 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
   const newSpotImage = SpotImage.build({ url, preview });
   await newSpotImage.save();
   return res.json(newSpotImage);
+});
+
+// ----------- Create a Review for a Spot based on the Spot's id ------------ //
+
+router.post("/:spotId/reviews", requireAuth, async (req, res, next) => {
+  const ownerId = req.user.dataValues.id;
+  res.json(ownerId);
 });
 
 // ================ PUT ROUTES ================ //
