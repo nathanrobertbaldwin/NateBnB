@@ -192,13 +192,46 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
 
 // ----------- Post A New Spot Image ------------ //
 
-// router.post("/:spotId/images", async (req, res, next) => {
-//   const spot = await Spot.findByPk(req.params.spotId);
-//   if (!spot) return next(new Error{"Could not f"});
-//   const { url, preview } = req.body;
-//   const newImage = SpotImage.build(url, preview);
-//   res.json(newImage);
-// });
+router.post("/:spotId/images", requireAuth, async (req, res, next) => {
+  const ownerId = req.user.dataValues.id;
+  const spot = await Spot.findByPk(req.params.spotId);
+  if (ownerId !== spot.ownerId) {
+    return next(new Error("Remember to write a new Error setup."));
+  }
+  const { url, preview } = req.body;
+  const newSpotImage = SpotImage.build({ url, preview });
+  newSpotImage.save();
+  return res.json(spot);
+});
+
+// ================ PUT ROUTES ================ //
+// ----------- Edit A Spot ------------ //
+
+router.put("/:spotId", requireAuth, async (req, res, next) => {
+  const ownerId = req.user.dataValues.id;
+  const spot = await Spot.findByPk(req.params.spotId);
+
+  if (!spot) return next(new Error("Remember to write a new Error setup."));
+  if (ownerId !== spot.ownerId)
+    return next(new Error("Remember to write a new Error setup."));
+
+  const { address, city, state, country, lat, lng, name, description, price } =
+    req.body;
+
+  if (address) spot.address = address;
+  if (city) spot.city = city;
+  if (state) spot.state = state;
+  if (country) spot.country = country;
+  if (lat) spot.lat = lat;
+  if (lng) spot.lng = lng;
+  if (name) spot.name = name;
+  if (description) spot.description = description;
+  if (price) spot.price = price;
+
+  await spot.save();
+
+  return res.json(spot);
+});
 
 // router.use((err, req, res, next) => {
 //   const err = new Error;
