@@ -17,6 +17,9 @@ router.get("/current", async (req, res, next) => {
       { model: SpotImage, attributes: ["url"], where: { preview: true } },
     ],
     group: ["Spot.id", "Reviews.id", "SpotImages.id"],
+    // Note to self: postgres requires order by statement referencing all included table ids.
+    // Also, for some inexplicable reason, the first table is actually the model name.
+    // Because using the Spot.findAll?
   });
 
   spots = spots.map((spot) => (spot = spot.toJSON()));
