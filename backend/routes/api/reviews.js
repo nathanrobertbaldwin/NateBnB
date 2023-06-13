@@ -20,7 +20,8 @@ const { handleValidationErrors } = require("../../utils/validation");
 // ----------- Get all Reviews of the Current User ------------ //
 router.get("/current", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
-  const reviews = await User.findByPk(userId, {
+  const reviews = await User.findAll({
+    where: { id: userId },
     attributes: [],
     include: {
       model: Review,
@@ -29,6 +30,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
         { model: Spot },
         { model: ReviewImage, attributes: ["id", "url"] },
       ],
+      group: ["User.id", "Spots.id", "ReviewImage.id"],
     },
   });
   res.json(reviews);
