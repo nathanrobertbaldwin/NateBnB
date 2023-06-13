@@ -241,7 +241,20 @@ router.put("/:spotId", requireAuth, async (req, res, next) => {
 
 // ----------- Delete A Spot ------------ //
 
+router.delete("/:spotId", requireAuth, async (req, res, next) => {
+  const ownerId = req.user.dataValues.id;
+  const spot = await Spot.findByPk(req.params.spotId);
 
+  if (!spot) return next(new Error("Remember to write a new Error setup."));
+  if (ownerId !== spot.ownerId)
+    return next(new Error("Remember to write a new Error setup."));
+
+  await Spot.destroy({ where: { id: req.params.spotId } });
+
+  return res.json({
+    message: "Successfully deleted",
+  });
+});
 
 // router.use((err, req, res, next) => {
 //   const err = new Error;
