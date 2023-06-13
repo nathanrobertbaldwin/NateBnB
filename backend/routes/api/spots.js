@@ -9,8 +9,6 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 // ================ MIDDLEWARE ================ //
 
-// ----------- Authorization to Edit ------------ //
-
 // ----------- Spot Input Validator ------------ //
 
 const validateSpot = [
