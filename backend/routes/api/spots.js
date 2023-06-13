@@ -220,11 +220,11 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
 // ----------- Post A New Spot Image ------------ //
 
 router.post("/:spotId/images", requireAuth, async (req, res, next) => {
-  const ownerId = req.user.dataValues.id;
   const spot = await Spot.findByPk(req.params.spotId);
   if (ownerId !== spot.ownerId) {
     return next(new Error("Remember to write a new Error setup."));
   }
+  const ownerId = req.user.dataValues.id;
   const { url, preview } = req.body;
   const newSpotImage = SpotImage.build({ url, preview });
   await newSpotImage.save();
@@ -234,8 +234,14 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
 // ----------- Create a Review for a Spot based on the Spot's id ------------ //
 
 router.post("/:spotId/reviews", requireAuth, async (req, res, next) => {
-  const ownerId = req.user.dataValues.id;
-  res.json(ownerId);
+  const spot = await Spot.findByPk(req.params.spotId);
+  if (!spot) return next(new Error("Remember to write a new Error setup."));
+  const userId = req.user.dataValues.id;
+  const spotId = parseInt(req.params.spotId);
+  const { review, stars } = req.body;
+  const newReview = await Review.build({ userId, spotId, review, stars });
+  await newReview.save();
+  res.json(newReview);
 });
 
 // ================ PUT ROUTES ================ //
