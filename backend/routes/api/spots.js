@@ -16,6 +16,7 @@ router.get("/current", async (req, res, next) => {
       { model: Review, attributes: [] },
       { model: SpotImage, attributes: ["url"], where: { preview: true } },
     ],
+    group: ["Spots.id", "Reviews.id", "SpotImages.id"],
   });
 
   spots = spots.map((spot) => (spot = spot.toJSON()));
