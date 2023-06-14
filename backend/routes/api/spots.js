@@ -10,10 +10,10 @@ const {
   ReviewImage,
   Booking,
 } = require("../../db/models");
+const Op = sequelize.Op;
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
-const booking = require("../../db/models/booking");
 
 // ================ MIDDLEWARE ================ //
 
@@ -51,19 +51,13 @@ const validateSpot = [
   check("lat")
     .exists()
     .withMessage("lat must exist.")
-    .not()
-    .isString()
-    .withMessage("lat must be a number.")
-    .matches(/^[0-9.-]*$/)
-    .withMessage("lat must be numeric, plus - character"),
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("lat must be a floating point number."),
   check("lng")
     .exists()
     .withMessage("lng must exist.")
-    .not()
-    .isString()
-    .withMessage("lng must be a number.")
-    .matches(/^[0-9.-]*$/)
-    .withMessage("lng must be numeric, plus - character"),
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("lng must be a floating point number."),
   check("name")
     .exists()
     .withMessage("name must exist.")
@@ -81,11 +75,8 @@ const validateSpot = [
     .withMessage("price must exist.")
     .notEmpty()
     .withMessage("price cannot be empty.")
-    .not()
-    .isString()
-    .withMessage("price must be a number.")
-    .matches(/^[0-9.]*$/)
-    .withMessage("price must be alphanumeric, plus . character"),
+    .isFloat()
+    .withMessage("lng must be a floating point number"),
   handleValidationErrors,
 ];
 
@@ -111,19 +102,31 @@ router.get("/", async (req, res, next) => {
   // Parameters
 
   const { minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
-  const where = {};
+  const query = { where: {} };
 
-  if (minLat) where.minLat = minLat;
-  if (maxLat) where.minLat = maxLat;
-  if (minLng) where.minLng = minLng;
-  if (maxLng) where.maxLng = maxLng;
-  if (minPrice) where.minPrice = minPrice;
-  if (maxPrice) where.maxPrice = maxPrice;
+  if (minLat) {
+    query.where.lat = { [Op.gte]: minLat };
+  }
+  if (maxLat) {
+    query.where.lat = { [Op.lte]: maxLat };
+  }
+  if (minLng) {
+    query.where.lng = { [Op.gte]: minLng };
+  }
+  if (maxLng) {
+    query.where.lng = { [Op.lte]: maxLng };
+  }
+  if (minPrice) {
+    query.where.price = { [Op.gte]: minPrice };
+  }
+  if (maxPrice) {
+    query.where.lat = { [Op.lte]: maxPrice };
+  }
 
   // Query
 
   let spots = await Spot.findAll({
-    where,
+    ...query,
     include: [
       { model: SpotImage, attributes: ["url"], where: { preview: true } },
       {
@@ -133,6 +136,7 @@ router.get("/", async (req, res, next) => {
             [sequelize.fn("count", sequelize.col("stars")), "countReviews"],
             [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
           ],
+          group: ["Spots.id"],
         },
       },
     ],
@@ -141,14 +145,14 @@ router.get("/", async (req, res, next) => {
 
   // Post Query Mods
 
-  spots = spots.map((spot) => spot.toJSON());
+  // spots = spots.map((spot) => spot.toJSON());
 
-  spots.forEach((spot) => {
-    spot.url = spot.SpotImages[0].url;
-    delete spot.SpotImages;
-    spot.aveReview = spot.Reviews[0].sumReviews / spot.Reviews[0].countReviews;
-    delete spot.Reviews;
-  });
+  // spots.forEach((spot) => {
+  //   spot.url = spot.SpotImages[0].url;
+  //   delete spot.SpotImages;
+  //   spot.aveReview = spot.Reviews[0].sumReviews / spot.Reviews[0].countReviews;
+  //   delete spot.Reviews;
+  // });
 
   return res.json({ Spots: spots, page, size });
 });
