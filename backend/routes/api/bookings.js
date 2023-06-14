@@ -60,6 +60,8 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
   if (startDate) booking.startDate = startDate;
   if (endDate) booking.endDate = endDate;
 
+  await booking.save();
+
   res.json(booking);
 });
 

@@ -127,8 +127,10 @@ router.get("/", validateQueries, async (req, res, next) => {
   if (!page) page = 1;
   if (!size) size = 10;
 
-  pagination.limit = size;
-  pagination.offset = size * (page - 1);
+  if (size >= 1 && page >= 1) {
+    pagination.limit = size;
+    pagination.offset = size * (page - 1);
+  }
 
   // Parameters
 
