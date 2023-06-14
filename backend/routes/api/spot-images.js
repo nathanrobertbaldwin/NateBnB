@@ -12,6 +12,7 @@ const {
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { AuthorizationError, noResourceExistsError } = require("./errors");
 
 // ================ MIDDLEWARE ================ //
 
@@ -25,10 +26,11 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
     include: { model: Spot, attributes: ["ownerId"] },
   });
 
-  if (!image) return next(new Error("Spot Image couldn't be found"));
+  if (!image)
+    return next(new noResourceExistsError("Spot Image couldn't be found"));
   if (ownerId !== image.Spot.ownerId) {
     return next(
-      new noPermissionsError(
+      new AuthorizationError(
         "You do not have the permission to edit this resource."
       )
     );

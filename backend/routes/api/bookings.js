@@ -13,7 +13,7 @@ const {
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
-const { noPermissionsError, noResourceExistsError } = require("./errors");
+const { AuthorizationError, noResourceExistsError } = require("./errors");
 
 // ================ MIDDLEWARE ================ //
 
@@ -49,7 +49,7 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
     return next(new noResourceExistsError("Booking couldn't be found"));
   if (userId !== booking.userId) {
     return next(
-      new noPermissionsError(
+      new AuthorizationError(
         "You do not have the permission to edit this resource."
       )
     );
@@ -76,7 +76,7 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
     return next(new noResourceExistsError("Booking couldn't be found"));
   if (userId !== booking.userId) {
     return next(
-      new noPermissionsError(
+      new AuthorizationError(
         "You do not have the permission to delete this resource."
       )
     );

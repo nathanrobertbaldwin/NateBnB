@@ -1,8 +1,15 @@
-class noPermissionsError extends Error {
+class AuthenticationError extends Error {
   constructor(message) {
     super(message);
-    this.name = notAuthorizedError;
-    this.statusCode = 404;
+    this.name = AuthenticationError;
+    this.statusCode = 401;
+  }
+}
+class AuthorizationError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = AuthorizationError;
+    this.statusCode = 403;
   }
 }
 
@@ -14,4 +21,8 @@ class noResourceExistsError extends Error {
   }
 }
 
-module.exports = { noPermissionsError, noResourceExistsError };
+module.exports = {
+  AuthenticationError,
+  AuthorizationError,
+  noResourceExistsError,
+};
