@@ -17,8 +17,28 @@ const {
   AuthorizationError,
   noResourceExistsError,
 } = require("../../utils/errors");
+const { getCurrentDate, getDateFromString } = require("../../utils/dates");
 
 // ================ MIDDLEWARE ================ //
+
+const validateBooking = [
+  check("startDate")
+    .exists()
+    .withMessage("startDate must exist.")
+    .isString()
+    .withMessage("startDate must be a string")
+    .custom(({ req }) => {
+      const today = getCurrentDate();
+      const bookingStartDate = getDateFromString(req.body.startDate);
+      return today < bookingStartDate;
+    }),
+  check("endDate")
+    .exists()
+    .withMessage("startDate must exist.")
+    .isString()
+    .withMessage("endDate must be a string"),
+  handleValidationErrors,
+];
 
 // ================ GET ROUTES ================ //
 // ----------- Get all of the Current User's Bookings ------------ //
@@ -44,25 +64,30 @@ router.get("/current", requireAuth, async (req, res, next) => {
 // ================ PUT ROUTES ================ //
 // ----------- Edit a Booking ------------ //
 
-router.put("/:bookingId", requireAuth, async (req, res, next) => {
-  const userId = req.user.dataValues.id;
-  const booking = await Booking.findByPk(req.params.bookingId);
+router.put(
+  "/:bookingId",
+  requireAuth,
+  validateBooking,
+  async (req, res, next) => {
+    const userId = req.user.dataValues.id;
+    const booking = await Booking.findByPk(req.params.bookingId);
 
-  if (!booking)
-    return next(new noResourceExistsError("Booking couldn't be found"));
-  if (userId !== booking.userId) {
-    return next(new AuthorizationError("Forbidden"));
+    if (!booking)
+      return next(new noResourceExistsError("Booking couldn't be found"));
+    if (userId !== booking.userId) {
+      return next(new AuthorizationError("Forbidden"));
+    }
+
+    const { startDate, endDate } = req.body;
+
+    if (startDate) booking.startDate = startDate;
+    if (endDate) booking.endDate = endDate;
+
+    await booking.save();
+
+    res.json(booking);
   }
-
-  const { startDate, endDate } = req.body;
-
-  if (startDate) booking.startDate = startDate;
-  if (endDate) booking.endDate = endDate;
-
-  await booking.save();
-
-  res.json(booking);
-});
+);
 
 // ================ DELETE ROUTES ================ //
 // ----------- Delete a Booking ------------ //
@@ -74,11 +99,7 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
   if (!booking)
     return next(new noResourceExistsError("Booking couldn't be found"));
   if (userId !== booking.userId) {
-    return next(
-      new AuthorizationError(
-        "You do not have the permission to delete this resource."
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   await Booking.destroy({ where: { id: req.params.bookingId } });
