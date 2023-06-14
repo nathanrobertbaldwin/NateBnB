@@ -17,7 +17,7 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 // ================ DELETE ROUTES ================ //
 
-// ----------- Delete a Spot Image ------------ //
+// ----------- Delete a Review Image ------------ //
 
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
