@@ -142,11 +142,6 @@ router.get("/current", requireAuth, async (req, res, next) => {
       { model: SpotImage, attributes: ["url"], where: { preview: true } },
     ],
     group: ["Spot.id", "Reviews.id", "SpotImages.id"],
-    // Note to self: postgres requires order statement referencing some
-    // column on the joined tables. Seems like this is only an issue when joining
-    // multiple tables?
-    // Also, for some inexplicable reason, the first table is actually the model name.
-    // Because using the Spot.findAll?
   });
 
   Spots = Spots.map((spot) => (spot = spot.toJSON()));

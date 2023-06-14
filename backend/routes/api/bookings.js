@@ -36,6 +36,24 @@ router.get("/current", requireAuth, async (req, res, next) => {
   return res.json(bookings);
 });
 
+// ================ PUT ROUTES ================ //
+// ----------- Edit a Booking ------------ //
+
+router.put("/:bookingId", requireAuth, async (req, res, next) => {
+  const userId = req.user.dataValues.id;
+  const booking = await Booking.findByPk(req.params.bookingId);
+  if (!booking) return next(new Error("Remember to write a new Error setup."));
+  if (userId !== booking.userId)
+    return next(new Error("Remember to write a new Error setup."));
+
+  const { startDate, endDate } = req.body;
+
+  if (startDate) booking.startDate = startDate;
+  if (endDate) booking.endDate = endDate;
+
+  res.json(booking);
+});
+
 // ================ DELETE ROUTES ================ //
 // ----------- Delete a Booking ------------ //
 
