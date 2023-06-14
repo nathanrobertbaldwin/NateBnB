@@ -110,7 +110,7 @@ router.get("/", async (req, res, next) => {
   if (minLng) query.where.lng = { [Op.gte]: minLng };
   if (maxLng) query.where.lng = { [Op.lte]: maxLng };
   if (minPrice) query.where.price = { [Op.gte]: minPrice };
-  if (maxPrice) query.where.lat = { [Op.lte]: maxPrice };
+  if (maxPrice) query.where.price = { [Op.lte]: maxPrice };
 
   // Query
 
@@ -118,30 +118,28 @@ router.get("/", async (req, res, next) => {
     ...query,
     include: [
       { model: SpotImage, attributes: ["url"], where: { preview: true } },
-      {
-        model: Review,
-        attributes: {
-          include: [
-            [sequelize.fn("count", sequelize.col("stars")), "countReviews"],
-            [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
-          ],
-          group: ["Spots.id"],
-        },
-      },
+      { model: Review },
     ],
     ...pagination,
   });
 
   // Post Query Mods
 
-  // spots = spots.map((spot) => spot.toJSON());
+  spots = spots.map((spot) => spot.toJSON());
 
-  // spots.forEach((spot) => {
-  //   spot.url = spot.SpotImages[0].url;
-  //   delete spot.SpotImages;
-  //   spot.aveReview = spot.Reviews[0].sumReviews / spot.Reviews[0].countReviews;
-  //   delete spot.Reviews;
-  // });
+  spots.forEach((spot) => {
+    spot.url = spot.SpotImages[0].url;
+    delete spot.SpotImages;
+
+    let sum = 0;
+    spot.Reviews.forEach((review) => {
+      sum += review.stars;
+    });
+
+    spot.aveReview = sum / spot.Reviews.length;
+
+    delete spot.Reviews;
+  });
 
   return res.json({ Spots: spots, page, size });
 });
