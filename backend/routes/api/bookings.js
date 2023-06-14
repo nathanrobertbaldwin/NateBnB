@@ -36,4 +36,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
   return res.json(bookings);
 });
 
+// ================ DELETE ROUTES ================ //
+// ----------- Delete a Booking ------------ //
+
 module.exports = router;
