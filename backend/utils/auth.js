@@ -2,8 +2,8 @@
 const jwt = require("jsonwebtoken");
 const { jwtConfig } = require("../config");
 const { User } = require("../db/models");
-
 const { secret, expiresIn } = jwtConfig;
+const { AuthenticationError } = require("./errors");
 
 // backend/utils/auth.js
 // ...
@@ -72,15 +72,7 @@ const restoreUser = (req, res, next) => {
 // If there is no current user, return an error
 const requireAuth = function (req, _res, next) {
   if (req.user) return next();
-
-  const err = new Error(
-    "Authentication required. Please log in or create an account."
-  );
-  err.title = "Authentication Required";
-  err.errors = {
-    message: "Authentication required. Please log in or create an account.",
-  };
-  err.status = 401;
+  const err = new AuthenticationError("Authentication Required.");
   return next(err);
 };
 

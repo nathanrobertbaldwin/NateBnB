@@ -2,14 +2,16 @@ class AuthenticationError extends Error {
   constructor(message) {
     super(message);
     this.name = AuthenticationError;
-    this.statusCode = 401;
+    this.status = 401;
   }
 }
 class AuthorizationError extends Error {
   constructor(message) {
     super(message);
+    this.title = "Authentication Required";
     this.name = AuthorizationError;
-    this.statusCode = 403;
+    this.errors = { message: "Authentication required." };
+    this.status = 403;
   }
 }
 
@@ -17,7 +19,7 @@ class noResourceExistsError extends Error {
   constructor(message) {
     super(message);
     this.name = noResourceExistsError;
-    this.statusCode = 404;
+    this.status = 404;
   }
 }
 

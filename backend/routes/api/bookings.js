@@ -13,7 +13,7 @@ const {
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
-const { AuthorizationError, noResourceExistsError } = require("./errors");
+const { AuthorizationError, noResourceExistsError } = require("../../utils/errors");
 
 // ================ MIDDLEWARE ================ //
 
