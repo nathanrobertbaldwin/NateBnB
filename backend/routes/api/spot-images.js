@@ -15,4 +15,25 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 // ================ MIDDLEWARE ================ //
 
+// ================ DELETE ROUTES ================ //
 
+// ----------- Delete a Spot Image ------------ //
+
+router.delete("/:imageId", requireAuth, async (req, res, next) => {
+  const ownerId = req.user.dataValues.id;
+  const image = await SpotImage.findByPk(req.params.imageId, {
+    include: { model: Spot, attributes: ["ownerId"] },
+  });
+
+  if (!image) return next(new Error("Remember to write a new Error setup."));
+  if (ownerId !== image.Spot.ownerId)
+    return next(new Error("Remember to write a new Error setup."));
+
+  await SpotImage.destroy({ where: { id: req.params.imageId } });
+
+  return res.json({
+    message: "Successfully deleted",
+  });
+});
+
+module.exports = router;
