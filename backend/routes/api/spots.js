@@ -192,6 +192,27 @@ router.get("/:spotId/reviews", async (req, res, next) => {
   return res.json(spot);
 });
 
+// ----------- Get all Bookings for a Spot based on the Spot's id ------------ //
+
+router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
+  const userId = req.user.dataValues.id;
+  let spot = await Spot.findByPk(req.params.spotId, {
+    attributes: ["ownerId"],
+    include: { model: Booking, include: { model: User } },
+  });
+
+  spot = spot.toJSON();
+  if (userId === spot.ownerId) {
+    spot.Bookings.forEach((booking) => {
+      console.log(booking);
+    });
+  }
+
+  delete spot.ownerId;
+
+  return res.json(spot);
+});
+
 // ================ POST ROUTES ================ //
 // ----------- Post New Spot ------------ //
 
