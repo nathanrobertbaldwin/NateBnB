@@ -198,13 +198,21 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   let spot = await Spot.findByPk(req.params.spotId, {
     attributes: ["ownerId"],
-    include: { model: Booking, include: { model: User } },
+    include: {
+      model: Booking,
+      include: { model: User, attributes: ["id", "firstName", "lastName"] },
+    },
   });
 
   spot = spot.toJSON();
-  if (userId === spot.ownerId) {
+
+  if (userId !== spot.ownerId) {
     spot.Bookings.forEach((booking) => {
-      console.log(booking);
+      delete booking.id;
+      delete booking.userId;
+      delete booking.createdAt;
+      delete booking.updatedAt;
+      delete booking.User;
     });
   }
 
@@ -267,6 +275,7 @@ router.post("/:spotId/reviews", requireAuth, async (req, res, next) => {
   res.json(newReview);
 });
 
+// ----------- Create a Booking for a Spot based on the Spot's id ------------ //
 router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   const spotId = parseInt(req.params.spotId);
