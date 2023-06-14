@@ -8,10 +8,12 @@ const {
   SpotImage,
   User,
   ReviewImage,
+  Booking,
 } = require("../../db/models");
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const booking = require("../../db/models/booking");
 
 // ================ MIDDLEWARE ================ //
 
@@ -239,9 +241,22 @@ router.post("/:spotId/reviews", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   const spotId = parseInt(req.params.spotId);
   const { review, stars } = req.body;
-  const newReview = await Review.build({ userId, spotId, review, stars });
+  const newReview = Review.build({ userId, spotId, review, stars });
   await newReview.save();
   res.json(newReview);
+});
+
+router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
+  const userId = req.user.dataValues.id;
+  const spotId = parseInt(req.params.spotId);
+  const spot = await Spot.findByPk(req.params.spotId);
+  if (!spot) return next(new Error("Remember to write a new Error setup."));
+  if (userId === spot.ownerId)
+    return next(new Error("Remember to write a new Error setup."));
+  const { startDate, endDate } = req.body;
+  const newBooking = Booking.build({ spotId, userId, startDate, endDate });
+  await newBooking.save();
+  res.json(newBooking);
 });
 
 // ================ PUT ROUTES ================ //
