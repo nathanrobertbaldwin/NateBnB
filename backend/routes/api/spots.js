@@ -18,6 +18,36 @@ const { noPermissionsError, noResourceExistsError } = require("./errors");
 
 // ================ MIDDLEWARE ================ //
 
+// ----------- Query Validator ------------ //
+
+const validateQueries = [
+  check("minLat")
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("lat must be a floating point number."),
+  check("maxLat")
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("lat must be a floating point number."),
+  check("minLng")
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("lng must be a floating point number."),
+  check("maxLng")
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("lng must be a floating point number."),
+  check("minPrice")
+    .optional()
+    .matches(/^[a-zA-Z0-9. ]*$/)
+    .withMessage("address must be alphanumeric, plus spaces and . character"),
+  check("maxPrice")
+    .optional()
+    .matches(/^[a-zA-Z0-9. ]*$/)
+    .withMessage("address must be alphanumeric, plus spaces and . character"),
+  handleValidationErrors,
+];
+
 // ----------- Spot Input Validator ------------ //
 
 const validateSpot = [
@@ -84,7 +114,7 @@ const validateSpot = [
 // ================ GET ROUTES ================ //
 // ----------- Get All Spots ------------ //
 
-router.get("/", async (req, res, next) => {
+router.get("/", validateQueries, async (req, res, next) => {
   // Pagination
 
   const pagination = {};
