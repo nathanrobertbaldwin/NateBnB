@@ -93,36 +93,64 @@ const validateSpot = [
 // ----------- Get All Spots ------------ //
 
 router.get("/", async (req, res, next) => {
+  // Pagination
+
+  const pagination = {};
+
+  let { page, size } = req.query;
+
+  page = parseInt(page);
+  size = parseInt(size);
+
+  if (!page) page = 1;
+  if (!size) size = 10;
+
+  pagination.limit = size;
+  pagination.offset = size * (page - 1);
+
+  // Parameters
+
+  const { minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+  const where = {};
+
+  if (minLat) where.minLat = minLat;
+  if (maxLat) where.minLat = maxLat;
+  if (minLng) where.minLng = minLng;
+  if (maxLng) where.maxLng = maxLng;
+  if (minPrice) where.minPrice = minPrice;
+  if (maxPrice) where.maxPrice = maxPrice;
+
+  // Query
+
   let spots = await Spot.findAll({
-    attributes: {
-      include: [
-        [sequelize.fn("count", sequelize.col("stars")), "countReviews"],
-        [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
-      ],
-    },
+    where,
     include: [
-      { model: Review, attributes: [] },
       { model: SpotImage, attributes: ["url"], where: { preview: true } },
+      {
+        model: Review,
+        attributes: {
+          include: [
+            [sequelize.fn("count", sequelize.col("stars")), "countReviews"],
+            [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
+          ],
+        },
+      },
     ],
-    group: ["Spot.id", "Reviews.id", "SpotImages.id"],
-    // Note to self: postgres requires order statement referencing some
-    // column on the joined tables. Seems like this is only an issue when joining
-    // multiple tables?
-    // Also, for some inexplicable reason, the first table is actually the model name.
-    // Because using the Spot.findAll?
+    ...pagination,
   });
 
-  spots = spots.map((spot) => (spot = spot.toJSON()));
+  // Post Query Mods
+
+  spots = spots.map((spot) => spot.toJSON());
 
   spots.forEach((spot) => {
-    spot.aveReview = spot.sumReviews / spot.countReviews;
-    delete spot.sumReviews;
-    delete spot.countReviews;
-    spot.previewImage = spot.SpotImages[0].url;
+    spot.url = spot.SpotImages[0].url;
     delete spot.SpotImages;
+    spot.aveReview = spot.Reviews[0].sumReviews / spot.Reviews[0].countReviews;
+    delete spot.Reviews;
   });
 
-  return res.json(spots);
+  return res.json({ Spots: spots, page, size });
 });
 
 // ----------- Get all Spots owned by the Current User ------------ //
