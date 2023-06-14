@@ -17,7 +17,7 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 // ================ DELETE ROUTES ================ //
 
-// ----------- Delete a Review Image ------------ //
+// ----------- Delete a Spot Image ------------ //
 
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
@@ -25,9 +25,14 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
     include: { model: Spot, attributes: ["ownerId"] },
   });
 
-  if (!image) return next(new Error("Remember to write a new Error setup."));
-  if (ownerId !== image.Spot.ownerId)
-    return next(new Error("Remember to write a new Error setup."));
+  if (!image) return next(new Error("Spot Image couldn't be found"));
+  if (ownerId !== image.Spot.ownerId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
 
   await SpotImage.destroy({ where: { id: req.params.imageId } });
 

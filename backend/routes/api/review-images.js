@@ -12,6 +12,7 @@ const {
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { noPermissionsError, noResourceExistsError } = require("./errors");
 
 // ================ MIDDLEWARE ================ //
 
@@ -23,9 +24,17 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
   const image = await ReviewImage.findByPk(req.params.imageId, {
     include: { model: Review },
   });
-  if (!image) return next(new Error("Remember to write a new Error setup."));
-  if (userId !== image.Review.userId)
-    return next(new Error("Remember to write a new Error setup."));
+
+  if (!image)
+    return next(new noResourceExistsError("Review Image couldn't be found"));
+  if (userId !== image.Review.userId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
+
   await ReviewImage.destroy({ where: { id: req.params.imageId } });
   return res.json({
     message: "Successfully deleted",

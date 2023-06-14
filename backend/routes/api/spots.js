@@ -14,6 +14,7 @@ const Op = sequelize.Op;
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { noPermissionsError, noResourceExistsError } = require("./errors");
 
 // ================ MIDDLEWARE ================ //
 
@@ -104,24 +105,12 @@ router.get("/", async (req, res, next) => {
   const { minLat, maxLat, minLng, maxLng, minPrice, maxPrice } = req.query;
   const query = { where: {} };
 
-  if (minLat) {
-    query.where.lat = { [Op.gte]: minLat };
-  }
-  if (maxLat) {
-    query.where.lat = { [Op.lte]: maxLat };
-  }
-  if (minLng) {
-    query.where.lng = { [Op.gte]: minLng };
-  }
-  if (maxLng) {
-    query.where.lng = { [Op.lte]: maxLng };
-  }
-  if (minPrice) {
-    query.where.price = { [Op.gte]: minPrice };
-  }
-  if (maxPrice) {
-    query.where.lat = { [Op.lte]: maxPrice };
-  }
+  if (minLat) query.where.lat = { [Op.gte]: minLat };
+  if (maxLat) query.where.lat = { [Op.lte]: maxLat };
+  if (minLng) query.where.lng = { [Op.gte]: minLng };
+  if (maxLng) query.where.lng = { [Op.lte]: maxLng };
+  if (minPrice) query.where.price = { [Op.gte]: minPrice };
+  if (maxPrice) query.where.lat = { [Op.lte]: maxPrice };
 
   // Query
 
@@ -195,7 +184,9 @@ router.get("/:spotId", async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId, {
     include: [{ model: SpotImage }, { model: User }],
   });
-  if (!spot) return next(new Error("Remember to write a new Error setup."));
+
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
   return res.json(spot);
 });
 
@@ -215,7 +206,8 @@ router.get("/:spotId/reviews", async (req, res, next) => {
     ],
   });
 
-  if (!spot) return next(new Error("Remember to write a new Error setup."));
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
   return res.json(spot);
 });
 
@@ -275,17 +267,26 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
   return res.json(newSpot);
 });
 
-// ----------- Post A New Spot Image ------------ //
+// ----------- Add an Image to a Spot based on the Spot's id ------------ //
 
 router.post("/:spotId/images", requireAuth, async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId);
   const ownerId = req.user.dataValues.id;
+
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
   if (ownerId !== spot.ownerId) {
-    return next(new Error("Remember to write a new Error setup."));
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
   }
+
   const { url, preview } = req.body;
   const newSpotImage = SpotImage.build({ url, preview });
+
   await newSpotImage.save();
+
   return res.json(newSpotImage);
 });
 
@@ -293,26 +294,40 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
 
 router.post("/:spotId/reviews", requireAuth, async (req, res, next) => {
   const spot = await Spot.findByPk(req.params.spotId);
-  if (!spot) return next(new Error("Remember to write a new Error setup."));
+
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
   const userId = req.user.dataValues.id;
   const spotId = parseInt(req.params.spotId);
   const { review, stars } = req.body;
   const newReview = Review.build({ userId, spotId, review, stars });
+
   await newReview.save();
+
   res.json(newReview);
 });
 
-// ----------- Create a Booking for a Spot based on the Spot's id ------------ //
+// ----------- Create a Booking from a Spot based on the Spot's id ------------ //
+
 router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   const spotId = parseInt(req.params.spotId);
   const spot = await Spot.findByPk(req.params.spotId);
-  if (!spot) return next(new Error("Remember to write a new Error setup."));
-  if (userId === spot.ownerId)
-    return next(new Error("Remember to write a new Error setup."));
+
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+  if (userId === spot.ownerId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
+
   const { startDate, endDate } = req.body;
   const newBooking = Booking.build({ spotId, userId, startDate, endDate });
+
   await newBooking.save();
+
   res.json(newBooking);
 });
 
@@ -324,9 +339,14 @@ router.put("/:spotId", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
   const spot = await Spot.findByPk(req.params.spotId);
 
-  if (!spot) return next(new Error("Remember to write a new Error setup."));
-  if (ownerId !== spot.ownerId)
-    return next(new Error("Remember to write a new Error setup."));
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+  if (ownerId !== spot.ownerId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
 
   const { address, city, state, country, lat, lng, name, description, price } =
     req.body;
@@ -354,9 +374,14 @@ router.delete("/:spotId", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
   const spot = await Spot.findByPk(req.params.spotId);
 
-  if (!spot) return next(new Error("Remember to write a new Error setup."));
-  if (ownerId !== spot.ownerId)
-    return next(new Error("Remember to write a new Error setup."));
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+  if (ownerId !== spot.ownerId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
 
   await Spot.destroy({ where: { id: req.params.spotId } });
 
@@ -364,10 +389,5 @@ router.delete("/:spotId", requireAuth, async (req, res, next) => {
     message: "Successfully deleted",
   });
 });
-
-// router.use((err, req, res, next) => {
-//   const err = new Error;
-//   Error.message =
-// });
 
 module.exports = router;

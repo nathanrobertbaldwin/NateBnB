@@ -13,6 +13,7 @@ const {
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { noPermissionsError, noResourceExistsError } = require("./errors");
 
 // ================ MIDDLEWARE ================ //
 
@@ -33,6 +34,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
       },
     ],
   });
+
   return res.json(bookings);
 });
 
@@ -42,9 +44,16 @@ router.get("/current", requireAuth, async (req, res, next) => {
 router.put("/:bookingId", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   const booking = await Booking.findByPk(req.params.bookingId);
-  if (!booking) return next(new Error("Remember to write a new Error setup."));
-  if (userId !== booking.userId)
-    return next(new Error("Remember to write a new Error setup."));
+
+  if (!booking)
+    return next(new noResourceExistsError("Booking couldn't be found"));
+  if (userId !== booking.userId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
 
   const { startDate, endDate } = req.body;
 
@@ -60,9 +69,16 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
 router.delete("/:bookingId", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   const booking = await Booking.findByPk(req.params.bookingId);
-  if (!booking) return next(new Error("Remember to write a new Error setup."));
-  if (userId !== booking.userId)
-    return next(new Error("Remember to write a new Error setup."));
+
+  if (!booking)
+    return next(new noResourceExistsError("Booking couldn't be found"));
+  if (userId !== booking.userId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to delete this resource."
+      )
+    );
+  }
 
   await Booking.destroy({ where: { id: req.params.bookingId } });
 

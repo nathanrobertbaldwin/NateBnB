@@ -25,4 +25,10 @@ router.post("/test", (req, res) => {
   res.json({ requestBody: req.body });
 });
 
+router.use((err, req, res, next) => {
+  const message = err.message || "Internal Server Error.";
+  res.statusCode = err.statusCode || 500;
+  return res.json({ message: message });
+});
+
 module.exports = router;

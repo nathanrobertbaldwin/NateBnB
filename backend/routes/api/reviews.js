@@ -12,6 +12,7 @@ const {
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { noPermissionsError, noResourceExistsError } = require("./errors");
 
 // ================ MIDDLEWARE ================ //
 
@@ -41,13 +42,23 @@ router.get("/current", requireAuth, async (req, res, next) => {
 router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
   const review = await Review.findByPk(req.params.reviewId);
-  if (!review) return next(new Error("Remember to write a new Error setup."));
-  if (ownerId !== review.userId)
-    return next(new Error("Remember to write a new Error setup."));
+
+  if (!review)
+    return next(new noResourceExistsError("Review couldn't be found"));
+  if (ownerId !== review.userId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
+
   const { url } = req.body;
   const reviewId = req.params.reviewId;
   const newReviewImage = await ReviewImage.build({ url, reviewId });
+
   await newReviewImage.save();
+
   res.json(newReviewImage);
 });
 
@@ -57,16 +68,20 @@ router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
 router.put("/:reviewId", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   const reviewById = await Review.findByPk(req.params.reviewId);
+
   if (!reviewById)
-    return next(new Error("Remember to write a new Error setup."));
-  if (userId !== reviewById.userId)
-    return next(new Error("Remember to write a new Error setup."));
+    return next(new noResourceExistsError("Review couldn't be found"));
+  if (userId !== reviewById.userId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
 
   const { review, stars } = req.body;
 
-  if (reviewById) {
-    reviewById.review = review;
-  }
+  if (reviewById) reviewById.review = review;
   if (stars) review.stars = stars;
 
   await reviewById.save();
@@ -80,9 +95,16 @@ router.put("/:reviewId", requireAuth, async (req, res, next) => {
 router.delete("/:reviewId", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
   const review = await Review.findByPk(req.params.reviewId);
-  if (!review) return next(new Error("Remember to write a new Error setup."));
-  if (ownerId !== review.userId)
-    return next(new Error("Remember to write a new Error setup."));
+
+  if (!review)
+    return next(new noResourceExistsError("Review couldn't be found"));
+  if (ownerId !== review.userId) {
+    return next(
+      new noPermissionsError(
+        "You do not have the permission to edit this resource."
+      )
+    );
+  }
 
   await Review.destroy({ where: { id: req.params.reviewId } });
 
