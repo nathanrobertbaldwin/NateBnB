@@ -308,11 +308,7 @@ router.post("/:spotId/images", requireAuth, async (req, res, next) => {
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
   if (ownerId !== spot.ownerId) {
-    return next(
-      new AuthorizationError(
-        "You do not have the permission to edit this resource."
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   const { url, preview } = req.body;
@@ -349,11 +345,7 @@ router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
   if (userId === spot.ownerId) {
-    return next(
-      new AuthorizationError(
-        "You do not have the permission to edit this resource."
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   const { startDate, endDate } = req.body;
@@ -374,11 +366,7 @@ router.put("/:spotId", requireAuth, async (req, res, next) => {
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
   if (ownerId !== spot.ownerId) {
-    return next(
-      new AuthorizationError(
-        "You do not have the permission to edit this resource."
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   const { address, city, state, country, lat, lng, name, description, price } =
@@ -409,11 +397,7 @@ router.delete("/:spotId", requireAuth, async (req, res, next) => {
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
   if (ownerId !== spot.ownerId) {
-    return next(
-      new AuthorizationError(
-        "You do not have the permission to edit this resource."
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   await Spot.destroy({ where: { id: req.params.spotId } });

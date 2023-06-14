@@ -32,11 +32,7 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
   if (!image)
     return next(new noResourceExistsError("Spot Image couldn't be found"));
   if (ownerId !== image.Spot.ownerId) {
-    return next(
-      new AuthorizationError(
-        "You do not have the permission to edit this resource."
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   await SpotImage.destroy({ where: { id: req.params.imageId } });

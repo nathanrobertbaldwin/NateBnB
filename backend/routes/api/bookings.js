@@ -13,7 +13,10 @@ const {
 const { requireAuth } = require("../../utils/auth");
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
-const { AuthorizationError, noResourceExistsError } = require("../../utils/errors");
+const {
+  AuthorizationError,
+  noResourceExistsError,
+} = require("../../utils/errors");
 
 // ================ MIDDLEWARE ================ //
 
@@ -48,11 +51,7 @@ router.put("/:bookingId", requireAuth, async (req, res, next) => {
   if (!booking)
     return next(new noResourceExistsError("Booking couldn't be found"));
   if (userId !== booking.userId) {
-    return next(
-      new AuthorizationError(
-        "You do not have the permission to edit this resource."
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   const { startDate, endDate } = req.body;

@@ -33,7 +33,7 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
   if (userId !== image.Review.userId) {
     return next(
       new AuthorizationError(
-        "You do not have the permission to edit this resource."
+        "Forbidden"
       )
     );
   }

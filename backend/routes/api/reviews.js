@@ -51,7 +51,7 @@ router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
   if (ownerId !== review.userId) {
     return next(
       new AuthorizationError(
-        "You do not have the permission to edit this resource."
+        "Forbidden"
       )
     );
   }
@@ -77,7 +77,7 @@ router.put("/:reviewId", requireAuth, async (req, res, next) => {
   if (userId !== reviewById.userId) {
     return next(
       new AuthorizationError(
-        "You do not have the permission to edit this resource."
+        "Forbidden"
       )
     );
   }
@@ -104,7 +104,7 @@ router.delete("/:reviewId", requireAuth, async (req, res, next) => {
   if (ownerId !== review.userId) {
     return next(
       new AuthorizationError(
-        "You do not have the permission to edit this resource."
+        "Forbidden"
       )
     );
   }
