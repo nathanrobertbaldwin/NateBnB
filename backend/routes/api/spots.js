@@ -17,6 +17,7 @@ const { handleValidationErrors } = require("../../utils/validation");
 const {
   AuthorizationError,
   noResourceExistsError,
+  userAlreadyReviewedError,
 } = require("../../utils/errors");
 const { getCurrentDate, getDateFromString } = require("../../utils/dates");
 
@@ -144,8 +145,11 @@ const validatePostNewSpotImage = [
 // ------------ Validator for Create a Review With Spot Id ------------- //
 
 const validatePostNewReview = [
-  check("review").optional().isString().withMessage("review must be a string"),
-  check("stars").optional().isNumeric({ min: 0, max: 5 }),
+  check("review").exists().isString().withMessage("Review text is required"),
+  check("stars")
+    .optional()
+    .isNumeric({ min: 0, max: 5 })
+    .withMessage("Stars must be an integer from 1 to 5"),
   handleValidationErrors,
 ];
 
@@ -483,11 +487,19 @@ router.post(
   validatePostNewReview,
   async (req, res, next) => {
     const spotId = parseInt(req.params.spotId);
-    const spot = await Spot.findByPk(spotId);
+    const spot = await Spot.findByPk(spotId, { include: { model: Review } });
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
 
     const userId = req.user.dataValues.id;
+
+    spot.Reviews.forEach((review) => {
+      if (userId === review.userId)
+        throw new userAlreadyReviewedError(
+          "User already has a review for this spot"
+        );
+    });
+
     const { review, stars } = req.body;
     const newReview = Review.build({ userId, spotId, review, stars });
 

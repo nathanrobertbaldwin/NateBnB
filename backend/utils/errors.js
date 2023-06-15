@@ -30,9 +30,18 @@ class userAlreadyExistsError extends Error {
   }
 }
 
+class userAlreadyReviewedError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = userAlreadyReviewedError;
+    this.status = 500;
+  }
+}
+
 module.exports = {
   AuthenticationError,
   AuthorizationError,
   noResourceExistsError,
   userAlreadyExistsError,
+  userAlreadyReviewedError,
 };
