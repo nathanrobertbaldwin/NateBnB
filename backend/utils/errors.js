@@ -10,7 +10,6 @@ class AuthorizationError extends Error {
     super(message);
     this.title = "Authentication Required";
     this.name = AuthorizationError;
-    this.errors = { message: "Authentication required." };
     this.status = 403;
   }
 }
