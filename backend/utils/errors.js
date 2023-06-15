@@ -23,6 +23,15 @@ class noResourceExistsError extends Error {
   }
 }
 
+class userAlreadyExistsError extends Error {
+  constructor(message) {
+    super(message);
+    this.name = userAlreadyExistsError;
+    this.errors = { email: "User with that email already exists" };
+    this.status = 500;
+  }
+}
+
 module.exports = {
   AuthenticationError,
   AuthorizationError,

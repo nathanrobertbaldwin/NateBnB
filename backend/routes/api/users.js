@@ -8,6 +8,7 @@ const { User, Spot, Review } = require("../../db/models");
 
 const { check } = require("express-validator");
 const { handleValidationErrors } = require("../../utils/validation");
+const { userAlreadyExistsError } = require("../../utils/errors");
 
 const router = express.Router();
 
@@ -15,16 +16,28 @@ const router = express.Router();
 
 const validateSignup = [
   check("email")
-    .exists({ checkFalsy: true })
+    .exists()
     .isEmail()
-    .withMessage("Please provide a valid email."),
+    .withMessage("Please provide a valid email.")
+    .custom(async (value) => {
+      const users = await User.findAll({
+        attributes: ["email"],
+      });
+      users.forEach((user) => {
+        if (user.email === value)
+          throw new userAlreadyExistsError(
+            "User with that email already exists."
+          );
+      });
+    })
+    .withMessage("User with that email already exists."),
   check("username")
-    .exists({ checkFalsy: true })
-    .isLength({ min: 4 })
-    .withMessage("Please provide a username with at least 4 characters."),
+    .exists()
+    .isLength({ min: 3 })
+    .withMessage("Please provide a username with at least 3 characters."),
   check("username").not().isEmail().withMessage("Username cannot be an email."),
   check("password")
-    .exists({ checkFalsy: true })
+    .exists()
     .isLength({ min: 6 })
     .withMessage("Password must be 6 characters or more."),
   handleValidationErrors,
