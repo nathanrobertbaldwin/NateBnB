@@ -1,6 +1,7 @@
 "use strict";
 
 const { Model, Sequelize } = require("sequelize");
+const { getCurrentDate, getDateFromString } = require("../../utils/dates");
 
 module.exports = (sequelize, DataTypes) => {
   class Booking extends Model {
@@ -32,10 +33,28 @@ module.exports = (sequelize, DataTypes) => {
       startDate: {
         type: DataTypes.DATEONLY,
         allowNull: false,
+        validate: {
+          afterToday: (val) => {
+            const today = getCurrentDate();
+            const bookingStartDate = getDateFromString(val);
+            if (bookingStartDate < today)
+              throw new Error("Booking start must be after today!");
+          },
+        },
       },
       endDate: {
         type: DataTypes.DATEONLY,
         allowNull: false,
+        validate: {
+          afterStartDate: (val) => {
+            const bookingStartDate = getDateFromString(this.startDate);
+            const bookingEndDate = getDateFromString(val);
+            if (bookingStartDate < bookingEndDate)
+              throw new Error(
+                "Booking end date must be after booking start date!"
+              );
+          },
+        },
       },
       createdAt: {
         allowNull: false,

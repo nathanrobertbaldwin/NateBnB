@@ -21,9 +21,9 @@ const {
 
 // ============================= MIDDLEWARE ============================= //
 
-// -------------------------- Query Validator  -------------------------- //
+// --------- Validation for Optional Queries to Get All Spots ----------- //
 
-const validateQueries = [
+const validateGetAllSpotOptionalQueries = [
   check("minLat")
     .optional()
     .isFloat({ min: -90, max: 90 })
@@ -55,9 +55,9 @@ const validateQueries = [
   handleValidationErrors,
 ];
 
-// -------------------------  Spot Input Validator --------------------- //
+// --------------------- Validator for Post New Spot -------------------- //
 
-const validateSpot = [
+const validatePostNewSpot = [
   check("address")
     .exists()
     .withMessage("address must exist.")
@@ -78,14 +78,14 @@ const validateSpot = [
     .notEmpty()
     .withMessage("state cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("city must be letters only, plus spaces"),
+    .withMessage("state must be letters only, plus spaces"),
   check("country")
     .exists()
     .withMessage("country must exist.")
     .notEmpty()
     .withMessage("country cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("city must be letters only, plus spaces"),
+    .withMessage("country must be letters only, plus spaces"),
   check("lat")
     .exists()
     .withMessage("lat must exist.")
@@ -102,26 +102,134 @@ const validateSpot = [
     .notEmpty()
     .withMessage("name cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("city must be letters only, plus spaces"),
+    .withMessage("name must be letters only, plus spaces"),
   check("description")
     .exists()
     .withMessage("description must exist.")
     .notEmpty()
-    .withMessage("description cannot be empty."),
+    .withMessage("description cannot be empty.")
+    .isString()
+    .withMessage("description must be a string."),
   check("price")
     .exists()
     .withMessage("price must exist.")
     .notEmpty()
     .withMessage("price cannot be empty.")
     .isFloat()
-    .withMessage("lng must be a floating point number"),
+    .withMessage("price must be a floating point number"),
+  handleValidationErrors,
+];
+
+// ---------------- Validator for Post New Spot Image ------------------ //
+
+const validatePostNewSpotImage = [
+  check("url")
+    .exists()
+    .withMessage("url must exist")
+    .isURL()
+    .withMessage("url string must be a URL"),
+  check("preview")
+    .exists()
+    .withMessage("preview must exist")
+    .isBoolean()
+    .withMessage("preview must be a boolean"),
+  handleValidationErrors,
+];
+
+// ------------ Validator for Create a Review With Spot Id ------------- //
+
+const validatePostNewReview = [
+  check("review").optional().isString().withMessage("review must be a string"),
+  check("stars").optional().isNumeric({ min: 0, max: 5 }),
+  handleValidationErrors,
+];
+
+// ---------- Validator for Create New Booking with Spot Id ----------- //
+
+const validatePostNewBooking = [
+  check("startDate")
+    .exists()
+    .withMessage("startDate must exist.")
+    .isString()
+    .withMessage("startDate must be a string")
+    .custom((value, { req }) => {
+      const today = getCurrentDate();
+      const bookingStartDate = getDateFromString(req.body.startDate);
+      return today < bookingStartDate;
+    })
+    .withMessage("Start date must be after today."),
+  check("endDate")
+    .exists()
+    .withMessage("startDate must exist.")
+    .isString()
+    .withMessage("endDate must be a string")
+    .custom((value, { req }) => {
+      const bookingEndDate = getDateFromString(req.body.endDate);
+      const bookingStartDate = getDateFromString(req.body.startDate);
+      return bookingStartDate < bookingEndDate;
+    })
+    .withMessage("Start date must be before end date."),
+  handleValidationErrors,
+];
+
+const validatePutEditASpot = [
+  check("address")
+    .optional()
+    .notEmpty()
+    .withMessage("address cannot be empty.")
+    .matches(/^[a-zA-Z0-9. ]*$/)
+    .withMessage("address must be alphanumeric, plus spaces and . character"),
+  check("city")
+    .optional()
+    .notEmpty()
+    .withMessage("city cannot be empty.")
+    .matches(/^[a-zA-Z ]*$/)
+    .withMessage("city must be letters only, plus spaces"),
+  check("state")
+    .optional()
+    .notEmpty()
+    .withMessage("state cannot be empty.")
+    .matches(/^[a-zA-Z ]*$/)
+    .withMessage("state must be letters only, plus spaces"),
+  check("country")
+    .optional()
+    .notEmpty()
+    .withMessage("country cannot be empty.")
+    .matches(/^[a-zA-Z ]*$/)
+    .withMessage("country must be letters only, plus spaces"),
+  check("lat")
+    .optional()
+    .isFloat({ min: -90, max: 90 })
+    .withMessage("lat must be a floating point number."),
+  check("lng")
+    .optional()
+    .isFloat({ min: -180, max: 180 })
+    .withMessage("lng must be a floating point number."),
+  check("name")
+    .optional()
+    .notEmpty()
+    .withMessage("name cannot be empty.")
+    .matches(/^[a-zA-Z ]*$/)
+    .withMessage("name must be letters only, plus spaces"),
+  check("description")
+    .optional()
+    .notEmpty()
+    .withMessage("description cannot be empty.")
+    .isString()
+    .withMessage("description must be a string."),
+  check("price")
+    .optional()
+    .notEmpty()
+    .withMessage("price cannot be empty.")
+    .isFloat()
+    .withMessage("price must be a floating point number"),
   handleValidationErrors,
 ];
 
 // ============================= GET ROUTES ============================ //
 // --------------------------- Get All Spots --------------------------- //
 
-router.get("/", validateQueries, async (req, res, next) => {
+router.get("/", validateGetAllSpotOptionalQueries, async (req, res, next) => {
   // Pagination
 
   const pagination = {};
@@ -281,7 +389,7 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
 
 // ---------------------------- Post New Spot -------------------------- //
 
-router.post("/", requireAuth, validateSpot, async (req, res, next) => {
+router.post("/", requireAuth, validatePostNewSpot, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
 
   const { address, city, state, country, lat, lng, name, description, price } =
@@ -307,90 +415,119 @@ router.post("/", requireAuth, validateSpot, async (req, res, next) => {
 
 // ----------- Add an Image to a Spot based on the Spot's id ----------- //
 
-router.post("/:spotId/images", requireAuth, async (req, res, next) => {
-  const spot = await Spot.findByPk(req.params.spotId);
-  const ownerId = req.user.dataValues.id;
+router.post(
+  "/:spotId/images",
+  requireAuth,
+  validatePostNewSpotImage,
+  async (req, res, next) => {
+    const spot = await Spot.findByPk(req.params.spotId);
+    const ownerId = req.user.dataValues.id;
 
-  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
-  if (ownerId !== spot.ownerId) {
-    return next(new AuthorizationError("Forbidden"));
+    if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+    if (ownerId !== spot.ownerId) {
+      return next(new AuthorizationError("Forbidden"));
+    }
+
+    const { url, preview } = req.body;
+    const newSpotImage = SpotImage.build({ url, preview });
+
+    await newSpotImage.save();
+
+    return res.json(newSpotImage);
   }
-
-  const { url, preview } = req.body;
-  const newSpotImage = SpotImage.build({ url, preview });
-
-  await newSpotImage.save();
-
-  return res.json(newSpotImage);
-});
+);
 
 // --------- Create a Review for a Spot based on the Spot's id --------- //
 
-router.post("/:spotId/reviews", requireAuth, async (req, res, next) => {
-  const spot = await Spot.findByPk(req.params.spotId);
+router.post(
+  "/:spotId/reviews",
+  requireAuth,
+  validatePostNewReview,
+  async (req, res, next) => {
+    const spot = await Spot.findByPk(req.params.spotId);
 
-  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+    if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
 
-  const userId = req.user.dataValues.id;
-  const spotId = parseInt(req.params.spotId);
-  const { review, stars } = req.body;
-  const newReview = Review.build({ userId, spotId, review, stars });
+    const userId = req.user.dataValues.id;
+    const spotId = parseInt(req.params.spotId);
+    const { review, stars } = req.body;
+    const newReview = Review.build({ userId, spotId, review, stars });
 
-  await newReview.save();
+    await newReview.save();
 
-  res.json(newReview);
-});
+    res.json(newReview);
+  }
+);
 
 // ------- Create a Booking from a Spot based on the Spot's id --------- //
 
-router.post("/:spotId/bookings", requireAuth, async (req, res, next) => {
-  const userId = req.user.dataValues.id;
-  const spotId = parseInt(req.params.spotId);
-  const spot = await Spot.findByPk(req.params.spotId);
+router.post(
+  "/:spotId/bookings",
+  requireAuth,
+  validatePostNewBooking,
+  async (req, res, next) => {
+    const userId = req.user.dataValues.id;
+    const spotId = parseInt(req.params.spotId);
+    const spot = await Spot.findByPk(req.params.spotId);
 
-  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
-  if (userId === spot.ownerId) {
-    return next(new AuthorizationError("Forbidden"));
+    if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+    if (userId === spot.ownerId) {
+      return next(new AuthorizationError("Forbidden"));
+    }
+
+    const { startDate, endDate } = req.body;
+    const newBooking = Booking.build({ spotId, userId, startDate, endDate });
+
+    await newBooking.save();
+
+    res.json(newBooking);
   }
-
-  const { startDate, endDate } = req.body;
-  const newBooking = Booking.build({ spotId, userId, startDate, endDate });
-
-  await newBooking.save();
-
-  res.json(newBooking);
-});
+);
 
 // =========================== PUT ROUTES ============================= //
 
 // -------------------------- Edit a Spot ----------------------------- //
 
-router.put("/:spotId", requireAuth, async (req, res, next) => {
-  const ownerId = req.user.dataValues.id;
-  const spot = await Spot.findByPk(req.params.spotId);
+router.put(
+  "/:spotId",
+  requireAuth,
+  validatePutEditASpot,
+  async (req, res, next) => {
+    const ownerId = req.user.dataValues.id;
+    const spot = await Spot.findByPk(req.params.spotId);
 
-  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
-  if (ownerId !== spot.ownerId) {
-    return next(new AuthorizationError("Forbidden"));
+    if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+    if (ownerId !== spot.ownerId) {
+      return next(new AuthorizationError("Forbidden"));
+    }
+
+    const {
+      address,
+      city,
+      state,
+      country,
+      lat,
+      lng,
+      name,
+      description,
+      price,
+    } = req.body;
+
+    if (address) spot.address = address;
+    if (city) spot.city = city;
+    if (state) spot.state = state;
+    if (country) spot.country = country;
+    if (lat) spot.lat = lat;
+    if (lng) spot.lng = lng;
+    if (name) spot.name = name;
+    if (description) spot.description = description;
+    if (price) spot.price = price;
+
+    await spot.save();
+
+    return res.json(spot);
   }
-
-  const { address, city, state, country, lat, lng, name, description, price } =
-    req.body;
-
-  if (address) spot.address = address;
-  if (city) spot.city = city;
-  if (state) spot.state = state;
-  if (country) spot.country = country;
-  if (lat) spot.lat = lat;
-  if (lng) spot.lng = lng;
-  if (name) spot.name = name;
-  if (description) spot.description = description;
-  if (price) spot.price = price;
-
-  await spot.save();
-
-  return res.json(spot);
-});
+);
 
 // =========================== DELETE ROUTES =========================== //
 

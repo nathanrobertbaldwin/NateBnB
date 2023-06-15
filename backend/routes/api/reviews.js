@@ -19,6 +19,8 @@ const {
 
 // ============================= MIDDLEWARE ============================= //
 
+// ----------------  Validator for Post New Review Image ---------------- //
+
 const validatePostReviewImage = [
   check("url")
     .exists()
@@ -30,9 +32,11 @@ const validatePostReviewImage = [
   handleValidationErrors,
 ];
 
+// -----------------  Validator for Put Edit a Review ------------------ //
+
 const validatePutEditReview = [
   check("review").optional().isString().withMessage("review must be a string"),
-  check("stars").optional().isNumeric({ min: -90, max: 90 }),
+  check("stars").optional().isNumeric({ min: 0, max: 5 }),
   handleValidationErrors,
 ];
 
