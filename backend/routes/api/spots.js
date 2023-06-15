@@ -424,7 +424,7 @@ router.post(
   requireAuth,
   validatePostNewSpotImage,
   async (req, res, next) => {
-    const spotId = req.params.spotId;
+    const spotId = parseInt(req.params.spotId);
     const spot = await Spot.findByPk(spotId);
     const ownerId = req.user.dataValues.id;
 
@@ -449,12 +449,12 @@ router.post(
   requireAuth,
   validatePostNewReview,
   async (req, res, next) => {
-    const spot = await Spot.findByPk(req.params.spotId);
+    const spotId = parseInt(req.params.spotId);
+    const spot = await Spot.findByPk(spotId);
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
 
     const userId = req.user.dataValues.id;
-    const spotId = parseInt(req.params.spotId);
     const { review, stars } = req.body;
     const newReview = Review.build({ userId, spotId, review, stars });
 
@@ -471,11 +471,13 @@ router.post(
   requireAuth,
   validatePostNewBooking,
   async (req, res, next) => {
-    const userId = req.user.dataValues.id;
     const spotId = parseInt(req.params.spotId);
-    const spot = await Spot.findByPk(req.params.spotId);
+    const spot = await Spot.findByPk(spotId);
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
+    const userId = req.user.dataValues.id;
+
     if (userId === spot.ownerId) {
       return next(new AuthorizationError("Forbidden"));
     }
@@ -498,10 +500,13 @@ router.put(
   requireAuth,
   validatePutEditASpot,
   async (req, res, next) => {
-    const ownerId = req.user.dataValues.id;
-    const spot = await Spot.findByPk(req.params.spotId);
+    const spotId = parseInt(req.params.spotId);
+    const spot = await Spot.findByPk(spotId);
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
+    const ownerId = req.user.dataValues.id;
+
     if (ownerId !== spot.ownerId) {
       return next(new AuthorizationError("Forbidden"));
     }
@@ -539,10 +544,13 @@ router.put(
 // -------------------------- Delete a Booking ------------------------- //
 
 router.delete("/:spotId", requireAuth, async (req, res, next) => {
-  const ownerId = req.user.dataValues.id;
-  const spot = await Spot.findByPk(req.params.spotId);
+  const spotId = parseInt(req.params.spotId);
+  const spot = await Spot.findByPk(spotId);
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
+  const ownerId = req.user.dataValues.id;
+
   if (ownerId !== spot.ownerId) {
     return next(new AuthorizationError("Forbidden"));
   }
