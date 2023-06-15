@@ -27,27 +27,31 @@ const validateQueries = [
   check("minLat")
     .optional()
     .isFloat({ min: -90, max: 90 })
-    .withMessage("lat must be a floating point number."),
+    .withMessage("minLat must be a floating point number between -90 and 90."),
   check("maxLat")
     .optional()
     .isFloat({ min: -90, max: 90 })
-    .withMessage("lat must be a floating point number."),
+    .withMessage("maxLat must be a floating point number between -90 and 90."),
   check("minLng")
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage("lng must be a floating point number."),
+    .withMessage(
+      "minLng must be a floating point number between -180 and 180."
+    ),
   check("maxLng")
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage("lng must be a floating point number."),
+    .withMessage(
+      "maxLng must be a floating point number between -180 and 180."
+    ),
   check("minPrice")
     .optional()
-    .matches(/^[a-zA-Z0-9. ]*$/)
-    .withMessage("address must be alphanumeric, plus spaces and . character"),
+    .isFloat()
+    .withMessage("minPrice must be a floating point number."),
   check("maxPrice")
     .optional()
-    .matches(/^[a-zA-Z0-9. ]*$/)
-    .withMessage("address must be alphanumeric, plus spaces and . character"),
+    .isFloat()
+    .withMessage("maxPrice must be a floating point number."),
   handleValidationErrors,
 ];
 

@@ -19,6 +19,23 @@ const {
 
 // ============================= MIDDLEWARE ============================= //
 
+const validatePostReviewImage = [
+  check("url")
+    .exists()
+    .withMessage("url must exist.")
+    .isString()
+    .withMessage("url must be a string")
+    .isURL()
+    .withMessage("url string must be a URL."),
+  handleValidationErrors,
+];
+
+const validatePutEditReview = [
+  check("review").optional().isString().withMessage("review must be a string"),
+  check("stars").optional().isNumeric({ min: -90, max: 90 }),
+  handleValidationErrors,
+];
+
 // ============================= GET ROUTES ============================ //
 
 // ---------------- Get all Reviews of the Current User ---------------- //
@@ -45,48 +62,58 @@ router.get("/current", requireAuth, async (req, res, next) => {
 
 // ------- Add an Image to a Review based on the Review's id ---------- //
 
-router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
-  const ownerId = req.user.dataValues.id;
-  const review = await Review.findByPk(req.params.reviewId);
+router.post(
+  "/:reviewId/images",
+  requireAuth,
+  validatePostReviewImage,
+  async (req, res, next) => {
+    const ownerId = req.user.dataValues.id;
+    const review = await Review.findByPk(req.params.reviewId);
 
-  if (!review)
-    return next(new noResourceExistsError("Review couldn't be found"));
-  if (ownerId !== review.userId) {
-    return next(new AuthorizationError("Forbidden"));
+    if (!review)
+      return next(new noResourceExistsError("Review couldn't be found"));
+    if (ownerId !== review.userId) {
+      return next(new AuthorizationError("Forbidden"));
+    }
+
+    const { url } = req.body;
+    const reviewId = req.params.reviewId;
+    const newReviewImage = await ReviewImage.build({ url, reviewId });
+
+    await newReviewImage.save();
+
+    res.json(newReviewImage);
   }
-
-  const { url } = req.body;
-  const reviewId = req.params.reviewId;
-  const newReviewImage = await ReviewImage.build({ url, reviewId });
-
-  await newReviewImage.save();
-
-  res.json(newReviewImage);
-});
+);
 
 // ============================ PUT ROUTES ============================ //
 
 // --------------------------- Edit A Review -------------------------- //
 
-router.put("/:reviewId", requireAuth, async (req, res, next) => {
-  const userId = req.user.dataValues.id;
-  const reviewById = await Review.findByPk(req.params.reviewId);
+router.put(
+  "/:reviewId",
+  requireAuth,
+  validatePutEditReview,
+  async (req, res, next) => {
+    const userId = req.user.dataValues.id;
+    const reviewById = await Review.findByPk(req.params.reviewId);
 
-  if (!reviewById)
-    return next(new noResourceExistsError("Review couldn't be found"));
-  if (userId !== reviewById.userId) {
-    return next(new AuthorizationError("Forbidden"));
+    if (!reviewById)
+      return next(new noResourceExistsError("Review couldn't be found"));
+    if (userId !== reviewById.userId) {
+      return next(new AuthorizationError("Forbidden"));
+    }
+
+    const { review, stars } = req.body;
+
+    if (reviewById) reviewById.review = review;
+    if (stars) review.stars = stars;
+
+    await reviewById.save();
+
+    return res.json(reviewById);
   }
-
-  const { review, stars } = req.body;
-
-  if (reviewById) reviewById.review = review;
-  if (stars) review.stars = stars;
-
-  await reviewById.save();
-
-  return res.json(reviewById);
-});
+);
 
 // =========================== DELETE ROUTES =========================== //
 
