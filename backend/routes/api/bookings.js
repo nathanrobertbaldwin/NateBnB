@@ -106,12 +106,17 @@ router.put(
 // -------------------------- Delete a Booking ------------------------- //
 
 router.delete("/:bookingId", requireAuth, async (req, res, next) => {
-  const userId = req.user.dataValues.id;
-  const booking = await Booking.findByPk(req.params.bookingId);
+  const bookingId = parseInt(req.params.bookingId);
+  const booking = await Booking.findByPk(bookingId, {
+    include: { model: Spot, attributes: ["ownerId"] },
+  });
 
   if (!booking)
     return next(new noResourceExistsError("Booking couldn't be found"));
-  if (userId !== booking.userId) {
+
+  const userId = req.user.dataValues.id;
+
+  if (userId !== booking.userId && userId !== booking.Spot.ownerId) {
     return next(new AuthorizationError("Forbidden"));
   }
 
