@@ -46,7 +46,7 @@ const validatePutEditReview = [
 
 router.get("/current", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
-  const reviews = await User.findByPk(userId, {
+  let allReviews = await User.findByPk(userId, {
     where: { id: userId },
     attributes: [],
     include: {
@@ -56,13 +56,26 @@ router.get("/current", requireAuth, async (req, res, next) => {
         {
           model: Spot,
           attributes: { exclude: ["description", "createdAt", "updatedAt"] },
+          include: {
+            model: SpotImage,
+            attributes: ["url"],
+            where: { preview: true },
+          },
         },
         { model: ReviewImage, attributes: ["id", "url"] },
       ],
       group: ["User.id", "Spots.id", "ReviewImage.id"],
     },
   });
-  res.json(reviews);
+
+  const unPacked = allReviews.Reviews.map((review) => review.toJSON());
+
+  unPacked.forEach((review) => {
+    review.Spot.previewImage = review.Spot.SpotImages[0].url;
+    delete review.Spot.SpotImages;
+  });
+
+  res.json({ Reviews: unPacked });
 });
 
 // ============================ POST ROUTES ============================ //
