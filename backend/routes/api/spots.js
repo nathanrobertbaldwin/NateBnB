@@ -438,7 +438,11 @@ router.post(
 
     await newSpotImage.save();
 
-    return res.json(newSpotImage);
+    return res.json({
+      id: newSpotImage.id,
+      url: newSpotImage.url,
+      preview: newSpotImage.preview,
+    });
   }
 );
 
