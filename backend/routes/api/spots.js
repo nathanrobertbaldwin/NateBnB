@@ -275,7 +275,7 @@ router.get("/", validateGetAllSpotOptionalQueries, async (req, res, next) => {
   spots = spots.map((spot) => spot.toJSON());
 
   spots.forEach((spot) => {
-    spot.url = spot.SpotImages[0].url;
+    spot.previewImage = spot.SpotImages[0].url;
     delete spot.SpotImages;
 
     let sum = 0;
