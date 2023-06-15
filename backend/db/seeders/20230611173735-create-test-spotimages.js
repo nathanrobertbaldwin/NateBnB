@@ -17,12 +17,14 @@ module.exports = {
         { spotId: 2, url: "www.elsewhereImages.com/images", preview: true },
         { spotId: 3, url: "www.testDomain.com/images", preview: true },
         { spotId: 4, url: "www.imagefiles.com/images", preview: true },
+        { spotId: 5, url: "www.whatpic.com/images", preview: true },
+        { spotId: 6, url: "www.hostyourpics.com/images", preview: true },
       ],
       { validate: true }
     );
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete(options, { spotId: [1, 2, 3, 4] });
+    await queryInterface.bulkDelete(options, { spotId: [1, 2, 3, 4, 5, 6] });
   },
 };

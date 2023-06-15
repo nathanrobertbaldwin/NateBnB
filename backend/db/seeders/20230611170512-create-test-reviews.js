@@ -22,14 +22,32 @@ module.exports = {
         {
           spotId: 1,
           userId: 2,
-          review: "This place is sucks!",
-          stars: 4,
+          review: "I really like the windows",
+          stars: 3,
         },
         {
           spotId: 2,
           userId: 3,
-          review: "This place is Okay!",
+          review: "The carpet is shag green",
           stars: 3,
+        },
+        {
+          spotId: 2,
+          userId: 4,
+          review: "Could use a deep clean",
+          stars: 4,
+        },
+        {
+          spotId: 3,
+          userId: 4,
+          review: "Toilet was dirty!",
+          stars: 1,
+        },
+        {
+          spotId: 4,
+          userId: 5,
+          review: "This place looks wonderful, but smells weird.",
+          stars: 2,
         },
       ],
       { validate: true }
@@ -37,6 +55,15 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.bulkDelete(options, { spotId: [1] });
+    await queryInterface.bulkDelete(options, {
+      review: [
+        "This place is great!",
+        "I really like the windows",
+        "The carpet is shag green",
+        "Could use a deep clean",
+        "Toilet was dirty!",
+        "This place looks wonderful, but smells weird.",
+      ],
+    });
   },
 };

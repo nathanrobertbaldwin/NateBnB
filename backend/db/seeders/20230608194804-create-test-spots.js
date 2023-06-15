@@ -19,7 +19,7 @@ module.exports = {
           city: "Somewhere",
           state: "PA",
           country: "USA",
-          lat: 40.00,
+          lat: 40.0,
           lng: 170.25,
           name: "Beautiful House",
           description: "This beautiful house is right on the water!",
@@ -38,7 +38,7 @@ module.exports = {
           price: 13.5,
         },
         {
-          ownerId: 4,
+          ownerId: 2,
           address: "999 N Mansion Ave",
           city: "Glitzytown",
           state: "NJ",
@@ -49,6 +49,42 @@ module.exports = {
           description: "This spectacular place looks right at NYC!",
           price: 500.21,
         },
+        {
+          ownerId: 3,
+          address: "2185 Messed Up St",
+          city: "Badtown",
+          state: "PA",
+          country: "USA",
+          lat: 42,
+          lng: -60,
+          name: "Awful Home",
+          description: "Just a terrible place to visit",
+          price: 50.0,
+        },
+        {
+          ownerId: 4,
+          address: "9876 Highway A",
+          city: "Dells",
+          state: "WI",
+          country: "USA",
+          lat: 45,
+          lng: 100,
+          name: "The Dells House",
+          description: "Coolest Spot in the Dells!",
+          price: 999.0,
+        },
+        {
+          ownerId: 5,
+          address: "654 Icky Spot Rd",
+          city: "Ickyton",
+          state: "FL",
+          country: "USA",
+          lat: 0,
+          lng: 0,
+          name: "Icky Spot Place",
+          description: "Pretty icky spot somewhere in FL.",
+          price: 500.21,
+        },
       ],
       { validate: true }
     );
@@ -56,7 +92,14 @@ module.exports = {
 
   async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete(options, {
-      address: ["123 W Madeup St", "421 Elsewhere St", "999 N Mansion Ave"],
+      address: [
+        "123 W Madeup St",
+        "421 Elsewhere St",
+        "999 N Mansion Ave",
+        "2185 Messed Up St",
+        "9876 Highway A",
+        "654 Icky Spot Rd",
+      ],
     });
   },
 };
