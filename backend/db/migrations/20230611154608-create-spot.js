@@ -7,12 +7,12 @@ if (process.env.NODE_ENV === "production") {
   options.schema = process.env.SCHEMA; // define your schema in options object
 }
 
-options.tableName = "Reviews";
+options.tableName = "Spots";
 
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable(
-      "Reviews",
+      "Spots",
       {
         id: {
           allowNull: false,
@@ -20,19 +20,48 @@ module.exports = {
           primaryKey: true,
           type: Sequelize.INTEGER,
         },
-        spotId: {
+        ownerId: {
           type: Sequelize.INTEGER,
           allowNull: false,
+          onDelete: "CASCADE",
+          references: {
+            model: "Users",
+            key: "id",
+          },
         },
-        userId: {
-          type: Sequelize.INTEGER,
-          allowNull: false,
-        },
-        review: {
+        address: {
           type: Sequelize.STRING,
+          allowNull: false,
         },
-        stars: {
-          type: Sequelize.INTEGER,
+        city: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        state: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        country: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        lat: {
+          type: Sequelize.FLOAT,
+        },
+        lng: {
+          type: Sequelize.FLOAT,
+        },
+        name: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        description: {
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        price: {
+          type: Sequelize.FLOAT,
+          allowNull: false,
         },
         createdAt: {
           allowNull: false,
