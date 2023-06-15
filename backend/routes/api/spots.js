@@ -330,7 +330,9 @@ router.get("/current", requireAuth, async (req, res, next) => {
 // ---------------- Get details for a Spot from an id ----------------- //
 
 router.get("/:spotId", async (req, res, next) => {
-  let spot = await Spot.findByPk(req.params.spotId, {
+  const spotId = parseInt(req.params.spotId);
+
+  let spot = await Spot.findByPk(spotId, {
     attributes: {
       include: [
         [sequelize.fn("count", sequelize.col("stars")), "numReviews"],
@@ -361,7 +363,9 @@ router.get("/:spotId", async (req, res, next) => {
 // -------------------- Get all Reviews By Spot Id -------------------- //
 
 router.get("/:spotId/reviews", async (req, res, next) => {
-  const spot = await Spot.findByPk(req.params.spotId, {
+  const spotId = parseInt(req.params.spotId);
+
+  const spot = await Spot.findByPk(spotId, {
     attributes: [],
     include: [
       {
@@ -382,8 +386,9 @@ router.get("/:spotId/reviews", async (req, res, next) => {
 // -------- Get all Bookings for a Spot based on the Spot's id -------- //
 
 router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
-  const userId = req.user.dataValues.id;
-  let spot = await Spot.findByPk(req.params.spotId, {
+  const spotId = parseInt(req.params.spotId);
+
+  let spot = await Spot.findByPk(spotId, {
     attributes: ["ownerId"],
     include: {
       model: Booking,
@@ -391,7 +396,11 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
     },
   });
 
+  if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
   spot = spot.toJSON();
+
+  const userId = req.user.dataValues.id;
 
   if (userId !== spot.ownerId) {
     spot.Bookings.forEach((booking) => {
