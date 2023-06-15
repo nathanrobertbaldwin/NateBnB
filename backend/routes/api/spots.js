@@ -342,7 +342,7 @@ router.get("/:spotId", async (req, res, next) => {
       { model: User },
       { model: Review, attributes: [] },
     ],
-    group: ["Spot.id", "SpotImages.id"],
+    group: ["Spot.id", "SpotImages.id", "User.id"],
   });
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
