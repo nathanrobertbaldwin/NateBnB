@@ -33,8 +33,18 @@ const validateSignup = [
     .withMessage("User with that email already exists."),
   check("username")
     .exists()
-    .isLength({ min: 3 })
-    .withMessage("Please provide a username with at least 3 characters."),
+    .custom(async (value) => {
+      const users = await User.findAll({
+        attributes: ["username"],
+      });
+      users.forEach((user) => {
+        if (user.username === value)
+          throw new userAlreadyExistsError(
+            "User with that username already exists."
+          );
+      });
+    })
+    .withMessage("User with that username already exists."),
   check("username").not().isEmail().withMessage("Username cannot be an email."),
   check("password")
     .exists()
