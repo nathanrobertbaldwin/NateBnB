@@ -1,4 +1,4 @@
-// ================ IMPORTS ================ //
+// ============================== IMPORTS ============================== //
 
 const router = require("express").Router();
 const sequelize = require("sequelize");
@@ -19,7 +19,9 @@ const {
 } = require("../../utils/errors");
 const { getCurrentDate, getDateFromString } = require("../../utils/dates");
 
-// ================ MIDDLEWARE ================ //
+// ============================= MIDDLEWARE ============================= //
+
+// ----------------------- Validate Booking Body  ----------------------- //
 
 const validateBooking = [
   check("startDate")
@@ -47,8 +49,9 @@ const validateBooking = [
   handleValidationErrors,
 ];
 
-// ================ GET ROUTES ================ //
-// ----------- Get all of the Current User's Bookings ------------ //
+// ============================= GET ROUTES ============================ //
+
+// --------------- Get all of the Current User's Bookings -------------- //
 
 router.get("/current", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
@@ -68,8 +71,9 @@ router.get("/current", requireAuth, async (req, res, next) => {
   return res.json(bookings);
 });
 
-// ================ PUT ROUTES ================ //
-// ----------- Edit a Booking ------------ //
+// ============================ PUT ROUTES ============================ //
+
+// ------------------------ Edit a Booking ---------------------------- //
 
 router.put(
   "/:bookingId",
@@ -95,8 +99,9 @@ router.put(
   }
 );
 
-// ================ DELETE ROUTES ================ //
-// ----------- Delete a Booking ------------ //
+// =========================== DELETE ROUTES =========================== //
+
+// -------------------------- Delete a Booking ------------------------- //
 
 router.delete("/:bookingId", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
@@ -114,5 +119,7 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
     message: "Successfully deleted",
   });
 });
+
+// ============================== EXPORTS ============================== //
 
 module.exports = router;

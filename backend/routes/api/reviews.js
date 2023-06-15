@@ -1,4 +1,4 @@
-// ================ IMPORTS ================ //
+// ============================== IMPORTS ============================== //
 
 const router = require("express").Router();
 const sequelize = require("sequelize");
@@ -17,10 +17,12 @@ const {
   noResourceExistsError,
 } = require("../../utils/errors");
 
-// ================ MIDDLEWARE ================ //
+// ============================= MIDDLEWARE ============================= //
 
-// ================ GET ROUTES ================ //
-// ----------- Get all Reviews of the Current User ------------ //
+// ============================= GET ROUTES ============================ //
+
+// ---------------- Get all Reviews of the Current User ---------------- //
+
 router.get("/current", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
   const reviews = await User.findAll({
@@ -39,8 +41,9 @@ router.get("/current", requireAuth, async (req, res, next) => {
   res.json(reviews);
 });
 
-// ================ POST ROUTES ================ //
-// ----------- Add an Image to a Review based on the Review's id ------------ //
+// ============================ POST ROUTES ============================ //
+
+// ------- Add an Image to a Review based on the Review's id ---------- //
 
 router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
@@ -49,11 +52,7 @@ router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
   if (!review)
     return next(new noResourceExistsError("Review couldn't be found"));
   if (ownerId !== review.userId) {
-    return next(
-      new AuthorizationError(
-        "Forbidden"
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   const { url } = req.body;
@@ -65,8 +64,9 @@ router.post("/:reviewId/images", requireAuth, async (req, res, next) => {
   res.json(newReviewImage);
 });
 
-// ================ PUT ROUTES ================ //
-// ----------- Edit A Review ------------ //
+// ============================ PUT ROUTES ============================ //
+
+// --------------------------- Edit A Review -------------------------- //
 
 router.put("/:reviewId", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
@@ -75,11 +75,7 @@ router.put("/:reviewId", requireAuth, async (req, res, next) => {
   if (!reviewById)
     return next(new noResourceExistsError("Review couldn't be found"));
   if (userId !== reviewById.userId) {
-    return next(
-      new AuthorizationError(
-        "Forbidden"
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   const { review, stars } = req.body;
@@ -92,8 +88,9 @@ router.put("/:reviewId", requireAuth, async (req, res, next) => {
   return res.json(reviewById);
 });
 
-// ================ DELETE ROUTES ================ //
-// ----------- Delete A Review ------------ //
+// =========================== DELETE ROUTES =========================== //
+
+// ------------------------- Delete A Review --------------------------- //
 
 router.delete("/:reviewId", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
@@ -102,11 +99,7 @@ router.delete("/:reviewId", requireAuth, async (req, res, next) => {
   if (!review)
     return next(new noResourceExistsError("Review couldn't be found"));
   if (ownerId !== review.userId) {
-    return next(
-      new AuthorizationError(
-        "Forbidden"
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   await Review.destroy({ where: { id: req.params.reviewId } });
@@ -115,5 +108,7 @@ router.delete("/:reviewId", requireAuth, async (req, res, next) => {
     message: "Successfully deleted",
   });
 });
+
+// ============================== EXPORTS ============================== //
 
 module.exports = router;

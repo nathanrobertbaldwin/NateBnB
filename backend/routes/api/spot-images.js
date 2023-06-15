@@ -1,4 +1,4 @@
-// ================ IMPORTS ================ //
+// ============================== IMPORTS ============================== //
 
 const router = require("express").Router();
 const sequelize = require("sequelize");
@@ -17,11 +17,11 @@ const {
   noResourceExistsError,
 } = require("../../utils/errors");
 
-// ================ MIDDLEWARE ================ //
+// ============================= MIDDLEWARE ============================= //
 
-// ================ DELETE ROUTES ================ //
+// =========================== DELETE ROUTES =========================== //
 
-// ----------- Delete a Spot Image ------------ //
+// ------------------------ Delete a Spot Image ------------------------ //
 
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
@@ -41,5 +41,7 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
     message: "Successfully deleted",
   });
 });
+
+// ============================== EXPORTS ============================== //
 
 module.exports = router;

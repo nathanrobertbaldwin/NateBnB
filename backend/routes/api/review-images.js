@@ -1,4 +1,4 @@
-// ================ IMPORTS ================ //
+// ============================== IMPORTS ============================== //
 
 const router = require("express").Router();
 const sequelize = require("sequelize");
@@ -17,8 +17,9 @@ const {
   noResourceExistsError,
 } = require("../../utils/errors");
 
-// ================ DELETE ROUTES ================ //
-// ----------- Delete A Review Image ------------ //
+// =========================== DELETE ROUTES =========================== //
+
+// ----------------------- Delete A Review Image ----------------------- //
 
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
@@ -29,11 +30,7 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
   if (!image)
     return next(new noResourceExistsError("Review Image couldn't be found"));
   if (userId !== image.Review.userId) {
-    return next(
-      new AuthorizationError(
-        "Forbidden"
-      )
-    );
+    return next(new AuthorizationError("Forbidden"));
   }
 
   await ReviewImage.destroy({ where: { id: req.params.imageId } });
@@ -41,5 +38,7 @@ router.delete("/:imageId", requireAuth, async (req, res, next) => {
     message: "Successfully deleted",
   });
 });
+
+// ============================== EXPORTS ============================== //
 
 module.exports = router;

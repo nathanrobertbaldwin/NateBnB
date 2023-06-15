@@ -1,4 +1,5 @@
-// backend/routes/api/session.js
+// ============================== IMPORTS ============================== //
+
 const express = require("express");
 const { Op } = require("sequelize");
 const bcrypt = require("bcryptjs");
@@ -11,7 +12,10 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 const router = express.Router();
 
-// Validate Login
+// ============================= MIDDLEWARE ============================= //
+
+// -------------------------- Validate Login  -------------------------- //
+
 const validateLogin = [
   check("credential")
     .exists({ checkFalsy: true })
@@ -23,7 +27,10 @@ const validateLogin = [
   handleValidationErrors,
 ];
 
-// Log in
+// ============================= GET ROUTES ============================ //
+
+// ------------------------------ Log In  ------------------------------ //
+
 router.post("/", validateLogin, async (req, res, next) => {
   const { credential, password } = req.body;
 
@@ -59,13 +66,17 @@ router.post("/", validateLogin, async (req, res, next) => {
   });
 });
 
-// Log out
+// =========================== DELETE ROUTES =========================== //
+
+// ------------------------------ Log Out  ----------------------------- //
+
 router.delete("/", (_req, res) => {
   res.clearCookie("token");
   return res.json({ message: "success" });
 });
 
-// Restore session user
+// ============================== FINALLY  ============================== //
+
 router.get("/", (req, res) => {
   const { user } = req;
   if (user) {
@@ -82,6 +93,6 @@ router.get("/", (req, res) => {
   } else return res.json({ user: null });
 });
 
-// ...
+// ============================== EXPORTS ============================== //
 
 module.exports = router;

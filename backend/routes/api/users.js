@@ -1,4 +1,4 @@
-// ================ IMPORTS ================ //
+// ============================== IMPORTS ============================== //
 
 const express = require("express");
 const bcrypt = require("bcryptjs");
@@ -11,7 +11,7 @@ const { handleValidationErrors } = require("../../utils/validation");
 
 const router = express.Router();
 
-// ================ MIDDLEWARE ================ //
+// ============================= MIDDLEWARE ============================= //
 
 const validateSignup = [
   check("email")
@@ -30,8 +30,9 @@ const validateSignup = [
   handleValidationErrors,
 ];
 
-// ================ ROUTES ================ //
-// ----------- Create New User ------------ //
+// ============================= POST ROUTES =========================== //
+
+// --------------------------- Create a New User ----------------------- //
 
 router.post("/", validateSignup, async (req, res) => {
   const { email, password, username, firstName, lastName } = req.body;
@@ -58,5 +59,7 @@ router.post("/", validateSignup, async (req, res) => {
     user: safeUser,
   });
 });
+
+// ============================== EXPORTS ============================== //
 
 module.exports = router;
