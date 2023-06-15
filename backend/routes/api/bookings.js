@@ -114,6 +114,15 @@ router.delete("/:bookingId", requireAuth, async (req, res, next) => {
   if (!booking)
     return next(new noResourceExistsError("Booking couldn't be found"));
 
+  const today = getCurrentDate();
+  const bookingStartDate = getDateFromString(booking.startDate);
+
+  if (bookingStartDate < today) {
+    return next(
+      new AuthorizationError("Bookings that have been started can't be deleted")
+    );
+  }
+
   const userId = req.user.dataValues.id;
 
   if (userId !== booking.userId && userId !== booking.Spot.ownerId) {
