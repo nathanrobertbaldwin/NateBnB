@@ -53,7 +53,10 @@ router.get("/current", requireAuth, async (req, res, next) => {
       model: Review,
       include: [
         { model: User, attributes: ["id", "firstName", "lastName"] },
-        { model: Spot },
+        {
+          model: Spot,
+          attributes: { exclude: ["description", "createdAt", "updatedAt"] },
+        },
         { model: ReviewImage, attributes: ["id", "url"] },
       ],
       group: ["User.id", "Spots.id", "ReviewImage.id"],
