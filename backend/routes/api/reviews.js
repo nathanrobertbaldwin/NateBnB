@@ -35,8 +35,11 @@ const validatePostReviewImage = [
 // -----------------  Validator for Put Edit a Review ------------------ //
 
 const validatePutEditReview = [
-  check("review").optional().isString().withMessage("review must be a string"),
-  check("stars").optional().isNumeric({ min: 0, max: 5 }),
+  check("review").exists().isString().withMessage("Review text is required"),
+  check("stars")
+    .optional()
+    .isNumeric({ min: 0, max: 5 })
+    .withMessage("Stars must be an integer from 1 to 5"),
   handleValidationErrors,
 ];
 
@@ -127,11 +130,13 @@ router.put(
   requireAuth,
   validatePutEditReview,
   async (req, res, next) => {
-    const userId = req.user.dataValues.id;
     const reviewById = await Review.findByPk(req.params.reviewId);
 
     if (!reviewById)
       return next(new noResourceExistsError("Review couldn't be found"));
+
+    const userId = req.user.dataValues.id;
+
     if (userId !== reviewById.userId) {
       return next(new AuthorizationError("Forbidden"));
     }
@@ -140,7 +145,6 @@ router.put(
 
     if (reviewById) reviewById.review = review;
     if (stars) review.stars = stars;
-
     reviewById.updatedAt = new Date();
 
     await reviewById.save();
