@@ -9,7 +9,7 @@ const handleValidationErrors = (req, _res, next) => {
   if (!validationErrors.isEmpty()) {
     const errors = {};
     validationErrors.array().forEach((error) => {
-      console.log(error);
+      console.log(error.msg);
       errors[error.path] = error.msg;
     });
 
@@ -17,7 +17,7 @@ const handleValidationErrors = (req, _res, next) => {
     err.errors = errors;
     err.status = 400;
     err.title = "Bad request.";
-    next(err);
+    return next(err);
   }
   next();
 };

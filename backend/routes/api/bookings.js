@@ -27,16 +27,23 @@ const validateBooking = [
     .withMessage("startDate must exist.")
     .isString()
     .withMessage("startDate must be a string")
-    .custom(({ req }) => {
+    .custom((value, { req }) => {
       const today = getCurrentDate();
       const bookingStartDate = getDateFromString(req.body.startDate);
       return today < bookingStartDate;
-    }),
+    })
+    .withMessage("Start date must be after today."),
   check("endDate")
     .exists()
     .withMessage("startDate must exist.")
     .isString()
-    .withMessage("endDate must be a string"),
+    .withMessage("endDate must be a string")
+    .custom((value, { req }) => {
+      const bookingEndDate = getDateFromString(req.body.endDate);
+      const bookingStartDate = getDateFromString(req.body.startDate);
+      return bookingStartDate < bookingEndDate;
+    })
+    .withMessage("Start date must be before end date."),
   handleValidationErrors,
 ];
 
@@ -70,6 +77,7 @@ router.put(
   validateBooking,
   async (req, res, next) => {
     const userId = req.user.dataValues.id;
+    const { startDate, endDate } = req.body;
     const booking = await Booking.findByPk(req.params.bookingId);
 
     if (!booking)
@@ -77,8 +85,6 @@ router.put(
     if (userId !== booking.userId) {
       return next(new AuthorizationError("Forbidden"));
     }
-
-    const { startDate, endDate } = req.body;
 
     if (startDate) booking.startDate = startDate;
     if (endDate) booking.endDate = endDate;

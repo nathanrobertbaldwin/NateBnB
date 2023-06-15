@@ -1,7 +1,6 @@
 const getCurrentDate = () => {
   const date = new Date();
-  const now = date.getTime();
-  return now;
+  return date.getTime();
 };
 
 const getDateFromString = (str) => {

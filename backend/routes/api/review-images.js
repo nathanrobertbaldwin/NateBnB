@@ -17,8 +17,6 @@ const {
   noResourceExistsError,
 } = require("../../utils/errors");
 
-// ================ MIDDLEWARE ================ //
-
 // ================ DELETE ROUTES ================ //
 // ----------- Delete A Review Image ------------ //
 
