@@ -93,6 +93,8 @@ router.put(
     if (startDate) booking.startDate = startDate;
     if (endDate) booking.endDate = endDate;
 
+    booking.updatedAt = new Date();
+
     await booking.save();
 
     res.json(booking);

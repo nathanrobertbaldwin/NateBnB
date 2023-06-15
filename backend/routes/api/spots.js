@@ -556,6 +556,8 @@ router.put(
     if (description) spot.description = description;
     if (price) spot.price = price;
 
+    spot.updatedAt = new Date();
+
     await spot.save();
 
     return res.json(spot);

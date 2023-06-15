@@ -113,6 +113,8 @@ router.put(
     if (reviewById) reviewById.review = review;
     if (stars) review.stars = stars;
 
+    reviewById.updatedAt = new Date();
+
     await reviewById.save();
 
     return res.json(reviewById);
