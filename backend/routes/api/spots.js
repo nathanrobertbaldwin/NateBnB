@@ -330,11 +330,29 @@ router.get("/current", requireAuth, async (req, res, next) => {
 // ---------------- Get details for a Spot from an id ----------------- //
 
 router.get("/:spotId", async (req, res, next) => {
-  const spot = await Spot.findByPk(req.params.spotId, {
-    include: [{ model: SpotImage }, { model: User }],
+  let spot = await Spot.findByPk(req.params.spotId, {
+    attributes: {
+      include: [
+        [sequelize.fn("count", sequelize.col("stars")), "numReviews"],
+        [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
+      ],
+    },
+    include: [
+      { model: SpotImage },
+      { model: User },
+      { model: Review, attributes: [] },
+    ],
   });
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
+
+  spot = spot.toJSON();
+
+  spot.avgStarRating = spot.sumReviews / spot.numReviews;
+  delete spot.sumReviews;
+  spot.Owner = spot.User;
+  delete spot.Owner.username;
+  delete spot.User;
 
   return res.json(spot);
 });
