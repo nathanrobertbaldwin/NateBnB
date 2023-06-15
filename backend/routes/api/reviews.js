@@ -46,7 +46,7 @@ const validatePutEditReview = [
 
 router.get("/current", requireAuth, async (req, res, next) => {
   const userId = req.user.dataValues.id;
-  const reviews = await User.findAll({
+  const reviews = await User.findByPk(userId, {
     where: { id: userId },
     attributes: [],
     include: {
