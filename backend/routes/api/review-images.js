@@ -22,13 +22,15 @@ const {
 // ----------------------- Delete A Review Image ----------------------- //
 
 router.delete("/:imageId", requireAuth, async (req, res, next) => {
-  const userId = req.user.dataValues.id;
   const image = await ReviewImage.findByPk(req.params.imageId, {
     include: { model: Review },
   });
 
   if (!image)
     return next(new noResourceExistsError("Review Image couldn't be found"));
+
+  const userId = req.user.dataValues.id;
+
   if (userId !== image.Review.userId) {
     return next(new AuthorizationError("Forbidden"));
   }
