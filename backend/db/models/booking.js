@@ -34,7 +34,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-          afterToday: (val) => {
+          afterToday(val) {
             const today = getCurrentDate();
             const bookingStartDate = getDateFromString(val);
             if (bookingStartDate < today)
@@ -46,10 +46,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATEONLY,
         allowNull: false,
         validate: {
-          afterStartDate: (val) => {
+          afterStartDate(val) {
             const bookingStartDate = getDateFromString(this.startDate);
             const bookingEndDate = getDateFromString(val);
-            if (bookingStartDate < bookingEndDate)
+            if (bookingEndDate < bookingStartDate)
               throw new Error(
                 "Booking end date must be after booking start date!"
               );
