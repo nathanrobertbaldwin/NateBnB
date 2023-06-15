@@ -87,22 +87,34 @@ router.post(
   requireAuth,
   validatePostReviewImage,
   async (req, res, next) => {
-    const ownerId = req.user.dataValues.id;
-    const review = await Review.findByPk(req.params.reviewId);
+    const reviewId = parseInt(req.params.reviewId);
+    const review = await Review.findByPk(reviewId, {
+      include: { model: ReviewImage },
+    });
 
     if (!review)
       return next(new noResourceExistsError("Review couldn't be found"));
+
+    const ownerId = req.user.dataValues.id;
+
     if (ownerId !== review.userId) {
       return next(new AuthorizationError("Forbidden"));
     }
 
+    if (review.ReviewImages.length > 10) {
+      return next(
+        new AuthorizationError(
+          "Maximum number of images for this resource was reached"
+        )
+      );
+    }
+
     const { url } = req.body;
-    const reviewId = req.params.reviewId;
     const newReviewImage = await ReviewImage.build({ url, reviewId });
 
     await newReviewImage.save();
 
-    res.json(newReviewImage);
+    res.json({ id: newReviewImage.id, url: newReviewImage.url });
   }
 );
 
