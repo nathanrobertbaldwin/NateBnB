@@ -154,11 +154,14 @@ router.put(
 // ------------------------- Delete A Review --------------------------- //
 
 router.delete("/:reviewId", requireAuth, async (req, res, next) => {
-  const ownerId = req.user.dataValues.id;
-  const review = await Review.findByPk(req.params.reviewId);
+  const reviewId = parseInt(req.params.reviewId);
+  const review = await Review.findByPk(reviewId);
 
   if (!review)
     return next(new noResourceExistsError("Review couldn't be found"));
+
+  const ownerId = req.user.dataValues.id;
+
   if (ownerId !== review.userId) {
     return next(new AuthorizationError("Forbidden"));
   }
