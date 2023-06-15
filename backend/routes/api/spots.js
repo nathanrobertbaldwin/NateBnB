@@ -104,7 +104,7 @@ const validatePostNewSpot = [
     .matches(/^[a-zA-Z ]*$/)
     .withMessage("name must be letters only, plus spaces")
     .custom((value, { req }) => {
-      return value.length > 49;
+      return value.length < 50;
     })
     .withMessage("Name must be less than 50 characters"),
   check("description")
