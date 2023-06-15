@@ -90,12 +90,12 @@ const validatePostNewSpot = [
     .exists()
     .withMessage("lat must exist.")
     .isFloat({ min: -90, max: 90 })
-    .withMessage("lat must be a floating point number."),
+    .withMessage("lat must be a floating point number beween -90 and 90."),
   check("lng")
     .exists()
     .withMessage("lng must exist.")
     .isFloat({ min: -180, max: 180 })
-    .withMessage("lng must be a floating point number."),
+    .withMessage("lng must be a floating point number between -180 and 180."),
   check("name")
     .exists()
     .withMessage("name must exist.")
