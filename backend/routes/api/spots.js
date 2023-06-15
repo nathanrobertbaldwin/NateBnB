@@ -424,7 +424,8 @@ router.post(
   requireAuth,
   validatePostNewSpotImage,
   async (req, res, next) => {
-    const spot = await Spot.findByPk(req.params.spotId);
+    const spotId = req.params.spotId;
+    const spot = await Spot.findByPk(spotId);
     const ownerId = req.user.dataValues.id;
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
@@ -433,7 +434,7 @@ router.post(
     }
 
     const { url, preview } = req.body;
-    const newSpotImage = SpotImage.build({ url, preview });
+    const newSpotImage = SpotImage.build({ spotId, url, preview });
 
     await newSpotImage.save();
 
