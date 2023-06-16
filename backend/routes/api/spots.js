@@ -155,7 +155,7 @@ const validatePostNewReview = [
 
 // ---------- Validator for Create New Booking with Spot Id ----------- //
 
-const validatePostNewBooking = [
+const validateNewBooking = [
   check("startDate")
     .exists()
     .withMessage("startDate must exist.")
@@ -166,7 +166,31 @@ const validatePostNewBooking = [
       const bookingStartDate = getDateFromString(req.body.startDate);
       return today < bookingStartDate;
     })
-    .withMessage("Start date must be after today."),
+    .withMessage("Start date must be after today.")
+    .custom(async (value, { req }) => {
+      const bookingId = parseInt(req.params.bookingId);
+      const bookingsList = await Booking.findByPk(bookingId, {
+        include: {
+          model: Spot,
+          attributes: ["id"],
+          include: { model: Booking, attributes: ["startDate"] },
+        },
+      });
+
+      const { startDate } = req.body;
+      let noConflicts = true;
+
+      bookingsList.Spot.Bookings.forEach((booking) => {
+        if (
+          getDateFromString(booking.startDate) === getDateFromString(startDate)
+        ) {
+          noConflicts = false;
+        }
+      });
+
+      if (noConflicts === false) return Promise.reject();
+    })
+    .withMessage("Start date conflicts with an existing booking"),
   check("endDate")
     .exists()
     .withMessage("startDate must exist.")
@@ -177,9 +201,33 @@ const validatePostNewBooking = [
       const bookingStartDate = getDateFromString(req.body.startDate);
       return bookingStartDate < bookingEndDate;
     })
-    .withMessage("Start date must be before end date."),
+    .withMessage("Start date must be before end date.")
+    .custom(async (value, { req }) => {
+      const bookingId = parseInt(req.params.bookingId);
+      const bookingsList = await Booking.findByPk(bookingId, {
+        include: {
+          model: Spot,
+          attributes: ["id"],
+          include: { model: Booking, attributes: ["endDate"] },
+        },
+      });
+
+      const { endDate } = req.body;
+      let noConflicts = true;
+
+      bookingsList.Spot.Bookings.forEach((booking) => {
+        if (getDateFromString(booking.endDate) === getDateFromString(endDate)) {
+          noConflicts = false;
+        }
+      });
+
+      if (noConflicts === false) return Promise.reject();
+    })
+    .withMessage("End date conflicts with an existing booking"),
   handleValidationErrors,
 ];
+
+// ------------------ Validator for Edit a Spot ------------------- //
 
 const validatePutEditASpot = [
   check("address")
@@ -236,6 +284,7 @@ const validatePutEditASpot = [
 ];
 
 // ============================= GET ROUTES ============================ //
+
 // --------------------------- Get All Spots --------------------------- //
 
 router.get("/", validateGetAllSpotOptionalQueries, async (req, res, next) => {
@@ -514,7 +563,7 @@ router.post(
 router.post(
   "/:spotId/bookings",
   requireAuth,
-  validatePostNewBooking,
+  validateNewBooking,
   async (req, res, next) => {
     const spotId = parseInt(req.params.spotId);
     const spot = await Spot.findByPk(spotId);

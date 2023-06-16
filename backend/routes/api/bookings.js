@@ -23,7 +23,7 @@ const { getCurrentDate, getDateFromString } = require("../../utils/dates");
 
 // ----------------------- Validate Booking Body  ----------------------- //
 
-const validateBooking = [
+const validateBookingEdit = [
   check("startDate")
     .exists()
     .withMessage("startDate must exist.")
@@ -34,7 +34,31 @@ const validateBooking = [
       const bookingStartDate = getDateFromString(req.body.startDate);
       return today < bookingStartDate;
     })
-    .withMessage("Start date must be after today."),
+    .withMessage("Start date must be after today.")
+    .custom(async (value, { req }) => {
+      const bookingId = parseInt(req.params.bookingId);
+      const bookingsList = await Booking.findByPk(bookingId, {
+        include: {
+          model: Spot,
+          attributes: ["id"],
+          include: { model: Booking, attributes: ["startDate"] },
+        },
+      });
+
+      const { startDate } = req.body;
+      let noConflicts = true;
+
+      bookingsList.Spot.Bookings.forEach((booking) => {
+        if (
+          getDateFromString(booking.startDate) === getDateFromString(startDate)
+        ) {
+          noConflicts = false;
+        }
+      });
+
+      if (noConflicts === false) return Promise.reject();
+    })
+    .withMessage("Start date conflicts with an existing booking"),
   check("endDate")
     .exists()
     .withMessage("startDate must exist.")
@@ -45,7 +69,29 @@ const validateBooking = [
       const bookingStartDate = getDateFromString(req.body.startDate);
       return bookingStartDate < bookingEndDate;
     })
-    .withMessage("Start date must be before end date."),
+    .withMessage("Start date must be before end date.")
+    .custom(async (value, { req }) => {
+      const bookingId = parseInt(req.params.bookingId);
+      const bookingsList = await Booking.findByPk(bookingId, {
+        include: {
+          model: Spot,
+          attributes: ["id"],
+          include: { model: Booking, attributes: ["endDate"] },
+        },
+      });
+
+      const { endDate } = req.body;
+      let noConflicts = true;
+
+      bookingsList.Spot.Bookings.forEach((booking) => {
+        if (getDateFromString(booking.endDate) === getDateFromString(endDate)) {
+          noConflicts = false;
+        }
+      });
+
+      if (noConflicts === false) return Promise.reject();
+    })
+    .withMessage("End date conflicts with an existing booking"),
   handleValidationErrors,
 ];
 
@@ -78,21 +124,24 @@ router.get("/current", requireAuth, async (req, res, next) => {
 router.put(
   "/:bookingId",
   requireAuth,
-  validateBooking,
+  validateBookingEdit,
   async (req, res, next) => {
-    const userId = req.user.dataValues.id;
-    const { startDate, endDate } = req.body;
-    const booking = await Booking.findByPk(req.params.bookingId);
+    const bookingId = parseInt(req.params.bookingId);
+    const booking = await Booking.findByPk(bookingId);
 
     if (!booking)
       return next(new noResourceExistsError("Booking couldn't be found"));
+
+    const userId = req.user.dataValues.id;
+
     if (userId !== booking.userId) {
       return next(new AuthorizationError("Forbidden"));
     }
 
+    const { startDate, endDate } = req.body;
+
     if (startDate) booking.startDate = startDate;
     if (endDate) booking.endDate = endDate;
-
     booking.updatedAt = new Date();
 
     await booking.save();
