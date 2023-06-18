@@ -110,6 +110,7 @@ module.exports = (sequelize, DataTypes) => {
               "WY",
             ],
           ],
+          msg: "Please enter a valid two-letter state.",
         },
       },
       country: {

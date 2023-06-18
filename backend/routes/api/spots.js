@@ -29,31 +29,31 @@ const validateGetAllSpotOptionalQueries = [
   check("minLat")
     .optional()
     .isFloat({ min: -90, max: 90 })
-    .withMessage("minLat must be a floating point number between -90 and 90."),
+    .withMessage("MinLat must be a floating point number between -90 and 90."),
   check("maxLat")
     .optional()
     .isFloat({ min: -90, max: 90 })
-    .withMessage("maxLat must be a floating point number between -90 and 90."),
+    .withMessage("MaxLat must be a floating point number between -90 and 90."),
   check("minLng")
     .optional()
     .isFloat({ min: -180, max: 180 })
     .withMessage(
-      "minLng must be a floating point number between -180 and 180."
+      "MinLng must be a floating point number between -180 and 180."
     ),
   check("maxLng")
     .optional()
     .isFloat({ min: -180, max: 180 })
     .withMessage(
-      "maxLng must be a floating point number between -180 and 180."
+      "MaxLng must be a floating point number between -180 and 180."
     ),
   check("minPrice")
     .optional()
     .isFloat()
-    .withMessage("minPrice must be a floating point number."),
+    .withMessage("MinPrice must be a floating point number."),
   check("maxPrice")
     .optional()
     .isFloat()
-    .withMessage("maxPrice must be a floating point number."),
+    .withMessage("MaxPrice must be a floating point number."),
   handleValidationErrors,
 ];
 
@@ -62,67 +62,67 @@ const validateGetAllSpotOptionalQueries = [
 const validatePostNewSpot = [
   check("address")
     .exists()
-    .withMessage("address must exist.")
+    .withMessage("Address must exist.")
     .notEmpty()
-    .withMessage("address cannot be empty.")
+    .withMessage("Address cannot be empty.")
     .matches(/^[a-zA-Z0-9. ]*$/)
-    .withMessage("address must be alphanumeric, plus spaces and . character"),
+    .withMessage("Address must be alphanumeric, plus spaces and . character"),
   check("city")
     .exists()
-    .withMessage("city must exist.")
+    .withMessage("City must exist.")
     .notEmpty()
-    .withMessage("city cannot be empty.")
+    .withMessage("City cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("city must be letters only, plus spaces"),
+    .withMessage("City must be letters only, plus spaces"),
   check("state")
     .exists()
-    .withMessage("state must exist.")
+    .withMessage("State must exist.")
     .notEmpty()
-    .withMessage("state cannot be empty.")
+    .withMessage("State cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("state must be letters only, plus spaces"),
+    .withMessage("State must be letters only, plus spaces"),
   check("country")
     .exists()
-    .withMessage("country must exist.")
+    .withMessage("Country must exist.")
     .notEmpty()
-    .withMessage("country cannot be empty.")
+    .withMessage("Country cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("country must be letters only, plus spaces"),
+    .withMessage("Country must be letters only, plus spaces"),
   check("lat")
     .exists()
-    .withMessage("lat must exist.")
+    .withMessage("Lat must exist.")
     .isFloat({ min: -90, max: 90 })
-    .withMessage("lat must be a floating point number beween -90 and 90."),
+    .withMessage("Lat must be a floating point number beween -90 and 90."),
   check("lng")
     .exists()
-    .withMessage("lng must exist.")
+    .withMessage("Lng must exist.")
     .isFloat({ min: -180, max: 180 })
-    .withMessage("lng must be a floating point number between -180 and 180."),
+    .withMessage("Lng must be a floating point number between -180 and 180."),
   check("name")
     .exists()
-    .withMessage("name must exist.")
+    .withMessage("Name must exist.")
     .notEmpty()
-    .withMessage("name cannot be empty.")
+    .withMessage("Name cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("name must be letters only, plus spaces")
+    .withMessage("Name must be letters only, plus spaces")
     .custom((value, { req }) => {
       return value.length < 50;
     })
     .withMessage("Name must be less than 50 characters"),
   check("description")
     .exists()
-    .withMessage("description must exist.")
+    .withMessage("Description must exist.")
     .notEmpty()
-    .withMessage("description cannot be empty.")
+    .withMessage("Description cannot be empty.")
     .isString()
-    .withMessage("description must be a string."),
+    .withMessage("Description must be a string."),
   check("price")
     .exists()
-    .withMessage("price must exist.")
+    .withMessage("Price must exist.")
     .notEmpty()
-    .withMessage("price cannot be empty.")
+    .withMessage("Price cannot be empty.")
     .isFloat()
-    .withMessage("price must be a floating point number"),
+    .withMessage("Price must be a floating point number"),
   handleValidationErrors,
 ];
 
@@ -131,14 +131,14 @@ const validatePostNewSpot = [
 const validatePostNewSpotImage = [
   check("url")
     .exists()
-    .withMessage("url must exist")
+    .withMessage("Url must exist")
     .isURL()
-    .withMessage("url string must be a URL"),
+    .withMessage("Url string must be a URL"),
   check("preview")
     .exists()
-    .withMessage("preview must exist")
+    .withMessage("Preview must exist")
     .isBoolean()
-    .withMessage("preview must be a boolean"),
+    .withMessage("Preview must be a boolean"),
   handleValidationErrors,
 ];
 
@@ -158,15 +158,15 @@ const validatePostNewReview = [
 const validateNewBooking = [
   check("startDate")
     .exists()
-    .withMessage("startDate must exist.")
+    .withMessage("StartDate must exist.")
     .isString()
-    .withMessage("startDate must be a string")
+    .withMessage("StartDate must be a string")
     .custom((value, { req }) => {
       const today = getCurrentDate();
       const bookingStartDate = getDateFromString(req.body.startDate);
       return today < bookingStartDate;
     })
-    .withMessage("Start date must be after today.")
+    .withMessage("StartDate must be after today.")
     .custom(async (value, { req }) => {
       const bookingId = parseInt(req.params.bookingId);
       const bookingsList = await Booking.findByPk(bookingId, {
@@ -190,18 +190,18 @@ const validateNewBooking = [
 
       if (noConflicts === false) return Promise.reject();
     })
-    .withMessage("Start date conflicts with an existing booking"),
+    .withMessage("StartDate conflicts with an existing booking"),
   check("endDate")
     .exists()
-    .withMessage("startDate must exist.")
+    .withMessage("EndDate must exist.")
     .isString()
-    .withMessage("endDate must be a string")
+    .withMessage("EndDate must be a string")
     .custom((value, { req }) => {
       const bookingEndDate = getDateFromString(req.body.endDate);
       const bookingStartDate = getDateFromString(req.body.startDate);
       return bookingStartDate < bookingEndDate;
     })
-    .withMessage("Start date must be before end date.")
+    .withMessage("EndDate must be after startDate.")
     .custom(async (value, { req }) => {
       const bookingId = parseInt(req.params.bookingId);
       const bookingsList = await Booking.findByPk(bookingId, {
@@ -223,7 +223,7 @@ const validateNewBooking = [
 
       if (noConflicts === false) return Promise.reject();
     })
-    .withMessage("End date conflicts with an existing booking"),
+    .withMessage("EndDate conflicts with an existing booking"),
   handleValidationErrors,
 ];
 
@@ -233,53 +233,53 @@ const validatePutEditASpot = [
   check("address")
     .optional()
     .notEmpty()
-    .withMessage("address cannot be empty.")
+    .withMessage("Address cannot be empty.")
     .matches(/^[a-zA-Z0-9. ]*$/)
-    .withMessage("address must be alphanumeric, plus spaces and . character"),
+    .withMessage("Address must be alphanumeric, plus spaces and . character"),
   check("city")
     .optional()
     .notEmpty()
-    .withMessage("city cannot be empty.")
+    .withMessage("City cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("city must be letters only, plus spaces"),
+    .withMessage("City must be letters only, plus spaces"),
   check("state")
     .optional()
     .notEmpty()
-    .withMessage("state cannot be empty.")
+    .withMessage("State cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("state must be letters only, plus spaces"),
+    .withMessage("State must be a valid two-letter state."),
   check("country")
     .optional()
     .notEmpty()
-    .withMessage("country cannot be empty.")
+    .withMessage("Country cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("country must be letters only, plus spaces"),
+    .withMessage("Country must be letters only, plus spaces"),
   check("lat")
     .optional()
     .isFloat({ min: -90, max: 90 })
-    .withMessage("lat must be a floating point number."),
+    .withMessage("Lat must be a floating point number."),
   check("lng")
     .optional()
     .isFloat({ min: -180, max: 180 })
-    .withMessage("lng must be a floating point number."),
+    .withMessage("Lng must be a floating point number."),
   check("name")
     .optional()
     .notEmpty()
-    .withMessage("name cannot be empty.")
+    .withMessage("Name cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("name must be letters only, plus spaces"),
+    .withMessage("Name must be letters only, plus spaces"),
   check("description")
     .optional()
     .notEmpty()
-    .withMessage("description cannot be empty.")
+    .withMessage("Description cannot be empty.")
     .isString()
-    .withMessage("description must be a string."),
+    .withMessage("Description must be a string."),
   check("price")
     .optional()
     .notEmpty()
-    .withMessage("price cannot be empty.")
+    .withMessage("Price cannot be empty.")
     .isFloat()
-    .withMessage("price must be a floating point number"),
+    .withMessage("Price must be a floating point number"),
   handleValidationErrors,
 ];
 
@@ -392,6 +392,7 @@ router.get("/:spotId", async (req, res, next) => {
         [sequelize.fn("count", sequelize.col("stars")), "numReviews"],
         [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
       ],
+      exclude: ["spotId", "createdAt", "updatedAt"],
     },
     include: [
       { model: SpotImage },
@@ -471,6 +472,29 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
   return res.json(spot);
 });
 
+// -------- Get all Bookings for a Spot based on the Spot's id -------- //
+
+router.get("/:spot/testing", requireAuth, async (req, res, next) => {
+  const bookingId = parseInt(req.params.bookingId);
+  const bookingsList = await Booking.findByPk(bookingId, {
+    include: {
+      model: Spot,
+      attributes: ["id"],
+      include: { model: Booking, attributes: ["startDate"] },
+    },
+  });
+
+  const { startDate } = req.body;
+  let noConflicts = true;
+
+  bookingsList.Spot.Bookings.forEach((booking) => {
+    if (getDateFromString(booking.startDate) === getDateFromString(startDate)) {
+      noConflicts = false;
+    }
+  });
+
+  res.json(noConflicts);
+});
 // ============================= POST ROUTES =========================== //
 
 // ---------------------------- Post New Spot -------------------------- //
