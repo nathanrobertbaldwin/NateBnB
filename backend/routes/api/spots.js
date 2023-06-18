@@ -472,9 +472,9 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
   return res.json(spot);
 });
 
-// -------- Get all Bookings for a Spot based on the Spot's id -------- //
+// -------- Testing Route for custom -------- //
 
-router.get("/:spot/testing", requireAuth, async (req, res, next) => {
+router.get("/testing", requireAuth, async (req, res, next) => {
   const bookingId = parseInt(req.params.bookingId);
   const bookingsList = await Booking.findByPk(bookingId, {
     include: {
