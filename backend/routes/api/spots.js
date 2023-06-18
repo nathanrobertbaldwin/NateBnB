@@ -173,7 +173,7 @@ const validateNewBooking = [
         attributes: [],
         include: {
           model: Booking,
-          attributes: ["startDate"],
+          attributes: ["startDate", "endDate"],
         },
       });
 
@@ -181,11 +181,15 @@ const validateNewBooking = [
       let noConflicts = true;
 
       bookingsList.Bookings.forEach((booking) => {
+        let existingBookingStartDate = getDateFromString(booking.startDate);
+        let existingBookingEndDate = getDateFromString(booking.endDate);
+        let newBookingStartDate = getDateFromString(startDate);
+
         if (
-          getDateFromString(booking.startDate) === getDateFromString(startDate)
-        ) {
+          existingBookingStartDate <= newBookingStartDate &&
+          newBookingStartDate <= existingBookingEndDate
+        )
           noConflicts = false;
-        }
       });
 
       if (noConflicts === false) return Promise.reject();
@@ -208,7 +212,7 @@ const validateNewBooking = [
         attributes: [],
         include: {
           model: Booking,
-          attributes: ["endDate"],
+          attributes: ["startDate", "endDate"],
         },
       });
 
@@ -216,9 +220,15 @@ const validateNewBooking = [
       let noConflicts = true;
 
       bookingsList.Bookings.forEach((booking) => {
-        if (getDateFromString(booking.endDate) === getDateFromString(endDate)) {
+        let existingBookingStartDate = getDateFromString(booking.startDate);
+        let existingBookingEndDate = getDateFromString(booking.endDate);
+        let newBookingEndDate = getDateFromString(endDate);
+
+        if (
+          existingBookingStartDate <= newBookingEndDate &&
+          newBookingEndDate <= existingBookingEndDate
+        )
           noConflicts = false;
-        }
       });
 
       if (noConflicts === false) return Promise.reject();
