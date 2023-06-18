@@ -479,7 +479,7 @@ router.get("/:spotId/testing", requireAuth, async (req, res, next) => {
   const bookingsList = await Spot.findByPk(spotId, {
     include: {
       model: Booking,
-      include: { model: Booking, attributes: ["startDate"] },
+      attributes: ["startDate"],
     },
   });
 
