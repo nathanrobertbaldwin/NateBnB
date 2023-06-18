@@ -177,17 +177,24 @@ const validateNewBooking = [
         },
       });
 
-      const { startDate } = req.body;
+      const { startDate, endDate } = req.body;
       let noConflicts = true;
 
       bookingsList.Bookings.forEach((booking) => {
         let existingBookingStartDate = getDateFromString(booking.startDate);
         let existingBookingEndDate = getDateFromString(booking.endDate);
         let newBookingStartDate = getDateFromString(startDate);
+        let newBookingEndDate = getDateFromString(endDate);
 
         if (
           existingBookingStartDate <= newBookingStartDate &&
           newBookingStartDate <= existingBookingEndDate
+        )
+          noConflicts = false;
+
+        if (
+          newBookingStartDate <= existingBookingStartDate &&
+          existingBookingEndDate <= newBookingEndDate
         )
           noConflicts = false;
       });
@@ -216,17 +223,24 @@ const validateNewBooking = [
         },
       });
 
-      const { endDate } = req.body;
+      const { startDate, endDate } = req.body;
       let noConflicts = true;
 
       bookingsList.Bookings.forEach((booking) => {
         let existingBookingStartDate = getDateFromString(booking.startDate);
         let existingBookingEndDate = getDateFromString(booking.endDate);
+        let newBookingStartDate = getDateFromString(startDate);
         let newBookingEndDate = getDateFromString(endDate);
 
         if (
           existingBookingStartDate <= newBookingEndDate &&
           newBookingEndDate <= existingBookingEndDate
+        )
+          noConflicts = false;
+
+        if (
+          newBookingStartDate <= existingBookingStartDate &&
+          existingBookingEndDate <= newBookingEndDate
         )
           noConflicts = false;
       });
@@ -484,27 +498,27 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
 
 // -------- Testing Route for custom -------- //
 
-router.get("/:spotId/testing", requireAuth, async (req, res, next) => {
-  const spotId = parseInt(req.params.spotId);
-  const bookingsList = await Spot.findByPk(spotId, {
-    attributes: [],
-    include: {
-      model: Booking,
-      attributes: ["startDate"],
-    },
-  });
+// router.get("/:spotId/testing", requireAuth, async (req, res, next) => {
+//   const spotId = parseInt(req.params.spotId);
+//   const bookingsList = await Spot.findByPk(spotId, {
+//     attributes: [],
+//     include: {
+//       model: Booking,
+//       attributes: ["startDate"],
+//     },
+//   });
 
-  const { startDate } = req.body;
-  let noConflicts = true;
+//   const { startDate } = req.body;
+//   let noConflicts = true;
 
-  bookingsList.Bookings.forEach((booking) => {
-    if (getDateFromString(booking.startDate) === getDateFromString(startDate)) {
-      noConflicts = false;
-    }
-  });
+//   bookingsList.Bookings.forEach((booking) => {
+//     if (getDateFromString(booking.startDate) === getDateFromString(startDate)) {
+//       noConflicts = false;
+//     }
+//   });
 
-  res.json(noConflicts);
-});
+//   res.json(noConflicts);
+// });
 // ============================= POST ROUTES =========================== //
 
 // ---------------------------- Post New Spot -------------------------- //
