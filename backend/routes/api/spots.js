@@ -477,22 +477,23 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
 router.get("/:spotId/testing", requireAuth, async (req, res, next) => {
   const spotId = parseInt(req.params.spotId);
   const bookingsList = await Spot.findByPk(spotId, {
+    attributes: [],
     include: {
       model: Booking,
       attributes: ["startDate"],
     },
   });
 
-  // const { startDate } = req.body;
-  // let noConflicts = true;
+  const { startDate } = req.body;
+  let noConflicts = true;
 
-  // bookingsList.Spot.Bookings.forEach((booking) => {
-  //   if (getDateFromString(booking.startDate) === getDateFromString(startDate)) {
-  //     noConflicts = false;
-  //   }
-  // });
+  bookingsList.Bookings.forEach((booking) => {
+    if (getDateFromString(booking.startDate) === getDateFromString(startDate)) {
+      noConflicts = false;
+    }
+  });
 
-  res.json(bookingsList);
+  res.json(noConflicts);
 });
 // ============================= POST ROUTES =========================== //
 
