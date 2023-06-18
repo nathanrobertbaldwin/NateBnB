@@ -117,6 +117,45 @@ router.get("/current", requireAuth, async (req, res, next) => {
   return res.json(bookings);
 });
 
+// ---------------------- Testing Route for custom --------------------- //
+
+router.get("/:bookingId/testing", requireAuth, async (req, res, next) => {
+  const bookingId = parseInt(req.params.bookingId);
+  const bookingsList = await Booking.findByPk(bookingId, {
+    include: {
+      model: Spot,
+      attributes: ["id"],
+      include: { model: Booking, attributes: ["startDate", "endDate"] },
+    },
+  });
+
+  const { startDate, endDate } = req.body;
+  let noConflicts = true;
+
+  bookingsList.Bookings.forEach((booking) => {
+    let existingBookingStartDate = getDateFromString(booking.startDate);
+    let existingBookingEndDate = getDateFromString(booking.endDate);
+    let newBookingStartDate = getDateFromString(startDate);
+    let newBookingEndDate = getDateFromString(endDate);
+
+    if (
+      existingBookingStartDate <= newBookingStartDate &&
+      newBookingStartDate <= existingBookingEndDate
+    )
+      noConflicts = false;
+
+    if (
+      newBookingStartDate <= existingBookingStartDate &&
+      existingBookingEndDate <= newBookingEndDate
+    )
+      noConflicts = false;
+  });
+
+  return noConflicts;
+
+  // if (noConflicts === false) return Promise.reject();
+});
+
 // ============================ PUT ROUTES ============================ //
 
 // ------------------------ Edit a Booking ---------------------------- //

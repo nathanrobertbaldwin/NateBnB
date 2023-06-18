@@ -496,7 +496,7 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
   return res.json(spot);
 });
 
-// -------- Testing Route for custom -------- //
+// ---------------------- Testing Route for custom --------------------- //
 
 // router.get("/:spotId/testing", requireAuth, async (req, res, next) => {
 //   const spotId = parseInt(req.params.spotId);
