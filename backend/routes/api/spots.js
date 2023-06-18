@@ -168,19 +168,19 @@ const validateNewBooking = [
     })
     .withMessage("StartDate must be after today.")
     .custom(async (value, { req }) => {
-      const bookingId = parseInt(req.params.bookingId);
-      const bookingsList = await Booking.findByPk(bookingId, {
+      const spotId = parseInt(req.params.spotId);
+      const bookingsList = await Spot.findByPk(spotId, {
+        attributes: [],
         include: {
-          model: Spot,
-          attributes: ["id"],
-          include: { model: Booking, attributes: ["startDate"] },
+          model: Booking,
+          attributes: ["startDate"],
         },
       });
 
       const { startDate } = req.body;
       let noConflicts = true;
 
-      bookingsList.Spot.Bookings.forEach((booking) => {
+      bookingsList.Bookings.forEach((booking) => {
         if (
           getDateFromString(booking.startDate) === getDateFromString(startDate)
         ) {
@@ -203,19 +203,19 @@ const validateNewBooking = [
     })
     .withMessage("EndDate must be after startDate.")
     .custom(async (value, { req }) => {
-      const bookingId = parseInt(req.params.bookingId);
-      const bookingsList = await Booking.findByPk(bookingId, {
+      const spotId = parseInt(req.params.spotId);
+      const bookingsList = await Spot.findByPk(spotId, {
+        attributes: [],
         include: {
-          model: Spot,
-          attributes: ["id"],
-          include: { model: Booking, attributes: ["endDate"] },
+          model: Booking,
+          attributes: ["endDate"],
         },
       });
 
       const { endDate } = req.body;
       let noConflicts = true;
 
-      bookingsList.Spot.Bookings.forEach((booking) => {
+      bookingsList.Bookings.forEach((booking) => {
         if (getDateFromString(booking.endDate) === getDateFromString(endDate)) {
           noConflicts = false;
         }
