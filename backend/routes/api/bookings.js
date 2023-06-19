@@ -199,6 +199,8 @@ router.get("/:bookingId/testing", requireAuth, async (req, res, next) => {
       noConflicts = false;
   });
 
+  res.json(noConflicts);
+
   // if (noConflicts === false) return Promise.reject();
 });
 
