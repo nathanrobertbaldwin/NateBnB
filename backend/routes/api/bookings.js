@@ -177,30 +177,30 @@ router.post("/:bookingId/testing", requireAuth, async (req, res, next) => {
     },
   });
 
-  const { startDate, endDate } = req.body;
-  let noConflicts = true;
+  // const { startDate, endDate } = req.body;
+  // let noConflicts = true;
 
-  bookingsList.Spot.Bookings.forEach((booking) => {
-    console.log(booking.startDate, booking.endDate);
-    let existingBookingStartDate = getDateFromString(booking.startDate);
-    let existingBookingEndDate = getDateFromString(booking.endDate);
-    let newBookingStartDate = getDateFromString(startDate);
-    let newBookingEndDate = getDateFromString(endDate);
+  // bookingsList.Spot.Bookings.forEach((booking) => {
+  //   console.log(booking.startDate, booking.endDate);
+  //   let existingBookingStartDate = getDateFromString(booking.startDate);
+  //   let existingBookingEndDate = getDateFromString(booking.endDate);
+  //   let newBookingStartDate = getDateFromString(startDate);
+  //   let newBookingEndDate = getDateFromString(endDate);
 
-    if (
-      existingBookingStartDate <= newBookingStartDate &&
-      newBookingStartDate <= existingBookingEndDate
-    )
-      noConflicts = false;
+  //   if (
+  //     existingBookingStartDate <= newBookingStartDate &&
+  //     newBookingStartDate <= existingBookingEndDate
+  //   )
+  //     noConflicts = false;
 
-    if (
-      newBookingStartDate <= existingBookingStartDate &&
-      existingBookingEndDate <= newBookingEndDate
-    )
-      noConflicts = false;
-  });
+  //   if (
+  //     newBookingStartDate <= existingBookingStartDate &&
+  //     existingBookingEndDate <= newBookingEndDate
+  //   )
+  //     noConflicts = false;
+  // });
 
-  res.json(noConflicts);
+  res.json(bookingsList);
 
   // if (noConflicts === false) return Promise.reject();
 });
