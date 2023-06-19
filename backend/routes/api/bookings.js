@@ -159,7 +159,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
 
 // ---------------------- Testing Route for custom --------------------- //
 
-router.get("/:bookingId/testing", requireAuth, async (req, res, next) => {
+router.post("/:bookingId/testing", requireAuth, async (req, res, next) => {
   const bookingId = parseInt(req.params.bookingId);
   const bookingsList = await Booking.findByPk(bookingId, {
     include: {
@@ -167,7 +167,7 @@ router.get("/:bookingId/testing", requireAuth, async (req, res, next) => {
       attributes: ["id"],
       include: {
         model: Booking,
-        attributes: ["startDate", "endDate"],
+        attributes: ["id", "startDate", "endDate"],
         where: {
           id: {
             [sequelize.Op.not]: bookingId,
@@ -177,29 +177,30 @@ router.get("/:bookingId/testing", requireAuth, async (req, res, next) => {
     },
   });
 
-  // const { startDate, endDate } = req.body;
-  // let noConflicts = true;
+  const { startDate, endDate } = req.body;
+  let noConflicts = true;
 
-  // bookingsList.Spot.Bookings.forEach((booking) => {
-  //   let existingBookingStartDate = getDateFromString(booking.startDate);
-  //   let existingBookingEndDate = getDateFromString(booking.endDate);
-  //   let newBookingStartDate = getDateFromString(startDate);
-  //   let newBookingEndDate = getDateFromString(endDate);
+  bookingsList.Spot.Bookings.forEach((booking) => {
+    console.log(booking.startDate, booking.endDate);
+    let existingBookingStartDate = getDateFromString(booking.startDate);
+    let existingBookingEndDate = getDateFromString(booking.endDate);
+    let newBookingStartDate = getDateFromString(startDate);
+    let newBookingEndDate = getDateFromString(endDate);
 
-  //   if (
-  //     existingBookingStartDate <= newBookingStartDate &&
-  //     newBookingStartDate <= existingBookingEndDate
-  //   )
-  //     noConflicts = false;
+    if (
+      existingBookingStartDate <= newBookingStartDate &&
+      newBookingStartDate <= existingBookingEndDate
+    )
+      noConflicts = false;
 
-  //   if (
-  //     newBookingStartDate <= existingBookingStartDate &&
-  //     existingBookingEndDate <= newBookingEndDate
-  //   )
-  //     noConflicts = false;
-  // });
+    if (
+      newBookingStartDate <= existingBookingStartDate &&
+      existingBookingEndDate <= newBookingEndDate
+    )
+      noConflicts = false;
+  });
 
-  res.json(bookingsList);
+  res.json(noConflicts);
 
   // if (noConflicts === false) return Promise.reject();
 });
