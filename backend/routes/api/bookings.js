@@ -21,7 +21,7 @@ const { getCurrentDate, getDateFromString } = require("../../utils/dates");
 
 // ============================= MIDDLEWARE ============================= //
 
-// ----------------------- Validate Booking Body  ----------------------- //
+// ----------------------- Validator for Edit a Booking  ----------------------- //
 
 const validateBookingEdit = [
   check("startDate")
@@ -41,19 +41,30 @@ const validateBookingEdit = [
         include: {
           model: Spot,
           attributes: ["id"],
-          include: { model: Booking, attributes: ["startDate"] },
+          include: { model: Booking, attributes: ["startDate", "endDate"] },
         },
       });
 
-      const { startDate } = req.body;
+      const { startDate, endDate } = req.body;
       let noConflicts = true;
 
       bookingsList.Spot.Bookings.forEach((booking) => {
+        let existingBookingStartDate = getDateFromString(booking.startDate);
+        let existingBookingEndDate = getDateFromString(booking.endDate);
+        let newBookingStartDate = getDateFromString(startDate);
+        let newBookingEndDate = getDateFromString(endDate);
+
         if (
-          getDateFromString(booking.startDate) === getDateFromString(startDate)
-        ) {
+          existingBookingStartDate <= newBookingStartDate &&
+          newBookingStartDate <= existingBookingEndDate
+        )
           noConflicts = false;
-        }
+
+        if (
+          newBookingStartDate <= existingBookingStartDate &&
+          existingBookingEndDate <= newBookingEndDate
+        )
+          noConflicts = false;
       });
 
       if (noConflicts === false) return Promise.reject();
@@ -76,17 +87,30 @@ const validateBookingEdit = [
         include: {
           model: Spot,
           attributes: ["id"],
-          include: { model: Booking, attributes: ["endDate"] },
+          include: { model: Booking, attributes: ["startDate", "endDate"] },
         },
       });
 
-      const { endDate } = req.body;
+      const { startDate, endDate } = req.body;
       let noConflicts = true;
 
       bookingsList.Spot.Bookings.forEach((booking) => {
-        if (getDateFromString(booking.endDate) === getDateFromString(endDate)) {
+        let existingBookingStartDate = getDateFromString(booking.startDate);
+        let existingBookingEndDate = getDateFromString(booking.endDate);
+        let newBookingStartDate = getDateFromString(startDate);
+        let newBookingEndDate = getDateFromString(endDate);
+
+        if (
+          existingBookingStartDate <= newBookingEndDate &&
+          newBookingEndDate <= existingBookingEndDate
+        )
           noConflicts = false;
-        }
+
+        if (
+          newBookingStartDate <= existingBookingStartDate &&
+          existingBookingEndDate <= newBookingEndDate
+        )
+          noConflicts = false;
       });
 
       if (noConflicts === false) return Promise.reject();
