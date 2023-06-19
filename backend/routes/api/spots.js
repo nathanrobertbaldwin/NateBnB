@@ -80,7 +80,7 @@ const validatePostNewSpot = [
     .notEmpty()
     .withMessage("State cannot be empty.")
     .matches(/^[a-zA-Z ]*$/)
-    .withMessage("State must be letters only, plus spaces"),
+    .withMessage("Please enter a valid two-letter State."),
   check("country")
     .exists()
     .withMessage("Country must exist.")
@@ -416,10 +416,12 @@ router.get("/:spotId", async (req, res, next) => {
         [sequelize.fn("count", sequelize.col("stars")), "numReviews"],
         [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
       ],
-      exclude: ["spotId", "createdAt", "updatedAt"],
     },
     include: [
-      { model: SpotImage },
+      {
+        model: SpotImage,
+        attributes: { exclude: ["spotId", "createdAt", "updatedAt"] },
+      },
       { model: User },
       { model: Review, attributes: [] },
     ],
