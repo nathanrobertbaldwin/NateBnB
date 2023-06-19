@@ -199,7 +199,7 @@ router.post("/:bookingId/testing", requireAuth, async (req, res, next) => {
       noConflicts = false;
   });
 
-  res.json(bookingsList);
+  res.json(noConflicts);
 
   // if (noConflicts === false) return Promise.reject();
 });
