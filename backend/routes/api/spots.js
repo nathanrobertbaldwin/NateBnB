@@ -365,7 +365,7 @@ router.get("/", validateGetAllSpotOptionalQueries, async (req, res, next) => {
       sum += review.stars;
     });
 
-    spot.aveReview = sum / spot.Reviews.length;
+    spot.avgRating = sum / spot.Reviews.length;
 
     delete spot.Reviews;
   });
@@ -395,7 +395,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
   Spots = Spots.map((spot) => (spot = spot.toJSON()));
 
   Spots.forEach((spot) => {
-    spot.aveReview = spot.sumReviews / spot.countReviews;
+    spot.avgRating = spot.sumReviews / spot.countReviews;
     delete spot.sumReviews;
     delete spot.countReviews;
     spot.previewImage = spot.SpotImages[0].url;
