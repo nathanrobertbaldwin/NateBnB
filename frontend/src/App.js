@@ -1,14 +1,8 @@
-// frontend/src/App.js
-
-// ============================== IMPORTS ============================== //
-
 import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { Route, Switch } from "react-router-dom";
-import LoginFormPage from "./components/LoginFormPage";
+import { Switch } from "react-router-dom";
 import * as sessionActions from "./store/session";
-
-// ============================= COMPONENT ============================= //
+import Navigation from "./components/Navigation";
 
 function App() {
   const dispatch = useDispatch();
@@ -18,13 +12,10 @@ function App() {
   }, [dispatch]);
 
   return (
-    isLoaded && (
-      <Switch>
-        <Route path="/login">
-          <LoginFormPage />
-        </Route>
-      </Switch>
-    )
+    <>
+      <Navigation isLoaded={isLoaded} />
+      {isLoaded && <Switch></Switch>}
+    </>
   );
 }
 
