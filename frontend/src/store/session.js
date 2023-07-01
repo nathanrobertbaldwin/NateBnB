@@ -80,8 +80,6 @@ export const logout = () => async (dispatch) => {
   return response;
 };
 
-// ========================= SESSION REDUCER ========================= //
-
 const initialState = { user: null };
 
 const sessionReducer = (state = initialState, action) => {
