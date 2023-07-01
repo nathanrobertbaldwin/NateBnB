@@ -1,11 +1,9 @@
 .spot_card {
-  outline: 1px solid lightgray;
+  border-radius: 1em;
   display: flex;
   flex-direction: column;
   flex: 1;
   flex-basis: 20%;
-  min-width: 250px;
-  max-height: 300px;
   padding: 1em;
 }
 
@@ -19,4 +17,5 @@
 img {
   max-width: 100%;
   height: auto;
+  border-radius: 1em;
 }
