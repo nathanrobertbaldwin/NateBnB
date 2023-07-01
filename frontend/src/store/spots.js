@@ -37,7 +37,7 @@ const getSpotDetails = (data) => {
 // Get All Spots
 
 export const getAllSpotsThunk = () => async (dispatch) => {
-  const response = await csrfFetch("api/spots");
+  const response = await csrfFetch("/api/spots");
   if (response.ok) {
     const data = await response.json();
     dispatch(getAllSpots(data));
@@ -48,7 +48,7 @@ export const getAllSpotsThunk = () => async (dispatch) => {
 // Get Spot Images
 
 export const getSpotDetailsThunk = (spotId) => async (dispatch) => {
-  const response = await csrfFetch(`api/spots/${spotId}`);
+  const response = await csrfFetch(`/api/spots/${spotId}`);
   if (response.ok) {
     const data = await response.json();
     dispatch(getSpotDetails(data));
@@ -76,9 +76,9 @@ export const spotsReducer = (state = {}, action) => {
       return newState;
     }
     case GET_SPOT_DETAILS: {
-      const data = action.payload.Spot;
-      const newState = { ...state };
-      newState.id = data;
+      const data = action.payload;
+      const id = data.id;
+      const newState = { ...state, [id]: data };
       return newState;
     }
     default:

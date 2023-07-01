@@ -14,7 +14,7 @@
   margin-bottom: 1em;
 }
 
-img {
+.spot_card_image {
   max-width: 100%;
   height: auto;
   border-radius: 1em;

@@ -1,8 +1,10 @@
-#home {
-  margin-left: 2em;
-  margin-right: 2em;
+#spots_index {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  max-width: 1024px;
+  margin: auto;
   gap: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
 }
