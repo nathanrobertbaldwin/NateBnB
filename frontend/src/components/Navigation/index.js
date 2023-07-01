@@ -13,14 +13,14 @@ function Navigation({ isLoaded }) {
       <div id="logo_container">
         <img id="logo" />
       </div>
-      <ul id="navigation">
-        <li class="nav_links">
+      <ul className="navigation">
+        <li className="nav_links">
           <NavLink exact to="/">
-            <button class="nav_button">Home</button>
+            <button className="nav_button_large">Home</button>
           </NavLink>
         </li>
         {isLoaded && (
-          <li class="nav_links">
+          <li className="nav_links">
             <ProfileButton user={sessionUser} />
           </li>
         )}
