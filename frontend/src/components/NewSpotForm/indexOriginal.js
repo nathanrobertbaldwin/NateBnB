@@ -1,6 +1,6 @@
 // ============================== IMPORTS ============================== //
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import "./NewSpotForm.css";
@@ -25,77 +25,29 @@ export default function NewSpotForm() {
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
   const [validationErrors, setValidationErrors] = useState({});
-  const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  useEffect(() => {
-    checkForErrors();
-  }, [
-    country,
-    streetAddress,
-    city,
-    state,
-    latitude,
-    longitude,
-    description,
-    title,
-    price,
-    previewImage,
-    imageOne,
-    imageTwo,
-    imageThree,
-    imageFour,
-  ]);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-    setHasSubmitted(true);
-    console.log(validationErrors);
-    if (Object.values(validationErrors).length === 0) {
-      submitToServer();
-      // reset();
-    }
-  }
-
-  function checkForErrors() {
+  function reportErrors() {
     const errors = {};
     if (!country) errors.country = "Country is required";
     if (!streetAddress) errors.streetAddress = "Street Address is required";
     if (!city) errors.city = "City is required";
     if (!state || state.length !== 2)
       errors.state = "A two letter State is required";
-    if (latitude < -90 || latitude > 90)
-      errors.latitude = "A numeric latitude between -90 and 90 is required.";
-    if (longitude < -180 || longitude > 180)
-      errors.longitude =
-        "A numeric longitude between -180 and 180 is required.";
+    if (typeof latitude === "string" || Number.toString(latitude).length === 0)
+      errors.latitude = "A numeric latitude is required.";
+    if (
+      typeof longitude === "string" ||
+      Number.toString(longitude).length === 0
+    )
+      errors.latitude = "A numeric latitude is required.";
     if (description.length < 30)
       errors.description = "Description needs a minimum of 30 characters";
     if (!title) errors.title = "Title is required";
     if (!price) errors.price = "Price is required";
     if (!previewImage)
       errors.previewImage = "Preview Image is required in form of a URL";
-    setValidationErrors(errors);
-  }
 
-  function submitToServer() {
-    const newSpot = {
-      country,
-      streetAddress,
-      city,
-      state,
-      latitude,
-      longitude,
-      description,
-      title,
-      price,
-      previewImage,
-      imageOne,
-      imageTwo,
-      imageThree,
-      imageFour,
-    };
-
-    console.log("New Spot", newSpot); // turn this into a dispatch;
+    return errors;
   }
 
   function reset() {
@@ -116,10 +68,43 @@ export default function NewSpotForm() {
     setValidationErrors({});
   }
 
+  function handleSubmit(e) {
+    e.preventDefault();
+
+    const errors = reportErrors();
+
+    setValidationErrors(errors);
+
+    console.log(validationErrors);
+
+    if (Object.values(validationErrors).length === 0) {
+      const newSpot = {
+        country,
+        streetAddress,
+        city,
+        state,
+        latitude,
+        longitude,
+        description,
+        title,
+        price,
+        previewImage,
+        imageOne,
+        imageTwo,
+        imageThree,
+        imageFour,
+      };
+
+      console.log("New Spot", newSpot); // turn this into a dispatch;
+      //   reset(); // call reset after figuring out bugs
+      // history.push(""); remember to add new spot address
+    }
+  }
+
   return (
     <div id="new_spot_form_container">
-      <h1 id="form_h1">Create A New Spot</h1>
-      <form id="new_spot_form" onSubmit={handleSubmit}>
+      <h1>Create A New Spot</h1>
+      <form onSubmit={handleSubmit}>
         <div className="new_spot_form_section">
           <h4 className="form_h4">Where's your place located?</h4>
           <p className="form_p">
@@ -127,16 +112,7 @@ export default function NewSpotForm() {
             reservation.
           </p>
           <label>
-            {validationErrors.country && hasSubmitted ? (
-              <p>
-                {"Country: "}
-                <span className="error_message">
-                  {validationErrors.country}
-                </span>
-              </p>
-            ) : (
-              "Country"
-            )}
+            Country
             <input
               className="new_spot_form_input"
               type="text"
@@ -146,16 +122,7 @@ export default function NewSpotForm() {
             />
           </label>
           <label>
-            {validationErrors.streetAddress && hasSubmitted ? (
-              <p>
-                {"Street Address: "}
-                <span className="error_message">
-                  {validationErrors.streetAddress}
-                </span>
-              </p>
-            ) : (
-              "Street Address"
-            )}
+            Street Address
             <input
               className="new_spot_form_input"
               type="text"
@@ -165,14 +132,7 @@ export default function NewSpotForm() {
             />
           </label>
           <label>
-            {validationErrors.city && hasSubmitted ? (
-              <p>
-                {"City: "}
-                <span className="error_message">{validationErrors.city}</span>
-              </p>
-            ) : (
-              "City"
-            )}
+            City
             <input
               className="new_spot_form_input"
               type="text"
@@ -182,14 +142,7 @@ export default function NewSpotForm() {
             />
           </label>
           <label>
-            {validationErrors.state && hasSubmitted ? (
-              <p>
-                {"State: "}
-                <span className="error_message">{validationErrors.state}</span>
-              </p>
-            ) : (
-              "State"
-            )}
+            State
             <input
               className="new_spot_form_input"
               type="text"
@@ -199,16 +152,7 @@ export default function NewSpotForm() {
             />
           </label>
           <label>
-            {validationErrors.latitude && hasSubmitted ? (
-              <p>
-                {"Latitude: "}
-                <span className="error_message">
-                  {validationErrors.latitude}
-                </span>
-              </p>
-            ) : (
-              "Latitude"
-            )}
+            Latitude
             <input
               className="new_spot_form_input"
               type="number"
@@ -218,16 +162,7 @@ export default function NewSpotForm() {
             />
           </label>
           <label>
-            {validationErrors.longitude && hasSubmitted ? (
-              <p>
-                {"Longitude: "}
-                <span className="error_message">
-                  {validationErrors.longitude}
-                </span>
-              </p>
-            ) : (
-              "Longitude"
-            )}
+            Longitude
             <input
               className="new_spot_form_input"
               type="number"
@@ -252,11 +187,6 @@ export default function NewSpotForm() {
               rows="6"
               cols="50"
             />
-            {validationErrors.description && hasSubmitted && (
-              <span className="error_message">
-                {validationErrors.description}
-              </span>
-            )}
           </label>
         </div>
         <div className="new_spot_form_section">
@@ -274,9 +204,6 @@ export default function NewSpotForm() {
               onChange={(e) => setTitle(e.target.value)}
             />
           </label>
-          {validationErrors.title && hasSubmitted && (
-            <span className="error_message">{validationErrors.title}</span>
-          )}
         </div>
         <div className="new_spot_form_section">
           <h4 className="form_h4">Set a base price for your spot</h4>
@@ -294,9 +221,6 @@ export default function NewSpotForm() {
               value={price}
               onChange={(e) => setPrice(e.target.value)}
             />
-            {validationErrors.price && hasSubmitted && (
-              <span className="error_message">{validationErrors.price}</span>
-            )}
           </label>
         </div>
         <div className="new_spot_form_section">
@@ -312,11 +236,6 @@ export default function NewSpotForm() {
               value={previewImage}
               onChange={(e) => setPreviewImage(e.target.value)}
             />
-            {validationErrors.previewImage && hasSubmitted && (
-              <span className="error_message">
-                {validationErrors.previewImage}
-              </span>
-            )}
           </label>
           <label>
             <input

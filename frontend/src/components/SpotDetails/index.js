@@ -13,7 +13,6 @@ export default function SpotDetails() {
   const dispatch = useDispatch();
   const spotData = useSelector((store) => store.spots);
   const spot = spotData[spotId];
-  console.log("from spot details", spot);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {

@@ -1,11 +1,22 @@
 #new_spot_form_container {
   max-width: 400px;
   margin: auto;
+}
+
+#new_spot_form {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 0.5em;
 }
 
 .new_spot_form_section {
-  border-bottom: 1px solid lightgray;
+  border-bottom: 1px solid gray;
+  padding-bottom: 1em;
+}
+
+#form_h1 {
+  text-align: center;
 }
 
 .form_h4 {
@@ -18,8 +29,8 @@
 }
 
 .new_spot_form_input {
-  width: 100%;
-  margin-bottom: 1em;
+  width: 98%;
+  margin-bottom: 0.5em;
 }
 
 #button_container {
@@ -31,4 +42,9 @@
 #new_spot_form_submit {
   width: 33%;
   background-color: brown;
+}
+
+.error_message {
+  color: red;
+  width: 33%;
 }
