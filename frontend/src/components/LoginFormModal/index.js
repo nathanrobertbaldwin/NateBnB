@@ -8,14 +8,14 @@ import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./LoginForm.css";
 
+// ============================= EXPORTS =============================== //
+
 function LoginFormModal() {
   const dispatch = useDispatch();
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
-
-  // ============================= EXPORTS =============================== //
 
   const handleSubmit = (e) => {
     e.preventDefault();
