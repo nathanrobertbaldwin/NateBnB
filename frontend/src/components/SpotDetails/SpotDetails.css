@@ -51,8 +51,9 @@
   border-radius: 1em;
 }
 
-#spot_details_info {
+#spot_details_info_container {
   display: flex;
+  border-bottom: 1px solid lightgrey;
 }
 
 #spot_details_host_description {

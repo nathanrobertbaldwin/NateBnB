@@ -1,4 +1,7 @@
 // frontend/src/components/LoginFormModal/index.js
+
+// ============================== IMPORTS ============================== //
+
 import React, { useState } from "react";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
@@ -11,6 +14,8 @@ function LoginFormModal() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const { closeModal } = useModal();
+
+  // ============================= EXPORTS =============================== //
 
   const handleSubmit = (e) => {
     e.preventDefault();

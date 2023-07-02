@@ -417,17 +417,17 @@ router.get("/:spotId", async (req, res, next) => {
         model: SpotImage,
         attributes: { exclude: ["spotId", "createdAt", "updatedAt"] },
       },
-      { model: Review },
+      {
+        model: Review,
+        include: { model: User, attributes: ["firstName", "lastName"] },
+      },
     ],
-    group: ["Spot.id", "SpotImages.id", "User.id", "Reviews.id"],
+    group: ["Spot.id", "SpotImages.id", "Reviews.id", "User.id"],
   });
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
 
   spot = spot.toJSON();
-
-  // make sum reviews
-  // count num reviews
 
   spot.avgStarRating =
     spot.Reviews.reduce((accum, review) => {
