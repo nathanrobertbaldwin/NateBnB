@@ -423,7 +423,7 @@ router.get("/:spotId", async (req, res, next) => {
         attributes: { exclude: ["spotId", "createdAt", "updatedAt"] },
       },
       { model: User },
-      { model: Review, attributes: [] },
+      { model: Review },
     ],
     group: ["Spot.id", "SpotImages.id", "User.id"],
   });

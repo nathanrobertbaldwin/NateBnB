@@ -30,6 +30,8 @@ export default function SpotDetails() {
     (image) => image.preview === false
   );
 
+  const reviews = spot.
+
   return (
     <div id="spot_details">
       <h2>{spot.address}</h2>
