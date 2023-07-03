@@ -584,7 +584,6 @@ router.post("/", requireAuth, validatePostNewSpot, async (req, res, next) => {
     };
   });
 
-  console.log(newSpotsImages);
   await SpotImage.bulkCreate(newSpotsImages);
 
   return res.json(newSpot);

@@ -18,6 +18,10 @@ const GET_SPOT_DETAILS = "spots/getSpotDetails";
 
 const POST_NEW_SPOT = "spots/postNewSpot";
 
+// Get Spots By OwnerId
+
+const GET_SPOTS_BY_OWNERID = "spots/getSpotsByOwnerId";
+
 // ============================== ACTIONS ============================== //
 
 // Get All Spots
@@ -29,6 +33,8 @@ const getAllSpots = (data) => {
   };
 };
 
+// Get Spot Details
+
 const getSpotDetails = (data) => {
   return {
     type: GET_SPOT_DETAILS,
@@ -36,9 +42,20 @@ const getSpotDetails = (data) => {
   };
 };
 
+// Post New Spot
+
 const postNewSpot = (data) => {
   return {
     type: POST_NEW_SPOT,
+    payload: data,
+  };
+};
+
+// Get Spots By OwnerId
+
+const getSpotsByOwnerId = (id) => {
+  return {
+    type: GET_SPOTS_BY_OWNERID,
     payload: data,
   };
 };
@@ -74,6 +91,17 @@ export const postNewSpotThunk = (data) => async (dispatch) => {
     method: "POST",
     body: JSON.stringify(data),
   });
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(postNewSpot(data));
+    return data;
+  }
+};
+
+// Get All Spots By OwnerId
+
+export const getAllSpotsByOwnerId = (id) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots`);
   if (response.ok) {
     const data = await response.json();
     dispatch(postNewSpot(data));
