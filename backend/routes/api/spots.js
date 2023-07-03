@@ -412,8 +412,7 @@ router.get("/current", requireAuth, async (req, res, next) => {
 router.get("/:spotId", async (req, res, next) => {
   const spotId = parseInt(req.params.spotId);
 
-  let spot = await Spot.findAll({
-    where: { id: spotId },
+  let spot = await Spot.findByPk(spotId, {
     include: [
       { model: User },
       {
@@ -422,20 +421,18 @@ router.get("/:spotId", async (req, res, next) => {
       },
       {
         model: Review,
-        include: { model: User, attributes: ["firstName", "lastName"] },
       },
     ],
-    group: ["Spot.id", "SpotImages.id", "Reviews.id", "User.id"],
   });
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
 
-  spot = spot[0].toJSON();
+  spot = spot.toJSON();
 
   spot.avgStarRating =
-  spot.Reviews.reduce((accum, review) => {
-    return accum + review.stars;
-  }, 0) / spot.Reviews.length;
+    spot.Reviews.reduce((accum, review) => {
+      return accum + review.stars;
+    }, 0) / spot.Reviews.length;
   spot.Owner = spot.User;
   delete spot.Owner.username;
   delete spot.User;
