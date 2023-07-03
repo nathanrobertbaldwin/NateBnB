@@ -14,6 +14,10 @@ const GET_ALL_SPOTS = "spots/getAllSpots";
 
 const GET_SPOT_DETAILS = "spots/getSpotDetails";
 
+// Create New Spot
+
+const POST_NEW_SPOT = "spots/postNewSpot";
+
 // ============================== ACTIONS ============================== //
 
 // Get All Spots
@@ -32,6 +36,13 @@ const getSpotDetails = (data) => {
   };
 };
 
+const postNewSpot = (data) => {
+  return {
+    type: POST_NEW_SPOT,
+    payload: data,
+  };
+};
+
 // ============================== THUNKS =============================== //
 
 // Get All Spots
@@ -45,13 +56,28 @@ export const getAllSpotsThunk = () => async (dispatch) => {
   }
 };
 
-// Get Spot Images
+// Get Spot Details
 
 export const getSpotDetailsThunk = (spotId) => async (dispatch) => {
   const response = await csrfFetch(`/api/spots/${spotId}`);
   if (response.ok) {
     const data = await response.json();
     dispatch(getSpotDetails(data));
+    return data;
+  }
+};
+
+// Post New Spot
+
+export const postNewSpotThunk = (data) => async (dispatch) => {
+  console.log("From postNewSpotThunk:", data);
+  const response = await csrfFetch(`/api/spots`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(postNewSpot(data));
     return data;
   }
 };
@@ -81,9 +107,12 @@ export const spotsReducer = (state = {}, action) => {
       const newState = { ...state, [id]: data };
       return newState;
     }
+    case POST_NEW_SPOT: {
+      const data = action.payload;
+      const newState = { ...state, data };
+      return newState;
+    }
     default:
       return state;
   }
 };
-
-// ============================= EXPORTS =============================== //

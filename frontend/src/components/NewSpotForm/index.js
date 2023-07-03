@@ -1,15 +1,21 @@
 // ============================== IMPORTS ============================== //
 
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import "./NewSpotForm.css";
+import { postNewSpotThunk } from "../../store/spots";
 
 // ============================= EXPORTS =============================== //
 
 export default function NewSpotForm() {
+  // Variables
+
   const dispatch = useDispatch();
   const history = useHistory();
+  const userData = useSelector((state) => state.session.user);
+  const userId = userData.id;
+  console.log(userId);
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
@@ -27,8 +33,10 @@ export default function NewSpotForm() {
   const [validationErrors, setValidationErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
+  // Error Checking
+
   useEffect(() => {
-    checkForErrors();
+    _checkForErrors();
   }, [
     country,
     streetAddress,
@@ -46,17 +54,41 @@ export default function NewSpotForm() {
     imageFour,
   ]);
 
-  function handleSubmit(e) {
+  // Submit Handler
+
+  async function handleSubmit(e) {
     e.preventDefault();
     setHasSubmitted(true);
-    console.log(validationErrors);
+
     if (Object.values(validationErrors).length === 0) {
-      submitToServer();
-      // reset();
+      let data = {
+        ownerId: userId,
+        country,
+        address: streetAddress,
+        city,
+        state,
+        lat: latitude,
+        lng: longitude,
+        description,
+        name: title,
+        price,
+        previewImage,
+        imageOne,
+        imageTwo,
+        imageThree,
+        imageFour,
+      };
+
+      const newSpot = await dispatch(postNewSpotThunk(data));
+      console.log(newSpot);
+      // history.push(`/spots/${newSpot.id}`);
+      // _reset();
     }
   }
 
-  function checkForErrors() {
+  // Helper Functions
+
+  function _checkForErrors() {
     const errors = {};
     if (!country) errors.country = "Country is required";
     if (!streetAddress) errors.streetAddress = "Street Address is required";
@@ -77,28 +109,7 @@ export default function NewSpotForm() {
     setValidationErrors(errors);
   }
 
-  function submitToServer() {
-    const newSpot = {
-      country,
-      streetAddress,
-      city,
-      state,
-      latitude,
-      longitude,
-      description,
-      title,
-      price,
-      previewImage,
-      imageOne,
-      imageTwo,
-      imageThree,
-      imageFour,
-    };
-
-    console.log("New Spot", newSpot); // turn this into a dispatch;
-  }
-
-  function reset() {
+  function _reset() {
     setCountry("");
     setStreetAddress("");
     setCity("");
@@ -115,6 +126,8 @@ export default function NewSpotForm() {
     setImageFour("");
     setValidationErrors({});
   }
+
+  // Component Content
 
   return (
     <div id="new_spot_form_container">

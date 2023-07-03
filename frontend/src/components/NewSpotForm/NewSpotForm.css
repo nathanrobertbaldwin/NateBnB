@@ -37,6 +37,7 @@
   display: flex;
   justify-content: center;
   margin-top: 1em;
+  width: 100%;
 }
 
 #new_spot_form_submit {
@@ -46,5 +47,4 @@
 
 .error_message {
   color: red;
-  width: 33%;
 }
