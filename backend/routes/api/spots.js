@@ -171,10 +171,12 @@ const validateNewBooking = [
       const spotId = parseInt(req.params.spotId);
       const bookingsList = await Spot.findByPk(spotId, {
         attributes: [],
-        include: {
-          model: Booking,
-          attributes: ["startDate", "endDate"],
-        },
+        include: [
+          {
+            model: Booking,
+            attributes: ["id", "startDate", "endDate"],
+          },
+        ],
       });
 
       const { startDate, endDate } = req.body;
@@ -217,10 +219,12 @@ const validateNewBooking = [
       const spotId = parseInt(req.params.spotId);
       const bookingsList = await Spot.findByPk(spotId, {
         attributes: [],
-        include: {
-          model: Booking,
-          attributes: ["startDate", "endDate"],
-        },
+        include: [
+          {
+            model: Booking,
+            attributes: ["id", "startDate", "endDate"],
+          },
+        ],
       });
 
       const { startDate, endDate } = req.body;
@@ -346,7 +350,7 @@ router.get("/", validateGetAllSpotOptionalQueries, async (req, res, next) => {
   let spots = await Spot.findAll({
     ...query,
     include: [
-      { model: SpotImage, attributes: ["url"], where: { preview: true } },
+      { model: SpotImage, attributes: ["id", "url"], where: { preview: true } },
       { model: Review },
     ],
     ...pagination,
@@ -419,7 +423,7 @@ router.get("/:spotId", async (req, res, next) => {
       },
       {
         model: Review,
-        include: [{ model: User }],
+        include: [{ model: User, attributes: ["id", "firstName", "lastName"] }],
       },
     ],
   });
@@ -469,10 +473,12 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
 
   let spot = await Spot.findByPk(spotId, {
     attributes: ["ownerId"],
-    include: {
-      model: Booking,
-      include: { model: User, attributes: ["id", "firstName", "lastName"] },
-    },
+    include: [
+      {
+        model: Booking,
+        include: [{ model: User, attributes: ["id", "firstName", "lastName"] }],
+      },
+    ],
   });
 
   if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
@@ -624,7 +630,7 @@ router.post(
   validatePostNewReview,
   async (req, res, next) => {
     const spotId = parseInt(req.params.spotId);
-    const spot = await Spot.findByPk(spotId, { include: { model: Review } });
+    const spot = await Spot.findByPk(spotId, { include: [{ model: Review }] });
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
 
