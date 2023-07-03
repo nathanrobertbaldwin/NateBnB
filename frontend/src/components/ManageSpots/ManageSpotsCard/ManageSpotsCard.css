@@ -1,21 +1,31 @@
 .spot_card {
-  border-radius: 1em;
   display: flex;
   flex-direction: column;
   flex: 1;
   flex-basis: 20%;
   padding: 1em;
+  max-width: 25%;
 }
 
 .spot_preview_image {
   display: flex;
   width: 100%;
-  height: 80%;
+  height: 150px;
   margin-bottom: 1em;
 }
 
 .spot_card_image {
   max-width: 100%;
-  height: auto;
   border-radius: 1em;
+}
+
+#spots_card_button_container {
+  display: flex;
+  justify-content: space-around;
+}
+
+.sports_card_buttons {
+  background-color: brown;
+  color: white;
+  margin-top: 1em;
 }

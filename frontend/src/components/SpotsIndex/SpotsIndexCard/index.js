@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 // ============================= EXPORTS =============================== //
 
 export function SpotsIndexCard({ spot }) {
-  const rating = spot.avgRating ? spot.avgRating : "no reviews";
+  const rating = spot.avgStarRating ? spot.avgStarRating : "no reviews";
   return (
     <div className="spot_card">
       <Link to={`/spots/${spot.id}`}>

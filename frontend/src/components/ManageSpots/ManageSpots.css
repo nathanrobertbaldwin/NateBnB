@@ -1,0 +1,14 @@
+#manage_spots {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  max-width: 1024px;
+  margin: auto;
+  gap: 1em;
+  padding-left: 2em;
+  padding-right: 2em;
+}
+
+#manage_spots_header {
+  width: 100%;
+}

@@ -360,12 +360,11 @@ router.get("/", validateGetAllSpotOptionalQueries, async (req, res, next) => {
     spot.previewImage = spot.SpotImages[0].url;
     delete spot.SpotImages;
 
-    let sum = 0;
-    spot.Reviews.forEach((review) => {
-      sum += review.stars;
-    });
-
-    spot.avgRating = sum / spot.Reviews.length;
+    spot.avgStarRating =
+      spot.Reviews.reduce((accum, review) => {
+        return accum + review.stars;
+      }, 0) / spot.Reviews.length;
+    delete spot.Reviews;
 
     delete spot.Reviews;
   });
@@ -396,10 +395,13 @@ router.get("/current", requireAuth, async (req, res, next) => {
   Spots = Spots.map((spot) => (spot = spot.toJSON()));
 
   Spots.forEach((spot) => {
+    spot.previewImage = spot.SpotImages[0].url;
+    delete spot.SpotImages;
     spot.avgStarRating =
       spot.Reviews.reduce((accum, review) => {
         return accum + review.stars;
       }, 0) / spot.Reviews.length;
+    delete spot.Reviews;
   });
 
   return res.json({ Spots });
