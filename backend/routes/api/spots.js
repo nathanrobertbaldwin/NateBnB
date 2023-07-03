@@ -382,14 +382,12 @@ router.get("/current", requireAuth, async (req, res, next) => {
       {
         model: SpotImage,
         where: { preview: true },
-        attributes: { exclude: ["spotId", "createdAt", "updatedAt"] },
       },
       {
         model: Review,
-        attributes: ["stars"],
+        attributes: ["id", "stars"],
       },
     ],
-    group: ["Spot.id", "SpotImages.id", "Reviews.id"],
   });
 
   Spots = Spots.map((spot) => (spot = spot.toJSON()));
