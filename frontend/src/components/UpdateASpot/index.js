@@ -6,7 +6,7 @@ import { useHistory } from "react-router-dom";
 import "./NewSpotForm.css";
 import { postNewSpotThunk } from "../../store/spots";
 
-// ============================= EXPORTS =============================== //
+// ============================= EXPORTS ================================ //
 
 export default function NewSpotForm() {
   // Variables
