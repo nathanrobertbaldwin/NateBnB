@@ -421,6 +421,7 @@ router.get("/:spotId", async (req, res, next) => {
       },
       {
         model: Review,
+        include: [{ model: User }],
       },
     ],
   });
