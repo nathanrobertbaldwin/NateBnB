@@ -1,11 +1,11 @@
 // ============================== IMPORTS ============================== //
 
-import "./SpotCard.css";
+import "./SpotsIndexCard.css";
 import { Link } from "react-router-dom";
 
 // ============================= EXPORTS =============================== //
 
-export function SpotCard({ spot }) {
+export function SpotsIndexCard({ spot }) {
   const rating = spot.avgRating ? spot.avgRating : "no reviews";
   return (
     <div className="spot_card">

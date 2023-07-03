@@ -53,7 +53,7 @@ const postNewSpot = (data) => {
 
 // Get Spots By OwnerId
 
-const getSpotsByOwnerId = (id) => {
+const getSpotsByOwnerId = (data) => {
   return {
     type: GET_SPOTS_BY_OWNERID,
     payload: data,
@@ -100,11 +100,11 @@ export const postNewSpotThunk = (data) => async (dispatch) => {
 
 // Get All Spots By OwnerId
 
-export const getAllSpotsByOwnerId = (id) => async (dispatch) => {
-  const response = await csrfFetch(`/api/spots`);
+export const getAllSpotsByOwnerIdThunk = () => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/current`);
   if (response.ok) {
     const data = await response.json();
-    dispatch(postNewSpot(data));
+    dispatch(getSpotsByOwnerId(data));
     return data;
   }
 };
@@ -137,6 +137,11 @@ export const spotsReducer = (state = {}, action) => {
     case POST_NEW_SPOT: {
       const data = action.payload;
       const newState = { ...state, ...data };
+      return newState;
+    }
+    case GET_SPOTS_BY_OWNERID: {
+      const data = normalizeSpots(action.payload.Spots);
+      const newState = { ...data };
       return newState;
     }
     default:

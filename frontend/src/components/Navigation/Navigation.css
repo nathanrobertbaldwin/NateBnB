@@ -55,3 +55,8 @@
   text-align: center;
   text-decoration: none;
 }
+
+#navigation_profile_button_section {
+  border-bottom: 1px solid gray;
+  padding-bottom: 0.5em;
+}

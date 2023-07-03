@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllSpotsThunk } from "../../store/spots";
-import { SpotCard } from "../SpotCard";
+import { SpotsIndexCard } from "./SpotsIndexCard";
 import "./SpotsIndex.css";
 
 // ============================= EXPORTS =============================== //
@@ -23,7 +23,7 @@ export default function SpotsIndex() {
   return (
     <div id="spots_index">
       {spots.map((spot) => {
-        return <SpotCard key={spot.id} spot={spot} />;
+        return <SpotsIndexCard key={spot.id} spot={spot} />;
       })}
     </div>
   );

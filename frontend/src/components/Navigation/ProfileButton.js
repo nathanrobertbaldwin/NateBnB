@@ -1,5 +1,6 @@
 // frontend/src/components/Navigation/ProfileButton.js
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import * as sessionActions from "../../store/session";
 import OpenModalButton from "../OpenModalButton";
@@ -48,11 +49,18 @@ function ProfileButton({ user }) {
       <ul className={`${ulClassName} navigation}`} ref={ulRef}>
         {user ? (
           <>
-            <li className="nav_links">{user.username}</li>
-            <li className="nav_links">
-              {user.firstName} {user.lastName}
-            </li>
-            <li className="nav_links">{user.email}</li>
+            <div id="navigation_profile_button_section">
+              <li className="nav_links">{user.username}</li>
+              <li className="nav_links">
+                {user.firstName} {user.lastName}
+              </li>
+              <li className="nav_links">{user.email}</li>
+            </div>
+            <div id="navigation_profile_button_section">
+              <li>
+                <Link to="/spots/current">Manage Spots</Link>
+              </li>
+            </div>
             <li className="nav_links">
               <button onClick={logout}>Log Out</button>
             </li>

@@ -379,27 +379,27 @@ router.get("/current", requireAuth, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
   let Spots = await Spot.findAll({
     where: { ownerId: ownerId },
-    attributes: {
-      include: [
-        [sequelize.fn("count", sequelize.col("stars")), "countReviews"],
-        [sequelize.fn("sum", sequelize.col("stars")), "sumReviews"],
-      ],
-    },
     include: [
-      { model: Review, attributes: [] },
-      { model: SpotImage, attributes: ["url"], where: { preview: true } },
+      {
+        model: SpotImage,
+        where: { preview: true },
+        attributes: { exclude: ["spotId", "createdAt", "updatedAt"] },
+      },
+      {
+        model: Review,
+        attributes: ["stars"],
+      },
     ],
-    group: ["Spot.id", "Reviews.id", "SpotImages.id"],
+    group: ["Spot.id", "SpotImages.id", "Reviews.id"],
   });
 
   Spots = Spots.map((spot) => (spot = spot.toJSON()));
 
   Spots.forEach((spot) => {
-    spot.avgRating = spot.sumReviews / spot.countReviews;
-    delete spot.sumReviews;
-    delete spot.countReviews;
-    spot.previewImage = spot.SpotImages[0].url;
-    delete spot.SpotImages;
+    spot.avgStarRating =
+      spot.Reviews.reduce((accum, review) => {
+        return accum + review.stars;
+      }, 0) / spot.Reviews.length;
   });
 
   return res.json({ Spots });
