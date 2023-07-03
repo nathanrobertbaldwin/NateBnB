@@ -15,7 +15,6 @@ export default function NewSpotForm() {
   const history = useHistory();
   const userData = useSelector((state) => state.session.user);
   const userId = userData.id;
-  console.log(userId);
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
@@ -80,9 +79,8 @@ export default function NewSpotForm() {
       };
 
       const newSpot = await dispatch(postNewSpotThunk(data));
-      console.log(newSpot);
-      // history.push(`/spots/${newSpot.id}`);
-      // _reset();
+      _reset();
+      history.push(`/spots/${newSpot.id}`);
     }
   }
 

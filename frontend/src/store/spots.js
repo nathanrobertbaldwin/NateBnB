@@ -70,7 +70,6 @@ export const getSpotDetailsThunk = (spotId) => async (dispatch) => {
 // Post New Spot
 
 export const postNewSpotThunk = (data) => async (dispatch) => {
-  console.log("From postNewSpotThunk:", data);
   const response = await csrfFetch(`/api/spots`, {
     method: "POST",
     body: JSON.stringify(data),
@@ -109,7 +108,7 @@ export const spotsReducer = (state = {}, action) => {
     }
     case POST_NEW_SPOT: {
       const data = action.payload;
-      const newState = { ...state, data };
+      const newState = { ...state, ...data };
       return newState;
     }
     default:

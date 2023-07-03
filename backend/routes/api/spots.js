@@ -527,8 +527,22 @@ router.get("/:spotId/bookings", requireAuth, async (req, res, next) => {
 router.post("/", requireAuth, validatePostNewSpot, async (req, res, next) => {
   const ownerId = req.user.dataValues.id;
 
-  const { address, city, state, country, lat, lng, name, description, price } =
-    req.body;
+  const {
+    address,
+    city,
+    state,
+    country,
+    lat,
+    lng,
+    name,
+    description,
+    price,
+    previewImage,
+    imageOne,
+    imageTwo,
+    imageThree,
+    imageFour,
+  } = req.body;
 
   const newSpot = Spot.build({
     ownerId,
@@ -545,9 +559,36 @@ router.post("/", requireAuth, validatePostNewSpot, async (req, res, next) => {
 
   await newSpot.save();
 
+  const newSpotId = newSpot.id;
+
+  const newPreviewImage = SpotImage.build({
+    spotId: newSpotId,
+    url: previewImage,
+    preview: true,
+  });
+
+  newPreviewImage.save();
+
+  const newSpotImagesUrls = [];
+
+  if (imageOne) newSpotImagesUrls.push(imageOne);
+  if (imageTwo) newSpotImagesUrls.push(imageTwo);
+  if (imageThree) newSpotImagesUrls.push(imageThree);
+  if (imageFour) newSpotImagesUrls.push(imageFour);
+
+  const newSpotsImages = newSpotImagesUrls.map((url) => {
+    return {
+      spotId: newSpotId,
+      url: url,
+      preview: false,
+    };
+  });
+
+  console.log(newSpotsImages);
+  await SpotImage.bulkCreate(newSpotsImages);
+
   return res.json(newSpot);
 });
-
 // ----------- Add an Image to a Spot based on the Spot's id ----------- //
 
 router.post(
