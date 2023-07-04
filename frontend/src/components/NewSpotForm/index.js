@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
-import "./NewSpotForm.css";
 import { postNewSpotThunk } from "../../store/spots";
+import "./NewSpotForm.css";
 
 // ============================= EXPORTS =============================== //
 
-export default function NewSpotForm() {
+export function NewSpotForm() {
   // Variables
 
   const dispatch = useDispatch();

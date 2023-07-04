@@ -2,19 +2,26 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import "./NewSpotForm.css";
-import { postNewSpotThunk } from "../../store/spots";
+import { useHistory, useParams } from "react-router-dom";
+import { getSpotDetailsThunk, postNewSpotThunk } from "../../store/spots";
+import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
 
-export default function NewSpotForm() {
+export function UpdateASpotForm() {
   // Variables
+
+  const userData = useSelector((state) => state.session.user);
+  const userId = userData.id;
+
+  const { spotId } = useParams();
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const userData = useSelector((state) => state.session.user);
-  const userId = userData.id;
+
+  const [validationErrors, setValidationErrors] = useState({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
@@ -29,8 +36,30 @@ export default function NewSpotForm() {
   const [imageTwo, setImageTwo] = useState("");
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
-  const [validationErrors, setValidationErrors] = useState({});
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // On load, populate form fields with db data
+
+  useEffect(() => {
+    dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
+      setCountry(spot.country);
+      setStreetAddress(spot.address);
+      setCity(spot.city);
+      setState(spot.state);
+      setLatitude(spot.lat);
+      setLongitude(spot.lng);
+      setDescription(spot.description);
+      setTitle(spot.name);
+      setPrice(spot.price);
+      setPreviewImage(spot.previewImage);
+      setImageOne(spot.imageOne);
+      setImageTwo(spot.imageTwo);
+      setImageThree(spot.imageThree);
+      setImageFour(spot.imageFour);
+      setIsLoaded(true);
+    });
+  }, [dispatch]);
 
   // Error Checking
 
@@ -52,6 +81,8 @@ export default function NewSpotForm() {
     imageThree,
     imageFour,
   ]);
+
+  // Show existing db values on form
 
   // Submit Handler
 
