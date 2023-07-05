@@ -14,13 +14,7 @@ import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
 
-
 export default function UpdateASpotForm() {
-
-export function UpdateASpotForm() {
-
-export default function UpdateASpotForm() {
-
   // Variables
 
   const userData = useSelector((state) => state.session.user);
@@ -51,7 +45,7 @@ export default function UpdateASpotForm() {
 
   // On load, populate form fields with db data
 
-d/src/components/UpdateASpot/index.js
+  d / src / components / UpdateASpot / index.js;
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
       setCountry(spot.country);
