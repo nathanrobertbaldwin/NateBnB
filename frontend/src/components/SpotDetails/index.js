@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getSpotDetailsThunk } from "../../store/spots";
+import Reviews from "../Reviews";
 import "./SpotDetails.css";
 
 // ============================= EXPORTS =============================== //
@@ -11,8 +12,7 @@ import "./SpotDetails.css";
 export default function SpotDetails() {
   const { spotId } = useParams();
   const dispatch = useDispatch();
-  const spotData = useSelector((store) => store.spots);
-  const spot = spotData[spotId];
+  const spot = useSelector((store) => store.spots);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
@@ -28,6 +28,8 @@ export default function SpotDetails() {
   const otherImages = spot.SpotImages.filter(
     (image) => image.preview === false
   );
+
+  const reviewsCount = Object.values(spot.Reviews).length;
 
   return (
     <div id="spot_details">
@@ -56,7 +58,7 @@ export default function SpotDetails() {
           <p>
             {spot.Reviews.length === 0
               ? "Stars: New"
-              : `Rating: ${spot.avgStarRating} | Reviews: ${spot.Reviews.length}`}
+              : `Rating: ${spot.avgStarRating} | Reviews: ${reviewsCount}`}
           </p>
           <div id="spot_details_hosted_book_booking_card_button_container">
             <button id="spot_details_hosted_book_booking_card_button">
@@ -65,31 +67,12 @@ export default function SpotDetails() {
           </div>
         </div>
       </div>
-      <div id="reviews_container">
-        <h3>
-          {spot.Reviews.length === 0
-            ? "Stars: New"
-            : `Stars: ${spot.avgStarRating} | Reviews: ${spot.Reviews.length}`}
-        </h3>
-        {spot.Reviews.length === 0
-          ? ""
-          : spot.Reviews.map((review) => {
-              const reviewDate = new Date(review.createdAt);
-              const monthNumber = reviewDate.getMonth();
-              reviewDate.setMonth(monthNumber - 1);
-              const reviewMonthString = reviewDate.toLocaleString("en-US", {
-                month: "long",
-              });
-              const yearNumber = reviewDate.getFullYear();
-              return (
-                <div key={review.id}>
-                  <h3>{review.User.firstName}</h3>
-                  <h4>{`${reviewMonthString}, ${yearNumber}`}</h4>
-                  <p>{review.review}</p>
-                </div>
-              );
-            })}
-      </div>
+      <h3>
+        {reviewsCount === 0
+          ? "Stars: New"
+          : `Stars: ${spot.avgStarRating} | Reviews: ${reviewsCount}`}
+      </h3>
+      <Reviews spot={spot} />
     </div>
   );
 }

@@ -30,6 +30,10 @@ const EDIT_A_SPOT_BY_SPOTID = "spots/editASpotBySpotId";
 
 const DELETE_A_SPOT_BY_SPOTID = "spots/deleteASpotBySpotId";
 
+// Delete A Spot Review by ReviewId
+
+const DELETE_A_SPOT_REVIEW_BY_REVIEWID = "spots/deleteASpotReviewByReviewId";
+
 // ============================== ACTIONS ============================== //
 
 // Get All Spots
@@ -77,9 +81,20 @@ const editASpotBySpotId = (data) => {
   };
 };
 
+// Delete A Spot By SpotId
+
 const deleteASpotBySpotId = (data) => {
   return {
     type: DELETE_A_SPOT_BY_SPOTID,
+    payload: data,
+  };
+};
+
+// Delete A Review By ReviewId
+
+const deleteASpotReviewByReviewId = (data) => {
+  return {
+    type: DELETE_A_SPOT_REVIEW_BY_REVIEWID,
     payload: data,
   };
 };
@@ -163,9 +178,24 @@ export const deleteASpotBySpotIdThunk = (spotId) => async (dispatch) => {
   }
 };
 
+// Delete A Spot Review By ReviewId Thunk
+
+export const deleteASpotReviewByReviewIdThunk =
+  (reviewId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/reviews/${reviewId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      dispatch(deleteASpotReviewByReviewId(reviewId));
+      return data;
+    }
+  };
+
 // ============================== HELPERS ============================== //
 
-function normalizeSpots(arr) {
+function normalizeData(arr) {
   const normalizedData = {};
   arr.forEach((item) => {
     normalizedData[item.id] = item;
@@ -178,14 +208,14 @@ function normalizeSpots(arr) {
 export const spotsReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_ALL_SPOTS: {
-      const data = normalizeSpots(action.payload.Spots);
+      const data = normalizeData(action.payload.Spots);
       const newState = { ...state, ...data };
       return newState;
     }
     case GET_SPOT_DETAILS: {
       const data = action.payload;
-      const id = data.id;
-      const newState = { ...state, [id]: data };
+      const newState = { ...data };
+      newState.Reviews = normalizeData(newState.Reviews);
       return newState;
     }
     case POST_NEW_SPOT: {
@@ -194,19 +224,25 @@ export const spotsReducer = (state = {}, action) => {
       return newState;
     }
     case GET_SPOTS_BY_OWNERID: {
-      const data = normalizeSpots(action.payload.Spots);
+      const data = normalizeData(action.payload.Spots);
       const newState = { ...data };
       return newState;
     }
     case EDIT_A_SPOT_BY_SPOTID: {
       const data = action.payload;
-      const newState = { ...state, ...data };
+      const newState = { ...data };
       return newState;
     }
     case DELETE_A_SPOT_BY_SPOTID: {
       const id = action.payload;
       const newState = { ...state };
       delete newState[id];
+      return newState;
+    }
+    case DELETE_A_SPOT_REVIEW_BY_REVIEWID: {
+      const id = action.payload;
+      const newState = { ...state };
+      delete newState.Reviews[id];
       return newState;
     }
     default:
