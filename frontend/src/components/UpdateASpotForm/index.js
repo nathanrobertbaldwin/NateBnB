@@ -3,22 +3,40 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
+<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
 import {
   editASpotBySpotIdThunk,
   getSpotDetailsThunk,
   postNewSpotThunk,
 } from "../../store/spots";
+=======
+import { getSpotDetailsThunk, postNewSpotThunk } from "../../store/spots";
+>>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
 import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
 
+<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
 export default function UpdateASpotForm() {
+=======
+export function UpdateASpotForm() {
+>>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
   // Variables
+
+  const userData = useSelector((state) => state.session.user);
+  const userId = userData.id;
+
+  const { spotId } = useParams();
 
   const dispatch = useDispatch();
   const history = useHistory();
 
+<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
   const { spotId } = useParams();
+=======
+  const [validationErrors, setValidationErrors] = useState({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+>>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
 
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
@@ -35,8 +53,34 @@ export default function UpdateASpotForm() {
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
 
+<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
   const [validationErrors, setValidationErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
+=======
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  // On load, populate form fields with db data
+
+  useEffect(() => {
+    dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
+      setCountry(spot.country);
+      setStreetAddress(spot.address);
+      setCity(spot.city);
+      setState(spot.state);
+      setLatitude(spot.lat);
+      setLongitude(spot.lng);
+      setDescription(spot.description);
+      setTitle(spot.name);
+      setPrice(spot.price);
+      setPreviewImage(spot.previewImage);
+      setImageOne(spot.imageOne);
+      setImageTwo(spot.imageTwo);
+      setImageThree(spot.imageThree);
+      setImageFour(spot.imageFour);
+      setIsLoaded(true);
+    });
+  }, [dispatch]);
+>>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
 
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
@@ -77,6 +121,8 @@ export default function UpdateASpotForm() {
     imageThree,
     imageFour,
   ]);
+
+  // Show existing db values on form
 
   // Submit Handler
 
