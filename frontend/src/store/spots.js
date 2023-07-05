@@ -77,15 +77,6 @@ const editASpotBySpotId = (data) => {
   };
 };
 
-// Delete A Spot By SpotId
-
-const deleteASpotBySpotId = (data) => {
-  return {
-    type: DELETE_A_SPOT_BY_SPOTID,
-    payload: data,
-  };
-};
-
 // ============================== THUNKS =============================== //
 
 // Get All Spots
@@ -138,6 +129,7 @@ export const getAllSpotsByOwnerIdThunk = () => async (dispatch) => {
 // Edit A Spot By SpotId
 
 export const editASpotBySpotIdThunk = (data) => async (dispatch) => {
+  console.log(data);
   const spotId = data.spotId;
   const response = await csrfFetch(`/api/spots/${spotId}`, {
     method: "PUT",
