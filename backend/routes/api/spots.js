@@ -709,6 +709,11 @@ router.put(
       name,
       description,
       price,
+      previewImage,
+      imageOne,
+      imageTwo,
+      imageThree,
+      imageFour,
     } = req.body;
 
     if (address) spot.address = address;
@@ -724,6 +729,33 @@ router.put(
     spot.updatedAt = new Date();
 
     await spot.save();
+
+    SpotImage.destroy({ where: { spotId: spotId } });
+
+    const newPreviewImage = SpotImage.build({
+      spotId,
+      url: previewImage,
+      preview: true,
+    });
+
+    newPreviewImage.save();
+
+    const newSpotImagesUrls = [];
+
+    if (imageOne) newSpotImagesUrls.push(imageOne);
+    if (imageTwo) newSpotImagesUrls.push(imageTwo);
+    if (imageThree) newSpotImagesUrls.push(imageThree);
+    if (imageFour) newSpotImagesUrls.push(imageFour);
+
+    const newSpotsImages = newSpotImagesUrls.map((url) => {
+      return {
+        spotId,
+        url: url,
+        preview: false,
+      };
+    });
+
+    await SpotImage.bulkCreate(newSpotsImages);
 
     return res.json(spot);
   }

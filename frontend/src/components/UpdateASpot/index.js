@@ -2,20 +2,23 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { getSpotDetailsThunk, postNewSpotThunk } from "../../store/spots";
-import "./NewSpotForm.css";
+import { useHistory, useParams } from "react-router-dom";
+import {
+  editASpotBySpotIdThunk,
+  getSpotDetailsThunk,
+  postNewSpotThunk,
+} from "../../store/spots";
+import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
 
-export function updateASpotForm() {
+export default function UpdateASpotForm() {
   // Variables
 
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const userData = useSelector((state) => state.session.user);
-  const userId = userData.id;
+  const { spotId } = useParams();
 
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
@@ -35,24 +38,22 @@ export function updateASpotForm() {
   const [validationErrors, setValidationErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  const [isLoaded, setisLoaded] = useState(false);
-
   useEffect(() => {
-    data = dispatch(getSpotDetailsThunk(spotId)).then((data) => {
+    dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
       setCountry(spot.country);
-      setStreetAddress(spot.streetAddress);
+      setStreetAddress(spot.address);
       setCity(spot.city);
       setState(spot.state);
       setLatitude(spot.lat);
       setLongitude(spot.lng);
       setDescription(spot.description);
-      setTitle(spot.title);
+      setTitle(spot.name);
       setPrice(spot.price);
-      setPreviewImage(spot.previewImage);
-      setImageOne(spot.imageOne);
-      setImageTwo(spot.imageTwo);
-      setImageThree(spot.imageThree);
-      setImageFour(spot.imageFour);
+      setPreviewImage(spot.SpotImages[0].url);
+      if (spot.SpotImages[1]) setImageOne(spot.SpotImages[1].url);
+      if (spot.SpotImages[2]) setImageTwo(spot.SpotImages[2].url);
+      if (spot.SpotImages[3]) setImageThree(spot.SpotImages[3].url);
+      if (spot.SpotImages[4]) setImageFour(spot.SpotImages[4].url);
     });
   }, dispatch);
 
@@ -85,15 +86,15 @@ export function updateASpotForm() {
 
     if (Object.values(validationErrors).length === 0) {
       let data = {
-        ownerId: userId,
-        country,
+        spotId,
         address: streetAddress,
         city,
         state,
+        country,
         lat: latitude,
         lng: longitude,
-        description,
         name: title,
+        description,
         price,
         previewImage,
         imageOne,
@@ -102,7 +103,7 @@ export function updateASpotForm() {
         imageFour,
       };
 
-      const newSpot = await dispatch(postNewSpotThunk(data));
+      const newSpot = await dispatch(editASpotBySpotIdThunk(data));
       _reset();
       history.push(`/spots/${newSpot.id}`);
     }
