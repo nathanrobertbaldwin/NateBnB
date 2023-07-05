@@ -437,6 +437,9 @@ router.get("/:spotId", async (req, res, next) => {
       return accum + review.stars;
     }, 0) / spot.Reviews.length;
   spot.Owner = spot.User;
+  spot.preview = spot.SpotImages.find((image) => {
+    return image.preview === true;
+  }).url;
   delete spot.Owner.username;
   delete spot.User;
 
@@ -688,6 +691,8 @@ router.put(
   requireAuth,
   validatePutEditASpot,
   async (req, res, next) => {
+    // Grab spot.
+
     const spotId = parseInt(req.params.spotId);
     const spot = await Spot.findByPk(spotId);
 
@@ -698,6 +703,8 @@ router.put(
     if (ownerId !== spot.ownerId) {
       return next(new AuthorizationError("Forbidden"));
     }
+
+    // Grab variables from req.body.
 
     const {
       address,
@@ -716,21 +723,26 @@ router.put(
       imageFour,
     } = req.body;
 
-    if (address) spot.address = address;
-    if (city) spot.city = city;
-    if (state) spot.state = state;
-    if (country) spot.country = country;
-    if (lat) spot.lat = lat;
-    if (lng) spot.lng = lng;
-    if (name) spot.name = name;
-    if (description) spot.description = description;
-    if (price) spot.price = price;
+    // Update to variables from req.body.
 
+    spot.address = address;
+    spot.city = city;
+    spot.state = state;
+    spot.country = country;
+    spot.lat = lat;
+    spot.lng = lng;
+    spot.name = name;
+    spot.description = description;
+    spot.price = price;
     spot.updatedAt = new Date();
 
     await spot.save();
 
+    // Destroy all existing images.
+
     SpotImage.destroy({ where: { spotId: spotId } });
+
+    // Create new records for input images.
 
     const newPreviewImage = SpotImage.build({
       spotId,

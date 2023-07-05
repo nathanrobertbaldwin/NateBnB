@@ -8,7 +8,7 @@ import "./NewSpotForm.css";
 
 // ============================= EXPORTS =============================== //
 
-export function NewSpotForm() {
+export default function NewSpotForm() {
   // Variables
 
   const dispatch = useDispatch();

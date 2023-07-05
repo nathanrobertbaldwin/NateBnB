@@ -8,7 +8,7 @@ import "./SpotsIndex.css";
 
 // ============================= EXPORTS =============================== //
 
-export function SpotsIndex() {
+export default function SpotsIndex() {
   const dispatch = useDispatch();
   const spotsData = useSelector((store) => store.spots);
   const spots = Object.values(spotsData);

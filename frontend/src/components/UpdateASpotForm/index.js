@@ -3,13 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import {
-  editASpotBySpotIdThunk,
-  getSpotDetailsThunk,
-  postNewSpotThunk,
-} from "../../store/spots";
+import { editASpotBySpotIdThunk, getSpotDetailsThunk } from "../../store/spots";
 
-import { getSpotDetailsThunk, postNewSpotThunk } from "../../store/spots";
 import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
@@ -45,9 +40,9 @@ export default function UpdateASpotForm() {
 
   // On load, populate form fields with db data
 
-  d / src / components / UpdateASpot / index.js;
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
+      console.log(spot);
       setCountry(spot.country);
       setStreetAddress(spot.address);
       setCity(spot.city);
@@ -57,31 +52,14 @@ export default function UpdateASpotForm() {
       setDescription(spot.description);
       setTitle(spot.name);
       setPrice(spot.price);
-      setPreviewImage(spot.previewImage);
-      setImageOne(spot.imageOne);
-      setImageTwo(spot.imageTwo);
-      setImageThree(spot.imageThree);
-      setImageFour(spot.imageFour);
-    });
-  }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
-      setCountry(spot.country);
-      setStreetAddress(spot.address);
-      setCity(spot.city);
-      setState(spot.state);
-      setLatitude(spot.lat);
-      setLongitude(spot.lng);
-      setDescription(spot.description);
-      setTitle(spot.name);
-      setPrice(spot.price);
-
-      setPreviewImage(spot.SpotImages[0].url);
-      if (spot.SpotImages[1]) setImageOne(spot.SpotImages[1].url);
-      if (spot.SpotImages[2]) setImageTwo(spot.SpotImages[2].url);
-      if (spot.SpotImages[3]) setImageThree(spot.SpotImages[3].url);
-      if (spot.SpotImages[4]) setImageFour(spot.SpotImages[4].url);
+      setPreviewImage(spot.preview);
+      const otherImages = spot.SpotImages.filter(
+        (image) => image.preview === false
+      );
+      if (otherImages[0]) setImageOne(otherImages[0].url);
+      if (otherImages[1]) setImageOne(otherImages[1].url);
+      if (otherImages[2]) setImageOne(otherImages[2].url);
+      if (otherImages[3]) setImageOne(otherImages[3].url);
     });
   }, dispatch);
 
@@ -105,8 +83,6 @@ export default function UpdateASpotForm() {
     imageThree,
     imageFour,
   ]);
-
-  // Show existing db values on form
 
   // Submit Handler
 

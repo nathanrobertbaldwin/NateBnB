@@ -8,7 +8,7 @@ import "./SpotDetails.css";
 
 // ============================= EXPORTS =============================== //
 
-export function SpotDetails() {
+export default function SpotDetails() {
   const { spotId } = useParams();
   const dispatch = useDispatch();
   const spotData = useSelector((store) => store.spots);
