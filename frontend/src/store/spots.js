@@ -68,6 +68,15 @@ const getSpotsByOwnerId = (data) => {
   };
 };
 
+// Edit A Spot By SpotId
+
+const editASpotBySpotId = (data) => {
+  return {
+    type: EDIT_A_SPOT_BY_SPOTID,
+    payload: data,
+  };
+};
+
 // ============================== THUNKS =============================== //
 
 // Get All Spots
@@ -113,6 +122,22 @@ export const getAllSpotsByOwnerIdThunk = () => async (dispatch) => {
   if (response.ok) {
     const data = await response.json();
     dispatch(getSpotsByOwnerId(data));
+    return data;
+  }
+};
+
+// Edit A Spot By SpotId
+
+export const editASpotBySpotIdThunk = (data) => async (dispatch) => {
+  console.log(data);
+  const spotId = data.spotId;
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(editASpotBySpotId(data));
     return data;
   }
 };
