@@ -23,7 +23,7 @@ export function ManageSpotsCard({ spot }) {
         <Link to={`/spots/${spot.id}/edit`}>
           <button className="sports_card_buttons">Update</button>
         </Link>
-        <Link to="/spots/delete">
+        <Link to="/spots/${spot.id}/}">
           <button className="sports_card_buttons">Delete</button>
         </Link>
       </div>

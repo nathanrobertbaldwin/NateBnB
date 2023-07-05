@@ -42,6 +42,7 @@ export default function UpdateASpotForm() {
 
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
+      console.log(spot);
       setCountry(spot.country);
       setStreetAddress(spot.address);
       setCity(spot.city);
