@@ -1,3 +1,7 @@
+// ============================== IMPORTS ============================== //
+
+import { csrfFetch } from "./csrf";
+
 // ========================== ACTION STRINGS =========================== //
 
 // Delete A Review By ReviewId
@@ -36,9 +40,10 @@ export const deleteAReviewByReviewIdThunk = (reviewId) => async (dispatch) => {
 export const ReviewReducer = (state = {}, action) => {
   switch (action.type) {
     case DELETE_A_REVIEW_BY_REVIEWID: {
+      console.log("hitting this");
       const id = action.payload;
       const newState = { ...state };
-      delete newState[id]; // remember to change this based on state shape.
+      delete newState.spots.Reviews[id];
       return newState;
     }
     default:
