@@ -1,6 +1,8 @@
 // ============================== IMPORTS ============================== //
 
 import { Link } from "react-router-dom";
+import OpenModalButton from "../../OpenModalButton";
+import DeleteSpotModal from "../../DeleteSpotModal";
 import "./ManageSpotsCard.css";
 
 // ============================= EXPORTS =============================== //
@@ -23,8 +25,11 @@ export function ManageSpotsCard({ spot }) {
         <Link to={`/spots/${spot.id}/edit`}>
           <button className="sports_card_buttons">Update</button>
         </Link>
-        <Link to="/spots/delete">
-          <button className="sports_card_buttons">Delete</button>
+        <Link to="/spots/${spot.id}/}">
+          <OpenModalButton
+            buttonText="Delete"
+            modalComponent={<DeleteSpotModal spot={spot} />}
+          />
         </Link>
       </div>
     </div>
