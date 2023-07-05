@@ -3,34 +3,24 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-<<<<<<< HEAD:frontend/src/components/UpdateASpotForm/index.js
-<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
-=======
->>>>>>> ff53363 (Finished with edit a spot.):frontend/src/components/UpdateASpot/index.js
 import {
   editASpotBySpotIdThunk,
   getSpotDetailsThunk,
   postNewSpotThunk,
 } from "../../store/spots";
-<<<<<<< HEAD:frontend/src/components/UpdateASpotForm/index.js
-=======
+
 import { getSpotDetailsThunk, postNewSpotThunk } from "../../store/spots";
->>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
-=======
->>>>>>> ff53363 (Finished with edit a spot.):frontend/src/components/UpdateASpot/index.js
 import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
 
-<<<<<<< HEAD:frontend/src/components/UpdateASpotForm/index.js
-<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
+
 export default function UpdateASpotForm() {
-=======
+
 export function UpdateASpotForm() {
->>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
-=======
+
 export default function UpdateASpotForm() {
->>>>>>> ff53363 (Finished with edit a spot.):frontend/src/components/UpdateASpot/index.js
+
   // Variables
 
   const userData = useSelector((state) => state.session.user);
@@ -41,16 +31,8 @@ export default function UpdateASpotForm() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-<<<<<<< HEAD:frontend/src/components/UpdateASpotForm/index.js
-<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
-  const { spotId } = useParams();
-=======
   const [validationErrors, setValidationErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
->>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
-=======
-  const { spotId } = useParams();
->>>>>>> ff53363 (Finished with edit a spot.):frontend/src/components/UpdateASpot/index.js
 
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
@@ -67,17 +49,9 @@ export default function UpdateASpotForm() {
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
 
-<<<<<<< HEAD:frontend/src/components/UpdateASpot/index.js
-  const [validationErrors, setValidationErrors] = useState({});
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-=======
-  const [isLoaded, setIsLoaded] = useState(false);
-
-<<<<<<< HEAD:frontend/src/components/UpdateASpotForm/index.js
   // On load, populate form fields with db data
 
-=======
->>>>>>> ff53363 (Finished with edit a spot.):frontend/src/components/UpdateASpot/index.js
+d/src/components/UpdateASpot/index.js
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
       setCountry(spot.country);
@@ -89,16 +63,13 @@ export default function UpdateASpotForm() {
       setDescription(spot.description);
       setTitle(spot.name);
       setPrice(spot.price);
-<<<<<<< HEAD:frontend/src/components/UpdateASpotForm/index.js
       setPreviewImage(spot.previewImage);
       setImageOne(spot.imageOne);
       setImageTwo(spot.imageTwo);
       setImageThree(spot.imageThree);
       setImageFour(spot.imageFour);
-      setIsLoaded(true);
     });
   }, [dispatch]);
->>>>>>> 7-5-2023-merge-conflicts:frontend/src/components/UpdateASpotForm/index.js
 
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
@@ -111,8 +82,7 @@ export default function UpdateASpotForm() {
       setDescription(spot.description);
       setTitle(spot.name);
       setPrice(spot.price);
-=======
->>>>>>> ff53363 (Finished with edit a spot.):frontend/src/components/UpdateASpot/index.js
+
       setPreviewImage(spot.SpotImages[0].url);
       if (spot.SpotImages[1]) setImageOne(spot.SpotImages[1].url);
       if (spot.SpotImages[2]) setImageTwo(spot.SpotImages[2].url);
