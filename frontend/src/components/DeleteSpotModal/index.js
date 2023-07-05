@@ -2,38 +2,31 @@
 
 // ============================== IMPORTS ============================== //
 
-import React from "react";
-import { useModal } from "../../context/Modal";
+import React, { useState } from "react";
+import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
-import { useHistory } from "react-router-dom";
-import { deleteASpotBySpotIdThunk } from "../../store/spots";
+import { useModal } from "../../context/Modal";
 import "./DeleteSpotModal.css";
+import { deleteASpotBySpotIdThunk } from "../../store/spots";
 
 // ============================= EXPORTS =============================== //
 
 export default function DeleteSpotModal({ spot }) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
-  const history = useHistory();
 
-  const handleConfirmation = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(deleteASpotBySpotIdThunk(spot.id));
-    closeModal();
-    history.push("/spots/current");
+
+    return dispatch(deleteASpotBySpotIdThunk(spot.id));
   };
 
-  const handleDenial = (e) => {
-    e.preventDefault();
-    closeModal();
-    history.push("/spots/current");
-  };
   return (
     <>
       <h1>Confirm Delete</h1>
-      <form onSubmit={handleConfirmation}>
+      <form onSubmit={handleSubmit}>
         <button type="submit">Yes (Delete Spot)</button>
-        <button onClick={handleDenial}>No (Keep Spot)</button>
+        <button onClick={closeModal}>No (Keep Spot)</button>
       </form>
     </>
   );

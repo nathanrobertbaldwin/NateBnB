@@ -3,8 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
-import { editASpotBySpotIdThunk, getSpotDetailsThunk } from "../../store/spots";
-
+import {
+  editASpotBySpotIdThunk,
+  getSpotDetailsThunk,
+  postNewSpotThunk,
+} from "../../store/spots";
 import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
@@ -12,16 +15,10 @@ import "./UpdateASpotForm.css";
 export default function UpdateASpotForm() {
   // Variables
 
-  const userData = useSelector((state) => state.session.user);
-  const userId = userData.id;
-
-  const { spotId } = useParams();
-
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const [validationErrors, setValidationErrors] = useState({});
-  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const { spotId } = useParams();
 
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
@@ -38,11 +35,11 @@ export default function UpdateASpotForm() {
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
 
-  // On load, populate form fields with db data
+  const [validationErrors, setValidationErrors] = useState({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
-      console.log(spot);
       setCountry(spot.country);
       setStreetAddress(spot.address);
       setCity(spot.city);
@@ -52,14 +49,11 @@ export default function UpdateASpotForm() {
       setDescription(spot.description);
       setTitle(spot.name);
       setPrice(spot.price);
-      setPreviewImage(spot.preview);
-      const otherImages = spot.SpotImages.filter(
-        (image) => image.preview === false
-      );
-      if (otherImages[0]) setImageOne(otherImages[0].url);
-      if (otherImages[1]) setImageOne(otherImages[1].url);
-      if (otherImages[2]) setImageOne(otherImages[2].url);
-      if (otherImages[3]) setImageOne(otherImages[3].url);
+      setPreviewImage(spot.SpotImages[0].url);
+      if (spot.SpotImages[1]) setImageOne(spot.SpotImages[1].url);
+      if (spot.SpotImages[2]) setImageTwo(spot.SpotImages[2].url);
+      if (spot.SpotImages[3]) setImageThree(spot.SpotImages[3].url);
+      if (spot.SpotImages[4]) setImageFour(spot.SpotImages[4].url);
     });
   }, dispatch);
 

@@ -7,7 +7,7 @@ import SpotsIndex from "./components/SpotsIndex";
 import SpotDetails from "./components/SpotDetails";
 import NewSpotForm from "./components/NewSpotForm";
 import ManageSpots from "./components/ManageSpots";
-import UpdateASpotForm from "./components/UpdateASpotForm";
+import UpdateASpotForm from "./components/UpdateASpot";
 
 function App() {
   const dispatch = useDispatch();
