@@ -2,19 +2,24 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory } from "react-router-dom";
-import "./NewSpotForm.css";
-import { postNewSpotThunk } from "../../store/spots";
+import { useHistory, useParams } from "react-router-dom";
+import {
+  editASpotBySpotIdThunk,
+  getSpotDetailsThunk,
+  postNewSpotThunk,
+} from "../../store/spots";
+import "./UpdateASpotForm.css";
 
 // ============================= EXPORTS ================================ //
 
-export default function NewSpotForm() {
+export default function UpdateASpotForm() {
   // Variables
 
   const dispatch = useDispatch();
   const history = useHistory();
-  const userData = useSelector((state) => state.session.user);
-  const userId = userData.id;
+
+  const { spotId } = useParams();
+
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
@@ -29,8 +34,28 @@ export default function NewSpotForm() {
   const [imageTwo, setImageTwo] = useState("");
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
+
   const [validationErrors, setValidationErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  useEffect(() => {
+    dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
+      setCountry(spot.country);
+      setStreetAddress(spot.address);
+      setCity(spot.city);
+      setState(spot.state);
+      setLatitude(spot.lat);
+      setLongitude(spot.lng);
+      setDescription(spot.description);
+      setTitle(spot.name);
+      setPrice(spot.price);
+      setPreviewImage(spot.SpotImages[0].url);
+      if (spot.SpotImages[1]) setImageOne(spot.SpotImages[1].url);
+      if (spot.SpotImages[2]) setImageTwo(spot.SpotImages[2].url);
+      if (spot.SpotImages[3]) setImageThree(spot.SpotImages[3].url);
+      if (spot.SpotImages[4]) setImageFour(spot.SpotImages[4].url);
+    });
+  }, dispatch);
 
   // Error Checking
 
@@ -61,15 +86,15 @@ export default function NewSpotForm() {
 
     if (Object.values(validationErrors).length === 0) {
       let data = {
-        ownerId: userId,
-        country,
+        spotId,
         address: streetAddress,
         city,
         state,
+        country,
         lat: latitude,
         lng: longitude,
-        description,
         name: title,
+        description,
         price,
         previewImage,
         imageOne,
@@ -78,7 +103,7 @@ export default function NewSpotForm() {
         imageFour,
       };
 
-      const newSpot = await dispatch(postNewSpotThunk(data));
+      const newSpot = await dispatch(editASpotBySpotIdThunk(data));
       _reset();
       history.push(`/spots/${newSpot.id}`);
     }

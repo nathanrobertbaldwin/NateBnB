@@ -22,6 +22,14 @@ const POST_NEW_SPOT = "spots/postNewSpot";
 
 const GET_SPOTS_BY_OWNERID = "spots/getSpotsByOwnerId";
 
+// Edit A Spot By SpotId
+
+const EDIT_A_SPOT_BY_SPOTID = "spots/editASpotBySpotId";
+
+// Delete A Spot By SpotId
+
+const DELETE_A_SPOT_BY_SPOTID = "spots/deleteASpotBySpotId";
+
 // ============================== ACTIONS ============================== //
 
 // Get All Spots
@@ -56,6 +64,24 @@ const postNewSpot = (data) => {
 const getSpotsByOwnerId = (data) => {
   return {
     type: GET_SPOTS_BY_OWNERID,
+    payload: data,
+  };
+};
+
+// Edit A Spot By SpotId
+
+const editASpotBySpotId = (data) => {
+  return {
+    type: EDIT_A_SPOT_BY_SPOTID,
+    payload: data,
+  };
+};
+
+// Delete A Spot By SpotId
+
+const deleteASpotBySpotId = (data) => {
+  return {
+    type: DELETE_A_SPOT_BY_SPOTID,
     payload: data,
   };
 };
@@ -109,6 +135,36 @@ export const getAllSpotsByOwnerIdThunk = () => async (dispatch) => {
   }
 };
 
+// Edit A Spot By SpotId
+
+export const editASpotBySpotIdThunk = (data) => async (dispatch) => {
+  const spotId = data.spotId;
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(editASpotBySpotId(data));
+    return data;
+  }
+};
+
+// Delete A Spot By SpotId
+
+export const deleteASpotBySpotIdThunk = (spotId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "DELETE",
+  });
+  
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(deleteASpotBySpotId(data));
+    console.log(data);
+    return data;
+  }
+};
+
 // ============================== HELPERS ============================== //
 
 function normalizeSpots(arr) {
@@ -142,6 +198,11 @@ export const spotsReducer = (state = {}, action) => {
     case GET_SPOTS_BY_OWNERID: {
       const data = normalizeSpots(action.payload.Spots);
       const newState = { ...data };
+      return newState;
+    }
+    case EDIT_A_SPOT_BY_SPOTID: {
+      const data = action.payload;
+      const newState = { ...state, ...data };
       return newState;
     }
     default:

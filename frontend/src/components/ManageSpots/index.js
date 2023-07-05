@@ -9,7 +9,7 @@ import "./ManageSpots.css";
 
 // ============================= EXPORTS =============================== //
 
-export function ManageSpots() {
+export default function ManageSpots() {
   const dispatch = useDispatch();
   const spotsData = useSelector((store) => store.spots);
   const spots = Object.values(spotsData);
