@@ -77,6 +77,8 @@ const editASpotBySpotId = (data) => {
   };
 };
 
+// Delete A Spot By SpotId
+
 const deleteASpotBySpotId = (data) => {
   return {
     type: DELETE_A_SPOT_BY_SPOTID,
