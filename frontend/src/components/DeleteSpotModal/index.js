@@ -11,7 +11,7 @@ import { deleteASpotBySpotIdThunk } from "../../store/spots";
 
 // ============================= EXPORTS =============================== //
 
-export default function DeleteSpotModal({ spot }) {
+export default function DeleteSpotModal() {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
