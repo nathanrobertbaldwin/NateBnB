@@ -3,18 +3,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { getSpotDetailsThunk, postNewSpotThunk } from "../../store/spots";
 import "./NewSpotForm.css";
-import { postNewSpotThunk } from "../../store/spots";
 
 // ============================= EXPORTS ================================ //
 
-export default function NewSpotForm() {
+export function updateASpotForm() {
   // Variables
 
   const dispatch = useDispatch();
   const history = useHistory();
+
   const userData = useSelector((state) => state.session.user);
   const userId = userData.id;
+
   const [country, setCountry] = useState("");
   const [streetAddress, setStreetAddress] = useState("");
   const [city, setCity] = useState("");
@@ -29,8 +31,30 @@ export default function NewSpotForm() {
   const [imageTwo, setImageTwo] = useState("");
   const [imageThree, setImageThree] = useState("");
   const [imageFour, setImageFour] = useState("");
+
   const [validationErrors, setValidationErrors] = useState({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const [isLoaded, setisLoaded] = useState(false);
+
+  useEffect(() => {
+    data = dispatch(getSpotDetailsThunk(spotId)).then((data) => {
+      setCountry(spot.country);
+      setStreetAddress(spot.streetAddress);
+      setCity(spot.city);
+      setState(spot.state);
+      setLatitude(spot.lat);
+      setLongitude(spot.lng);
+      setDescription(spot.description);
+      setTitle(spot.title);
+      setPrice(spot.price);
+      setPreviewImage(spot.previewImage);
+      setImageOne(spot.imageOne);
+      setImageTwo(spot.imageTwo);
+      setImageThree(spot.imageThree);
+      setImageFour(spot.imageFour);
+    });
+  }, dispatch);
 
   // Error Checking
 
