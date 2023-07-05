@@ -77,6 +77,13 @@ const editASpotBySpotId = (data) => {
   };
 };
 
+const deleteASpotBySpotId = (data) => {
+  return {
+    type: DELETE_A_SPOT_BY_SPOTID,
+    payload: data,
+  };
+};
+
 // ============================== THUNKS =============================== //
 
 // Get All Spots
