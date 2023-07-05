@@ -26,6 +26,10 @@ const GET_SPOTS_BY_OWNERID = "spots/getSpotsByOwnerId";
 
 const EDIT_A_SPOT_BY_SPOTID = "spots/editASpotBySpotId";
 
+// Delete A Spot By SpotId
+
+const DELETE_A_SPOT_BY_SPOTID = "spots/deleteASpotBySpotId";
+
 // ============================== ACTIONS ============================== //
 
 // Get All Spots
@@ -69,6 +73,15 @@ const getSpotsByOwnerId = (data) => {
 const editASpotBySpotId = (data) => {
   return {
     type: EDIT_A_SPOT_BY_SPOTID,
+    payload: data,
+  };
+};
+
+// Delete A Spot By SpotId
+
+const deleteASpotBySpotId = (data) => {
+  return {
+    type: DELETE_A_SPOT_BY_SPOTID,
     payload: data,
   };
 };
@@ -125,7 +138,6 @@ export const getAllSpotsByOwnerIdThunk = () => async (dispatch) => {
 // Edit A Spot By SpotId
 
 export const editASpotBySpotIdThunk = (data) => async (dispatch) => {
-  console.log(data);
   const spotId = data.spotId;
   const response = await csrfFetch(`/api/spots/${spotId}`, {
     method: "PUT",
@@ -134,6 +146,21 @@ export const editASpotBySpotIdThunk = (data) => async (dispatch) => {
   if (response.ok) {
     const data = await response.json();
     dispatch(editASpotBySpotId(data));
+    return data;
+  }
+};
+
+// Delete A Spot By SpotId
+
+export const deleteASpotBySpotIdThunk = (spotId) => async (dispatch) => {
+  const response = await csrfFetch(`/api/spots/${spotId}`, {
+    method: "DELETE",
+  });
+  
+  if (response.ok) {
+    const data = await response.json();
+    dispatch(deleteASpotBySpotId(data));
+    console.log(data);
     return data;
   }
 };

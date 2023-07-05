@@ -7,35 +7,27 @@ import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
 import "./DeleteSpotModal.css";
+import { deleteASpotBySpotIdThunk } from "../../store/spots";
 
 // ============================= EXPORTS =============================== //
 
-function LoginFormModal() {
+export default function DeleteSpotModal({ spot }) {
   const dispatch = useDispatch();
   const { closeModal } = useModal();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
+    return dispatch(deleteASpotBySpotIdThunk(spot.id));
   };
 
   return (
     <>
       <h1>Confirm Delete</h1>
       <form onSubmit={handleSubmit}>
-        <button type="submit">Yes (Delete Spot) </button>
-        <button>No (Keep Spot) </button>
+        <button type="submit">Yes (Delete Spot)</button>
+        <button onClick={closeModal}>No (Keep Spot)</button>
       </form>
     </>
   );
 }
-
-export default LoginFormModal;
