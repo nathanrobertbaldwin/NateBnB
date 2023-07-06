@@ -633,6 +633,7 @@ router.post(
   validatePostNewReview,
   async (req, res, next) => {
     const spotId = parseInt(req.body.spotId);
+    
     const spot = await Spot.findByPk(spotId, {
       include: [{ model: Review, include: [{ model: User }] }],
     });
@@ -641,12 +642,17 @@ router.post(
 
     const userId = req.user.dataValues.id;
 
+    let userAlreadyReviewed = false;
+
     spot.Reviews.forEach((review) => {
-      if (userId === review.userId)
-        throw new userAlreadyReviewedError(
-          "User already has a review for this spot"
-        );
+      if (userId === review.userId) userAlreadyReviewed = true;
     });
+
+    if (userAlreadyReviewed) {
+      return next(
+        new userAlreadyReviewedError("User already has a review for this spot")
+      );
+    }
 
     const { review, stars } = req.body;
 
