@@ -5,11 +5,12 @@ import OpenModalButton from "../OpenModalButton";
 import DeleteAReviewModal from "./DeleteReviewModal";
 import "./Reviews.css";
 
-export default function Reviews({ spot }) {
+export default function Reviews() {
+  const spot = useSelector((state) => state.spots);
   const userId = useSelector((state) => state.session.user).id;
-
-  const reviewsArray = Object.values(spot.Reviews);
-  const reviewsCount = Object.values(spot.Reviews).length;
+  const reviewsData = useSelector((state) => state.spots.Reviews);
+  const reviewsArray = Object.values(reviewsData);
+  const reviewsCount = reviewsArray.length;
 
   return (
     <div id="reviews_container">

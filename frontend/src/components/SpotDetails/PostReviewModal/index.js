@@ -18,18 +18,10 @@ export default function PostReviewModal({ spot }) {
   const history = useHistory();
 
   const [reviewText, setReviewText] = useState("");
-  const [hasSubmitted, setHasSubmitted] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
-  const [serverErrors, setServerErrors] = useState({});
+  const [serverErrors, setServerErrors] = useState("");
   const [clickedStars, setClickedStars] = useState(0);
   const [hoverStars, setHoverStars] = useState(undefined);
-
-  // Messing with Stars
-
-  useEffect(() => {
-    console.log("clickedStars:", clickedStars);
-    console.log("hoverStars:", hoverStars);
-  }, [hoverStars, clickedStars]);
 
   // Error Checking
 
@@ -41,7 +33,6 @@ export default function PostReviewModal({ spot }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setHasSubmitted(true);
 
     if (Object.values(validationErrors).length === 0) {
       const data = {
@@ -50,7 +41,14 @@ export default function PostReviewModal({ spot }) {
         review: reviewText,
       };
 
-      await dispatch(postAReviewBySpotIdThunk(data));
+      try {
+        await dispatch(postAReviewBySpotIdThunk(data));
+      } catch (err) {
+        err = await err.json();
+        setServerErrors(err.message);
+        return;
+      }
+
       closeModal();
       _reset();
       history.push(`/spots/${spot.id}`);
@@ -81,7 +79,6 @@ export default function PostReviewModal({ spot }) {
   function _reset() {
     setReviewText("");
     setClickedStars(0);
-    setHasSubmitted(false);
     setValidationErrors({});
   }
 
@@ -92,7 +89,7 @@ export default function PostReviewModal({ spot }) {
       <h1>How was your stay?</h1>
       <div id="review_form_container">
         <form id="review_form" onSubmit={handleSubmit}>
-          {"Conditional Render of backend errors for posting a new spot"}
+          {serverErrors && <p>{serverErrors}</p>}
           <div id="review_stars_container">
             {starArray.map((_, index) => {
               return (
