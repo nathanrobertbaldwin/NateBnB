@@ -42,7 +42,6 @@ export default function UpdateASpotForm() {
 
   useEffect(() => {
     dispatch(getSpotDetailsThunk(spotId)).then((spot) => {
-      console.log(spot);
       setCountry(spot.country);
       setStreetAddress(spot.address);
       setCity(spot.city);
@@ -61,7 +60,7 @@ export default function UpdateASpotForm() {
       if (otherImages[2]) setImageOne(otherImages[2].url);
       if (otherImages[3]) setImageOne(otherImages[3].url);
     });
-  }, dispatch);
+  }, [dispatch]);
 
   // Error Checking
 

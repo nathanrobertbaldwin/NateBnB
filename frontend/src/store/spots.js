@@ -209,7 +209,7 @@ export const spotsReducer = (state = {}, action) => {
   switch (action.type) {
     case GET_ALL_SPOTS: {
       const data = normalizeData(action.payload.Spots);
-      const newState = { ...state, ...data };
+      const newState = { ...data };
       return newState;
     }
     case GET_SPOT_DETAILS: {
