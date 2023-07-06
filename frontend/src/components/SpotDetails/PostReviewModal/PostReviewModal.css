@@ -15,13 +15,13 @@
 }
 
 .review_stars_dark{
-color: grey;
-font-size: x-large;
-cursor: pointer;
+    color: grey;
+    font-size: x-large;
+    cursor: pointer;
 }
 
 .review_stars_light {
     color: gold;
-font-size: x-large;
-cursor: pointer;
+    font-size: x-large;
+    cursor: pointer;
 }
