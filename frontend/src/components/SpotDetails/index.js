@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getSpotDetailsThunk } from "../../store/spots";
 import Reviews from "../Reviews";
+import PostReviewModal from "./PostReviewModal";
+import OpenModalButton from "../OpenModalButton";
 import "./SpotDetails.css";
 
 // ============================= EXPORTS =============================== //
@@ -72,6 +74,10 @@ export default function SpotDetails() {
           ? "Stars: New"
           : `Stars: ${spot.avgStarRating} | Reviews: ${reviewsCount}`}
       </h3>
+      <OpenModalButton
+        buttonText="Post Your Review"
+        modalComponent={<PostReviewModal spot={spot} />}
+      />
       <Reviews spot={spot} />
     </div>
   );
