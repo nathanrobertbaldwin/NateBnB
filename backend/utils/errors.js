@@ -34,7 +34,7 @@ class userAlreadyReviewedError extends Error {
   constructor(message) {
     super(message);
     this.name = userAlreadyReviewedError;
-    this.status = 400;
+    this.status = 500;
   }
 }
 
