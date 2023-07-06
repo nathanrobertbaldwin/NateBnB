@@ -625,17 +625,15 @@ router.post(
   }
 );
 
-// --------- Post a Review for a Spot based on the Spot's id --------- //
+// --------- Create a Review for a Spot based on the Spot's id --------- //
 
 router.post(
   "/:spotId/reviews",
   requireAuth,
   validatePostNewReview,
   async (req, res, next) => {
-    const spotId = parseInt(req.body.spotId);
-    const spot = await Spot.findByPk(spotId, {
-      include: [{ model: Review, include: [{ model: User }] }],
-    });
+    const spotId = parseInt(req.params.spotId);
+    const spot = await Spot.findByPk(spotId, { include: [{ model: Review }] });
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));
 
@@ -649,16 +647,11 @@ router.post(
     });
 
     const { review, stars } = req.body;
-
     const newReview = Review.build({ userId, spotId, review, stars });
 
     await newReview.save();
 
-    const newSpot = await Spot.findByPk(spotId, {
-      include: [{ model: Review, include: [{ model: User }] }],
-    });
-
-    res.json(newSpot);
+    res.json(newReview);
   }
 );
 

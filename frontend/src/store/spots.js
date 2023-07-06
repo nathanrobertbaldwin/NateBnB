@@ -34,10 +34,6 @@ const DELETE_A_SPOT_BY_SPOTID = "spots/deleteASpotBySpotId";
 
 const DELETE_A_SPOT_REVIEW_BY_REVIEWID = "spots/deleteASpotReviewByReviewId";
 
-// Post A Review By SpotId;
-
-const POST_A_REVIEW_BY_SPOT_ID = "spots/postAReviewBySpotId";
-
 // ============================== ACTIONS ============================== //
 
 // Get All Spots
@@ -99,15 +95,6 @@ const deleteASpotBySpotId = (data) => {
 const deleteASpotReviewByReviewId = (data) => {
   return {
     type: DELETE_A_SPOT_REVIEW_BY_REVIEWID,
-    payload: data,
-  };
-};
-
-// Post A Review By SpotId
-
-const postAReviewBySpotId = (data) => {
-  return {
-    type: POST_A_REVIEW_BY_SPOT_ID,
     payload: data,
   };
 };
@@ -206,22 +193,6 @@ export const deleteASpotReviewByReviewIdThunk =
     }
   };
 
-// Post A Review By Spot Id Thunk
-
-export const postAReviewBySpotIdThunk = (data) => async (dispatch) => {
-  const spotId = data.spotId;
-  const response = await csrfFetch(`/api/spots/${spotId}/reviews`, {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
-
-  if (response.ok) {
-    const data = await response.json();
-    dispatch(postAReviewBySpotId(data));
-    return data;
-  }
-};
-
 // ============================== HELPERS ============================== //
 
 function normalizeData(arr) {
@@ -272,11 +243,6 @@ export const spotsReducer = (state = {}, action) => {
       const id = action.payload;
       const newState = { ...state };
       delete newState.Reviews[id];
-      return newState;
-    }
-    case POST_A_REVIEW_BY_SPOT_ID: {
-      const data = action.payload.Reviews;
-      const newState = { ...state, Reviews: data };
       return newState;
     }
     default:

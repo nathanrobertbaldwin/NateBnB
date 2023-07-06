@@ -5,8 +5,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { getSpotDetailsThunk } from "../../store/spots";
 import Reviews from "../Reviews";
-import PostReviewModal from "./PostReviewModal";
-import OpenModalButton from "../OpenModalButton";
 import "./SpotDetails.css";
 
 // ============================= EXPORTS =============================== //
@@ -15,18 +13,13 @@ export default function SpotDetails() {
   const { spotId } = useParams();
   const dispatch = useDispatch();
   const spot = useSelector((store) => store.spots);
-  const reviewsData = useSelector((state) => state.spots.Reviews);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    dispatch(getSpotDetailsThunk(spotId)).then(() => {
-      setIsLoaded(true);
-    });
+    dispatch(getSpotDetailsThunk(spotId)).then(() => setIsLoaded(true));
   }, [dispatch]);
 
   if (!isLoaded) return <></>;
-
-  const reviewsCount = Object.values(reviewsData).length;
 
   const previewImage = spot.SpotImages.filter(
     (image) => image.preview === true
@@ -36,16 +29,17 @@ export default function SpotDetails() {
     (image) => image.preview === false
   );
 
+  const reviewsCount = Object.values(spot.Reviews).length;
+
   return (
     <div id="spot_details">
       <h2>{spot.address}</h2>
       <div id="spot_details_images_container">
-        <img alt="" id="spot_details_preview_image" src={previewImage[0].url} />
+        <img id="spot_details_preview_image" src={previewImage[0].url} />
         <div id="spot_details_other_images_container">
           {otherImages.map((image) => {
             return (
               <img
-                alt=""
                 key={image.id}
                 className="spot_details_other_images"
                 src={image.url}
@@ -78,10 +72,6 @@ export default function SpotDetails() {
           ? "Stars: New"
           : `Stars: ${spot.avgStarRating} | Reviews: ${reviewsCount}`}
       </h3>
-      <OpenModalButton
-        buttonText="Post Your Review"
-        modalComponent={<PostReviewModal spot={spot} />}
-      />
       <Reviews spot={spot} />
     </div>
   );
