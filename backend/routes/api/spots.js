@@ -633,7 +633,7 @@ router.post(
   validatePostNewReview,
   async (req, res, next) => {
     const spotId = parseInt(req.body.spotId);
-    
+
     const spot = await Spot.findByPk(spotId, {
       include: [{ model: Review, include: [{ model: User }] }],
     });
@@ -660,9 +660,34 @@ router.post(
 
     await newReview.save();
 
-    const newSpot = await Spot.findByPk(spotId, {
-      include: [{ model: Review, include: [{ model: User }] }],
+    let newSpot = await Spot.findByPk(spotId, {
+      include: [
+        { model: User },
+        {
+          model: SpotImage,
+          attributes: { exclude: ["spotId", "createdAt", "updatedAt"] },
+        },
+        {
+          model: Review,
+          include: [
+            { model: User, attributes: ["id", "firstName", "lastName"] },
+          ],
+        },
+      ],
     });
+
+    newSpot = newSpot.toJSON();
+
+    newSpot.avgStarRating =
+      newSpot.Reviews.reduce((accum, review) => {
+        return accum + review.stars;
+      }, 0) / newSpot.Reviews.length;
+    newSpot.Owner = newSpot.User;
+    newSpot.preview = newSpot.SpotImages.find((image) => {
+      return image.preview === true;
+    }).url;
+    delete newSpot.Owner.username;
+    delete newSpot.User;
 
     res.json(newSpot);
   }
@@ -707,6 +732,7 @@ router.put(
     // Grab spot.
 
     const spotId = parseInt(req.params.spotId);
+
     const spot = await Spot.findByPk(spotId);
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));

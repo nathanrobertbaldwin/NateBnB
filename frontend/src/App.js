@@ -36,6 +36,9 @@ function App() {
           <Route exact path="/spots/:spotId">
             <SpotDetails />
           </Route>
+          <Route path="*">
+            <h3 className="error_message">"Error, please return to Home"</h3>
+          </Route>
         </Switch>
       )}
     </>

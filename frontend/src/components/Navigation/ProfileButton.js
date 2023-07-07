@@ -43,12 +43,12 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button className="nav_button_large" onClick={openMenu}>
+      <button className="button_large" onClick={openMenu}>
         <i className="fas fa-user-circle" />
       </button>
-      <ul className={`${ulClassName} navigation}`} ref={ulRef}>
+      <ul className={`${ulClassName} navigation`} ref={ulRef}>
         {user ? (
-          <>
+          <div id="navigation_profile_container">
             <div id="navigation_profile_button_section">
               <li className="nav_links">{user.username}</li>
               <li className="nav_links">
@@ -64,9 +64,9 @@ function ProfileButton({ user }) {
             <li className="nav_links">
               <button onClick={logout}>Log Out</button>
             </li>
-          </>
+          </div>
         ) : (
-          <>
+          <div id="navigation_profile_container">
             <li className="nav_links">
               <OpenModalButton
                 buttonText="Log In"
@@ -81,7 +81,7 @@ function ProfileButton({ user }) {
                 modalComponent={<SignupFormModal />}
               />
             </li>
-          </>
+          </div>
         )}
       </ul>
     </>

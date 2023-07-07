@@ -158,12 +158,12 @@ export default function UpdateASpotForm() {
   // Component Content
 
   return (
-    <div id="new_spot_form_container">
-      <h1 id="form_h1">Create A New Spot</h1>
-      <form id="new_spot_form" onSubmit={handleSubmit}>
-        <div className="new_spot_form_section">
-          <h4 className="form_h4">Where's your place located?</h4>
-          <p className="form_p">
+    <div id="update_spot_form_container">
+      <h1 id="update_spot_form_h1">Update Your Spot</h1>
+      <form id="update_spot_form" onSubmit={handleSubmit}>
+        <div id="update_spot_form_section">
+          <h4 id="update_spot_form_h4">Where's your place located?</h4>
+          <p id="update_spot_form_p">
             Guests will only get your exact address once they booked a
             reservation.
           </p>
@@ -171,15 +171,13 @@ export default function UpdateASpotForm() {
             {validationErrors.country && hasSubmitted ? (
               <p>
                 {"Country: "}
-                <span className="error_message">
-                  {validationErrors.country}
-                </span>
+                <span id="error_message">{validationErrors.country}</span>
               </p>
             ) : (
               "Country"
             )}
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="text"
               placeholder="Country"
               value={country}
@@ -190,15 +188,13 @@ export default function UpdateASpotForm() {
             {validationErrors.streetAddress && hasSubmitted ? (
               <p>
                 {"Street Address: "}
-                <span className="error_message">
-                  {validationErrors.streetAddress}
-                </span>
+                <span id="error_message">{validationErrors.streetAddress}</span>
               </p>
             ) : (
               "Street Address"
             )}
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="text"
               placeholder="Street Address"
               value={streetAddress}
@@ -209,13 +205,13 @@ export default function UpdateASpotForm() {
             {validationErrors.city && hasSubmitted ? (
               <p>
                 {"City: "}
-                <span className="error_message">{validationErrors.city}</span>
+                <span id="error_message">{validationErrors.city}</span>
               </p>
             ) : (
               "City"
             )}
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="text"
               placeholder="City"
               value={city}
@@ -226,16 +222,20 @@ export default function UpdateASpotForm() {
             {validationErrors.state && hasSubmitted ? (
               <p>
                 {"State: "}
-                <span className="error_message">{validationErrors.state}</span>
+                <span id="error_message">{validationErrors.state}</span>
               </p>
             ) : (
               "State"
             )}
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="text"
               placeholder="State"
               value={state}
+              Create
+              A
+              New
+              Spot
               onChange={(e) => setState(e.target.value)}
             />
           </label>
@@ -243,15 +243,13 @@ export default function UpdateASpotForm() {
             {validationErrors.latitude && hasSubmitted ? (
               <p>
                 {"Latitude: "}
-                <span className="error_message">
-                  {validationErrors.latitude}
-                </span>
+                <span id="error_message">{validationErrors.latitude}</span>
               </p>
             ) : (
               "Latitude"
             )}
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="number"
               placeholder="Latitude"
               value={latitude}
@@ -262,15 +260,13 @@ export default function UpdateASpotForm() {
             {validationErrors.longitude && hasSubmitted ? (
               <p>
                 {"Longitude: "}
-                <span className="error_message">
-                  {validationErrors.longitude}
-                </span>
+                <span id="error_message">{validationErrors.longitude}</span>
               </p>
             ) : (
               "Longitude"
             )}
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="number"
               placeholder="Longitude"
               value={longitude}
@@ -278,37 +274,35 @@ export default function UpdateASpotForm() {
             />
           </label>
         </div>
-        <div className="new_spot_form_section">
-          <h4 className="form_h4">Describe your place to guests</h4>
-          <p className="form_p">
+        <div id="update_spot_form_section">
+          <h4 id="update_spot_form_h4">Describe your place to guests</h4>
+          <p id="update_spot_form_p">
             Mention the best features of your space, any special amentities like
             fast wif or parking, and what you love about the neighborhood.
           </p>
           <label>
             <textarea
+              id="update_spot_spot_description_field"
               placeholder="Description"
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               rows="6"
-              cols="50"
             />
             {validationErrors.description && hasSubmitted && (
-              <span className="error_message">
-                {validationErrors.description}
-              </span>
+              <span id="error_message">{validationErrors.description}</span>
             )}
           </label>
         </div>
-        <div className="new_spot_form_section">
-          <h4 className="form_h4">Create a title for your spot</h4>
-          <p className="form_p">
+        <div id="update_spot_form_section">
+          <h4 id="update_spot_form_h4">Create a title for your spot</h4>
+          <p id="update_spot_form_p">
             Catch guests' attention with a spot title that highlights what makes
             your place special
           </p>
           <label>
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="text"
               placeholder="Name Of Your Spot"
               value={title}
@@ -316,19 +310,19 @@ export default function UpdateASpotForm() {
             />
           </label>
           {validationErrors.title && hasSubmitted && (
-            <span className="error_message">{validationErrors.title}</span>
+            <span id="error_message">{validationErrors.title}</span>
           )}
         </div>
-        <div className="new_spot_form_section">
-          <h4 className="form_h4">Set a base price for your spot</h4>
-          <p className="form_p">
+        <div id="update_spot_form_section">
+          <h4 id="update_spot_form_h4">Set a base price for your spot</h4>
+          <p id="update_spot_form_p">
             Competitive pricing can help your listing stand out and rank higher
             in search results.
           </p>
-          <label>
-            $
+          <label id="update_spot_form_price_label">
+            <p id="new_form_dollar_sign">$&nbsp;&nbsp;</p>
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="number"
               step="0.01"
               placeholder="Price per night (USD)"
@@ -336,32 +330,30 @@ export default function UpdateASpotForm() {
               onChange={(e) => setPrice(e.target.value)}
             />
             {validationErrors.price && hasSubmitted && (
-              <span className="error_message">{validationErrors.price}</span>
+              <span id="error_message">{validationErrors.price}</span>
             )}
           </label>
         </div>
-        <div className="new_spot_form_section">
-          <h4 className="form_h4">Liven up your spot with photos</h4>
-          <p className="form_p">
+        <div id="update_spot_form_section">
+          <h4 id="update_spot_form_h4">Liven up your spot with photos</h4>
+          <p id="update_spot_form_p">
             Submit a link to at least one photo to publish your spot.
           </p>
           <label>
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="url"
               placeholder="Preview Image URL"
               value={previewImage}
               onChange={(e) => setPreviewImage(e.target.value)}
             />
             {validationErrors.previewImage && hasSubmitted && (
-              <span className="error_message">
-                {validationErrors.previewImage}
-              </span>
+              <span id="error_message">{validationErrors.previewImage}</span>
             )}
           </label>
           <label>
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="url"
               placeholder="Image URL"
               value={imageOne}
@@ -370,7 +362,7 @@ export default function UpdateASpotForm() {
           </label>
           <label>
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="url"
               placeholder="Image URL"
               value={imageTwo}
@@ -379,7 +371,7 @@ export default function UpdateASpotForm() {
           </label>
           <label>
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="url"
               placeholder="Image URL"
               value={imageThree}
@@ -388,7 +380,7 @@ export default function UpdateASpotForm() {
           </label>
           <label>
             <input
-              className="new_spot_form_input"
+              id="update_spot_form_input"
               type="url"
               placeholder="Image URL"
               value={imageFour}
@@ -396,9 +388,9 @@ export default function UpdateASpotForm() {
             />
           </label>
         </div>
-        <div id="button_container">
-          <button type="submit" id="new_spot_form_submit">
-            Create Spot
+        <div id="update_spot_button_container">
+          <button type="submit" className="button_small">
+            Update Spot
           </button>
         </div>
       </form>

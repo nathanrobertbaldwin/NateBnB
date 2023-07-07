@@ -160,6 +160,7 @@ router.put(
 router.delete("/:reviewId", requireAuth, async (req, res, next) => {
   const reviewId = parseInt(req.params.reviewId);
   const review = await Review.findByPk(reviewId);
+  const spotId = review.spotId;
 
   if (!review)
     return next(new noResourceExistsError("Review couldn't be found"));
@@ -172,9 +173,36 @@ router.delete("/:reviewId", requireAuth, async (req, res, next) => {
 
   await Review.destroy({ where: { id: req.params.reviewId } });
 
-  return res.json({
-    message: "Successfully deleted",
+  let newSpot = await Spot.findByPk(spotId, {
+    include: [
+      { model: User },
+      {
+        model: SpotImage,
+        attributes: { exclude: ["spotId", "createdAt", "updatedAt"] },
+      },
+      {
+        model: Review,
+        include: [{ model: User, attributes: ["id", "firstName", "lastName"] }],
+      },
+    ],
   });
+
+  newSpot = newSpot.toJSON();
+
+  newSpot.avgStarRating =
+    newSpot.Reviews.reduce((accum, review) => {
+      return accum + review.stars;
+    }, 0) / newSpot.Reviews.length;
+
+  console.log("AVERAGE STAR RATING", newSpot.avgStarRating);
+  newSpot.Owner = newSpot.User;
+  newSpot.preview = newSpot.SpotImages.find((image) => {
+    return image.preview === true;
+  }).url;
+  delete newSpot.Owner.username;
+  delete newSpot.User;
+
+  return res.json(newSpot);
 });
 
 // ============================== EXPORTS ============================== //

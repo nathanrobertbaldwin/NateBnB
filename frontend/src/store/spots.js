@@ -30,13 +30,13 @@ const EDIT_A_SPOT_BY_SPOTID = "spots/editASpotBySpotId";
 
 const DELETE_A_SPOT_BY_SPOTID = "spots/deleteASpotBySpotId";
 
-// Delete A Spot Review by ReviewId
-
-const DELETE_A_SPOT_REVIEW_BY_REVIEWID = "spots/deleteASpotReviewByReviewId";
-
 // Post A Review By SpotId;
 
 const POST_A_REVIEW_BY_SPOT_ID = "spots/postAReviewBySpotId";
+
+// Delete A Spot Review by ReviewId
+
+const DELETE_A_SPOT_REVIEW_BY_REVIEWID = "spots/deleteASpotReviewByReviewId";
 
 // ============================== ACTIONS ============================== //
 
@@ -94,20 +94,20 @@ const deleteASpotBySpotId = (data) => {
   };
 };
 
-// Delete A Review By ReviewId
-
-const deleteASpotReviewByReviewId = (data) => {
-  return {
-    type: DELETE_A_SPOT_REVIEW_BY_REVIEWID,
-    payload: data,
-  };
-};
-
 // Post A Review By SpotId
 
 const postAReviewBySpotId = (data) => {
   return {
     type: POST_A_REVIEW_BY_SPOT_ID,
+    payload: data,
+  };
+};
+
+// Delete A Review By ReviewId
+
+const deleteASpotReviewByReviewId = (data) => {
+  return {
+    type: DELETE_A_SPOT_REVIEW_BY_REVIEWID,
     payload: data,
   };
 };
@@ -191,21 +191,6 @@ export const deleteASpotBySpotIdThunk = (spotId) => async (dispatch) => {
   }
 };
 
-// Delete A Spot Review By ReviewId Thunk
-
-export const deleteASpotReviewByReviewIdThunk =
-  (reviewId) => async (dispatch) => {
-    const response = await csrfFetch(`/api/reviews/${reviewId}`, {
-      method: "DELETE",
-    });
-
-    if (response.ok) {
-      const data = await response.json();
-      dispatch(deleteASpotReviewByReviewId(reviewId));
-      return data;
-    }
-  };
-
 // Post A Review By Spot Id Thunk
 
 export const postAReviewBySpotIdThunk = (data) => async (dispatch) => {
@@ -217,10 +202,26 @@ export const postAReviewBySpotIdThunk = (data) => async (dispatch) => {
 
   if (response.ok) {
     const data = await response.json();
+    console.log(data);
     dispatch(postAReviewBySpotId(data));
     return data;
   }
 };
+
+// Delete A Spot Review By ReviewId Thunk
+
+export const deleteASpotReviewByReviewIdThunk =
+  (reviewId) => async (dispatch) => {
+    const response = await csrfFetch(`/api/reviews/${reviewId}`, {
+      method: "DELETE",
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      dispatch(deleteASpotReviewByReviewId(data));
+      return data;
+    }
+  };
 
 // ============================== HELPERS ============================== //
 
@@ -268,15 +269,14 @@ export const spotsReducer = (state = {}, action) => {
       delete newState[id];
       return newState;
     }
-    case DELETE_A_SPOT_REVIEW_BY_REVIEWID: {
-      const id = action.payload;
-      const newState = { ...state };
-      delete newState.Reviews[id];
+    case POST_A_REVIEW_BY_SPOT_ID: {
+      const data = action.payload;
+      const newState = { ...data };
       return newState;
     }
-    case POST_A_REVIEW_BY_SPOT_ID: {
-      const data = action.payload.Reviews;
-      const newState = { ...state, Reviews: data };
+    case DELETE_A_SPOT_REVIEW_BY_REVIEWID: {
+      const data = action.payload;
+      const newState = { ...data };
       return newState;
     }
     default:

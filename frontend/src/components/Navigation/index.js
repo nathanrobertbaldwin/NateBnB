@@ -10,22 +10,29 @@ export default function Navigation({ isLoaded }) {
 
   return (
     <div id="nav_container">
-      <div id="logo_container">
-        <img id="logo" />
-      </div>
-      <ul className="navigation">
-        {sessionUser && <Link to="/spots/new">Create A New Spot</Link>}
-        <li className="nav_links">
-          <NavLink exact to="/">
-            <button className="nav_button_large">Home</button>
-          </NavLink>
-        </li>
-        {isLoaded && (
+      <div id="nav_container_inner">
+        <Link to="/" id="logo_container">
+          <img id="logo" atl="logo" />
+          <h1>NateBnB</h1>
+        </Link>
+        <ul className="navigation_list">
+          {sessionUser && (
+            <Link to="/spots/new">
+              <button className="button_small">Create A New Spot</button>
+            </Link>
+          )}
           <li className="nav_links">
-            <ProfileButton user={sessionUser} />
+            <NavLink exact to="/">
+              <button className="button_large">Home</button>
+            </NavLink>
           </li>
-        )}
-      </ul>
+          {isLoaded && (
+            <li className="nav_links">
+              <ProfileButton user={sessionUser} />
+            </li>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }

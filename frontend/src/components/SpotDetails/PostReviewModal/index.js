@@ -85,45 +85,44 @@ export default function PostReviewModal({ spot }) {
   const starArray = new Array(5).fill(0);
 
   return (
-    <>
+    <div id="review_form_modal_container">
       <h1>How was your stay?</h1>
-      <div id="review_form_container">
-        <form id="review_form" onSubmit={handleSubmit}>
-          {serverErrors && <p>{serverErrors}</p>}
-          <div id="review_stars_container">
-            {starArray.map((_, index) => {
-              return (
-                <FaStar
-                  className={
-                    clickedStars > index || hoverStars > index
-                      ? "review_stars_light"
-                      : "review_stars_dark"
-                  }
-                  key={index}
-                  onMouseOver={() => handleMouseOver(index + 1)}
-                  onMouseLeave={handleMouseLeave}
-                  onClick={() => handleClick(index + 1)}
-                />
-              );
-            })}
-          </div>
-          <input
-            id="review_text"
-            type="text"
-            placeholder="Just a quick review."
-            rows="6"
-            cols="50"
-            value={reviewText}
-            onChange={(e) => setReviewText(e.target.value)}
-          ></input>
+      <form id="review_form" onSubmit={handleSubmit}>
+        {serverErrors && <p>{serverErrors}</p>}
+        <div id="review_stars_container">
+          {starArray.map((_, index) => {
+            return (
+              <FaStar
+                className={
+                  clickedStars > index || hoverStars > index
+                    ? "review_stars_light"
+                    : "review_stars_dark"
+                }
+                key={index}
+                onMouseOver={() => handleMouseOver(index + 1)}
+                onMouseLeave={handleMouseLeave}
+                onClick={() => handleClick(index + 1)}
+              />
+            );
+          })}
+        </div>
+        <textarea
+          id="review_text"
+          rows="10"
+          placeholder="Just a quick review."
+          value={reviewText}
+          onChange={(e) => setReviewText(e.target.value)}
+        ></textarea>
+        <div id="review_button_container">
           <button
             type="submit"
+            className="button_small"
             disabled={Object.values(validationErrors).length > 0}
           >
             Submit Your Review
           </button>
-        </form>
-      </div>
-    </>
+        </div>
+      </form>
+    </div>
   );
 }

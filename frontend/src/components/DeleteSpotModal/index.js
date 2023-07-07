@@ -28,16 +28,18 @@ export default function DeleteSpotModal({ spot }) {
     history.push("/spots/current");
   };
   return (
-    <>
-      <h1>Confirm Delete</h1>
-      <form onSubmit={handleConfirmation}>
-        <button type="button" onClick={handleConfirmation}>
-          Yes (Delete Spot)
-        </button>
-        <button type="button" onClick={handleDenial}>
-          No (Keep Spot)
-        </button>
-      </form>
-    </>
+    <div id="delete_spot_modal_container">
+      <h1 id="delete_spot_modal_h1">Confirm Delete</h1>
+      <button
+        type="button"
+        className="button_small"
+        onClick={handleConfirmation}
+      >
+        Yes (Delete Spot)
+      </button>
+      <button type="button" className="button_large" onClick={handleDenial}>
+        No (Keep Spot)
+      </button>
+    </div>
   );
 }
