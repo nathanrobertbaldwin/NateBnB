@@ -20,6 +20,7 @@ function LoginFormModal() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors({});
+
     return dispatch(sessionActions.login({ credential, password }))
       .then(closeModal)
       .catch(async (res) => {
@@ -30,23 +31,29 @@ function LoginFormModal() {
       });
   };
 
+  const handleDemoUser = () => {
+    dispatch(
+      sessionActions.login({ credential: "Demolition", password: "password" })
+    ).then(closeModal);
+  };
+
   return (
     <div id="login_form_modal_container">
       <h1 id="login_form_modal_h1">Log In</h1>
       <form id="login_form" onSubmit={handleSubmit}>
-        <label id="login_form_label">
-          <p>Username or Email</p>
+        <label>
           <input
             type="text"
+            placeholder="Username or Email"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
           />
         </label>
         <label id="login_form_label">
-          <p>Password</p>
           <input
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -54,9 +61,11 @@ function LoginFormModal() {
         </label>
         {errors.credential && <p>{errors.credential}</p>}
         <div id="login_form_button_container">
-          {" "}
           <button className="button_small" type="submit">
             Log In
+          </button>
+          <button className="button_small" onClick={handleDemoUser}>
+            Demo User
           </button>
         </div>
       </form>
