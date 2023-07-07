@@ -1,0 +1,10 @@
+#delete_spot_modal_container{
+    display: flex;
+    flex-direction: column;
+    margin: 2em;
+    gap: 2em;
+}
+
+#delete_spot_modal_h1{
+    text-align: center;
+}

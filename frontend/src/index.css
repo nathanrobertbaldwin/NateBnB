@@ -40,7 +40,6 @@ p {
   font-family: Circular, "Helvetica Neue", sans-serif;
   font-size: 16px;
   font-weight: 600;
-  margin-left: 1em;
   padding: 13px 23px;
   text-align: center;
   text-decoration: none;
@@ -59,14 +58,14 @@ p {
 }
 
 .orange_modal_button {
-  background: #FF4742 !important;
-  border: 1px solid #FF4742 !important;;
-  border-radius: 6px !important;;
-  color: #FFFFFF !important;;
-  cursor: pointer !important;;
-  font-size: 14px !important;;
-  font-weight: bold !important;;
-  padding: 12px 14px !important;;
+  background: #FF4742;
+  border: 1px solid #FF4742;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 14px;
 }
 
 .error_message {

@@ -73,18 +73,26 @@
 #spot_details_booking_card {
   display: flex;
   flex-direction: column;
-  gap: 2em;   
+  gap: 1em;   
   border: 1px solid lightgray;
   border-radius: 1em;
-  padding: 2em;
+  padding-top: 2em;
+  padding-bottom: 2em;
+  padding-right: 1em;
+  padding-left: 1em;
   margin: 1em;
-  width: 25%;
+  width: 30%;
   height: 40%;
 }
 
 #spot_details_booking_card_header_container{
   display: flex;
   justify-content: space-between;
+}
+
+#spot_details_booking_card_review_info{
+  display: flex;
+  justify-content: center;
 }
 
 #reviews_title_post_review_container{
@@ -102,6 +110,11 @@
   gap: 1em;
   padding-bottom: 1em;
   border-bottom: 1px solid lightgray;
+}
+
+.spot_details_reviews_stars_container{
+  display: flex;
+  align-items: center;
 }
 
 #review_stars{

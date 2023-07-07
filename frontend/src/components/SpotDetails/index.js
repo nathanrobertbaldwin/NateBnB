@@ -71,10 +71,12 @@ export default function SpotDetails() {
                 {spot.Reviews.length === 0 ? (
                   "New!"
                 ) : (
-                  <p id="reviews_stars_container">
+                  <div id="spot_details_booking_card_review_info">
                     <FaStar id="review_stars" />
-                    {` ${avgStarRating} | ${reviewsCount} Reviews`}
-                  </p>
+                    <p id="reviews_stars_container">
+                      {`${avgStarRating} | ${reviewsCount} Reviews`}
+                    </p>
+                  </div>
                 )}
               </h5>
             </div>

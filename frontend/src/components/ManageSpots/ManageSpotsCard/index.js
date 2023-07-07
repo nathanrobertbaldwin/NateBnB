@@ -28,12 +28,10 @@ export function ManageSpotsCard({ spot }) {
         <Link to={`/spots/${spot.id}/edit`}>
           <button className="button_small">Update</button>
         </Link>
-        <Link to="/spots/${spot.id}/}">
-          <OpenModalButton
-            buttonText="Delete"
-            modalComponent={<DeleteSpotModal spot={spot} />}
-          />
-        </Link>
+        <OpenModalButton
+          buttonText="Delete"
+          modalComponent={<DeleteSpotModal spot={spot} />}
+        />
       </div>
     </div>
   );
