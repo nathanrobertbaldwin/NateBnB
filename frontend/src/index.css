@@ -69,3 +69,6 @@ p {
   padding: 12px 14px !important;;
 }
 
+.error_message {
+  color: red;
+}
