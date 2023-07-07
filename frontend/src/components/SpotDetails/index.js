@@ -1,12 +1,15 @@
 // ============================== IMPORTS ============================== //
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import { getSpotDetailsThunk } from "../../store/spots";
-import Reviews from "../Reviews";
-import PostReviewModal from "./PostReviewModal";
+
 import OpenModalButton from "../OpenModalButton";
+import LoginFormModal from "../LoginFormModal";
+import PostReviewModal from "./PostReviewModal";
+import Reviews from "../Reviews";
+import { FaStar } from "react-icons/fa";
 import "./SpotDetails.css";
 
 // ============================= EXPORTS =============================== //
@@ -14,6 +17,8 @@ import "./SpotDetails.css";
 export default function SpotDetails() {
   const { spotId } = useParams();
   const dispatch = useDispatch();
+  const sessionData = useSelector((state) => state.session);
+  console.log(sessionData);
   const spot = useSelector((store) => store.spots);
   const reviewsData = useSelector((state) => state.spots.Reviews);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -36,6 +41,8 @@ export default function SpotDetails() {
     (image) => image.preview === false
   );
 
+  const avgStarRating = spot.avgStarRating.toFixed(2);
+
   return (
     <div id="spot_details">
       <h2>{spot.address}</h2>
@@ -55,34 +62,62 @@ export default function SpotDetails() {
         </div>
       </div>
       <div id="spot_details_info_container">
-        <div id="spot_details_host_description">
-          <h3>{`Hosted By: ${spot.Owner.firstName} ${spot.Owner.lastName}`}</h3>
+        <h3>{`Hosted By: ${spot.Owner.firstName} ${spot.Owner.lastName}`}</h3>
+        <div id="spot_details_description_booking_button_container">
           <p id="spot_details_spot_description">{spot.description}</p>
-        </div>
-        <div id="spot_details_booking_card">
-          <p>{`$${spot.price} / Night`}</p>
-          <p>
-            {spot.Reviews.length === 0
-              ? "Stars: New"
-              : `Rating: ${spot.avgStarRating} | Reviews: ${reviewsCount}`}
-          </p>
-          <div id="spot_details_hosted_book_booking_card_button_container">
-            <button id="spot_details_hosted_book_booking_card_button">
-              Book This Spot!
-            </button>
+          <div id="spot_details_booking_card">
+            <div id="spot_details_booking_card_header_container">
+              <h4>{`$${spot.price} / night `}</h4>
+              <h5>
+                {spot.Reviews.length === 0 ? (
+                  "New!"
+                ) : (
+                  <p id="reviews_stars_container">
+                    <FaStar id="review_stars" />
+                    {` ${avgStarRating} | ${reviewsCount} Reviews`}
+                  </p>
+                )}
+              </h5>
+            </div>
+            {sessionData.user ? (
+              <div id="spot_details_booking_button_container">
+                <button className="button_small">Book This Spot!</button>
+              </div>
+            ) : (
+              <OpenModalButton
+                buttonText="Login to Create Booking"
+                modalComponent={<LoginFormModal />}
+              />
+            )}
           </div>
         </div>
       </div>
-      <h3>
-        {reviewsCount === 0
-          ? "Stars: New"
-          : `Stars: ${spot.avgStarRating} | Reviews: ${reviewsCount}`}
-      </h3>
-      <OpenModalButton
-        buttonText="Post Your Review"
-        modalComponent={<PostReviewModal spot={spot} />}
-      />
-      <Reviews spot={spot} />
+      <div id="reviews_title_post_review_container">
+        <h3 id="review_title">
+          {reviewsCount === 0 ? (
+            "New!"
+          ) : (
+            <h3>
+              <FaStar id="review_stars" />
+              {` ${avgStarRating} | ${reviewsCount} Reviews`}
+            </h3>
+          )}
+        </h3>
+        {sessionData.user ? (
+          <OpenModalButton
+            buttonText="Post Your Review"
+            modalComponent={<PostReviewModal spot={spot} />}
+          />
+        ) : (
+          <OpenModalButton
+            buttonText="Login to Post Review"
+            modalComponent={<LoginFormModal />}
+          />
+        )}
+      </div>
+      <div id="reviews_container">
+        <Reviews spot={spot} />
+      </div>
     </div>
   );
 }

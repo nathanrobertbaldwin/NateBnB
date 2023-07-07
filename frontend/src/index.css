@@ -22,12 +22,42 @@ h3,
 h4,
 h5,
 h6 {
-  margin: .25em;
+  margin: 0;
   padding: 0;
 }
 
 p {
-  margin: .25em;
+  margin: 0;
   padding: 0;
 }
+
+.button_large{
+  background-color: #ffffff;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  box-sizing: border-box;
+  color: #222222;
+  font-family: Circular, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  margin-left: 1em;
+  padding: 13px 23px;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.button_small {
+  background: #FF4742;
+  border: 1px solid #FF4742;
+  border-radius: 6px;
+  color: #FFFFFF;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 12px 14px;
+}
+
+
+
 

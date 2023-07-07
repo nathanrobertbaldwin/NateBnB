@@ -1,14 +1,14 @@
-.spot_card {
+.spot_card_container {
   border-radius: 1em;
   display: flex;
   flex-direction: column;
+  gap: .5em;
 }
 
 .spot_card_image_container {
   display: flex;
   width: 225px;
   height: 150px;
-  margin-bottom: 1em;
 }
 
 .spot_card_image {

@@ -7,13 +7,13 @@ import "./Reviews.css";
 
 export default function Reviews() {
   const spot = useSelector((state) => state.spots);
-  const userId = useSelector((state) => state.session.user).id;
+  const sessionData = useSelector((state) => state.session);
   const reviewsData = useSelector((state) => state.spots.Reviews);
   const reviewsArray = Object.values(reviewsData);
   const reviewsCount = reviewsArray.length;
 
   return (
-    <div id="reviews_container">
+    <>
       {reviewsCount === 0
         ? ""
         : reviewsArray.map((review) => {
@@ -27,21 +27,26 @@ export default function Reviews() {
             const yearNumber = reviewDate.getFullYear();
 
             return (
-              <div key={review.id}>
-                <h3>{review.User.firstName}</h3>
-                <h4>{`${reviewMonthString}, ${yearNumber}`}</h4>
+              <div id="individual_review_container" key={review.id}>
+                <div id="review_title_button_container">
+                  <h3 id="name_header">{review.User.firstName}</h3>
+                  {sessionData.user &&
+                    sessionData.user.id === review.User.id && (
+                      <Link to="/spots/${spot.id}/}">
+                        <OpenModalButton
+                          buttonText="Delete"
+                          modalComponent={
+                            <DeleteAReviewModal review={review} />
+                          }
+                        />
+                      </Link>
+                    )}
+                </div>
+                <h5>{`${reviewMonthString}, ${yearNumber}`}</h5>
                 <p>{review.review}</p>
-                {userId === review.User.id && (
-                  <Link to="/spots/${spot.id}/}">
-                    <OpenModalButton
-                      buttonText="Delete"
-                      modalComponent={<DeleteAReviewModal review={review} />}
-                    />
-                  </Link>
-                )}
               </div>
             );
           })}
-    </div>
+    </>
   );
 }
