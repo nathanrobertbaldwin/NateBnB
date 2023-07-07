@@ -276,7 +276,6 @@ export const spotsReducer = (state = {}, action) => {
     }
     case DELETE_A_SPOT_REVIEW_BY_REVIEWID: {
       const data = action.payload;
-      console.log(data);
       const newState = { ...data };
       return newState;
     }

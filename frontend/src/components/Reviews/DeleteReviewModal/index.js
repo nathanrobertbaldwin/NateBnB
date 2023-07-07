@@ -29,16 +29,21 @@ export default function DeleteAReviewModal({ review }) {
   };
 
   return (
-    <>
-      <h1>Confirm Delete</h1>
-      <form onSubmit={handleConfirmation}>
-        <button type="button" value={review.id} onClick={handleConfirmation}>
+    <div id="delete_review_modal_container">
+      <h1 id="delete_review_modal_form_h1">Confirm Delete</h1>
+      <di id="delete_review_modal_button_container">
+        <button
+          type="button"
+          className="button_small"
+          value={review.id}
+          onClick={handleConfirmation}
+        >
           Yes (Delete Review)
         </button>
-        <button type="button" onClick={handleDenial}>
+        <button type="button" className="button_small" onClick={handleDenial}>
           No (Keep Review)
         </button>
-      </form>
-    </>
+      </di>
+    </div>
   );
 }
