@@ -1,21 +1,15 @@
-#login_form_modal_container{
+#delete_review_modal_container{
     display: flex;
     flex-direction: column;
     margin: 2em;
     gap: 1.5em;
 }
 
-#login_form{
-    display: flex;
-    flex-direction: column;
-    gap: 1em;
-}
-
-#login_form_modal_h1 {
+#delete_review_modal_form_h1 {
     text-align: center;
 }
 
-#login_form_button_container{
+#delete_review_modal_button_container {
     display: flex;
     flex-direction: column;
     justify-content: center;

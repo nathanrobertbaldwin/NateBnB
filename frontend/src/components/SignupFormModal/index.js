@@ -43,11 +43,11 @@ function SignupFormModal() {
   };
 
   return (
-    <>
-      <h1>Sign Up</h1>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Email
+    <div id="sign_up_form_modal_container">
+      <h1 id="sign_up_form_h1">Sign Up</h1>
+      <form id="sign_up_form" onSubmit={handleSubmit}>
+        <label id="sign_up_form_label">
+          <p>Email</p>
           <input
             type="text"
             value={email}
@@ -56,8 +56,8 @@ function SignupFormModal() {
           />
         </label>
         {errors.email && <p>{errors.email}</p>}
-        <label>
-          Username
+        <label id="sign_up_form_label">
+          <p>Username</p>
           <input
             type="text"
             value={username}
@@ -66,8 +66,8 @@ function SignupFormModal() {
           />
         </label>
         {errors.username && <p>{errors.username}</p>}
-        <label>
-          First Name
+        <label id="sign_up_form_label">
+          <p>First Name</p>
           <input
             type="text"
             value={firstName}
@@ -76,8 +76,8 @@ function SignupFormModal() {
           />
         </label>
         {errors.firstName && <p>{errors.firstName}</p>}
-        <label>
-          Last Name
+        <label id="sign_up_form_label">
+          <p>Last Name</p>
           <input
             type="text"
             value={lastName}
@@ -86,7 +86,7 @@ function SignupFormModal() {
           />
         </label>
         {errors.lastName && <p>{errors.lastName}</p>}
-        <label>
+        <label id="sign_up_form_label">
           Password
           <input
             type="password"
@@ -96,8 +96,8 @@ function SignupFormModal() {
           />
         </label>
         {errors.password && <p>{errors.password}</p>}
-        <label>
-          Confirm Password
+        <label id="sign_up_form_label">
+          <p>Confirm Password</p>
           <input
             type="password"
             value={confirmPassword}
@@ -106,9 +106,12 @@ function SignupFormModal() {
           />
         </label>
         {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
-        <button type="submit">Sign Up</button>
+        <div id="sign_up_form_button_container"></div>
+        <button className="button_small" type="submit">
+          Sign Up
+        </button>
       </form>
-    </>
+    </div>
   );
 }
 

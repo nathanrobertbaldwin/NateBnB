@@ -1,31 +1,42 @@
-.spot_card {
+#spot_card_container {
+  border-radius: 1em;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  flex-basis: 20%;
-  padding: 1em;
-  max-width: 25%;
+  gap: 1em;
 }
 
-.spot_preview_image {
+#spot_preview_image_container {
   display: flex;
-  width: 100%;
-  height: 150px;
+  width: 210px;
+  height: 160px;
   margin-bottom: 1em;
 }
 
-.spot_card_image {
-  max-width: 100%;
+#spot_card_preview_image {
+  width: 100%;
+  object-fit: cover;
   border-radius: 1em;
 }
 
-#spots_card_button_container {
+#city_state_stars{
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.sports_card_buttons {
-  background-color: brown;
-  color: white;
-  margin-top: 1em;
+#review_stars {
+  color: gold;
+  font-size: large;
+  margin-right: .5em;
+}
+
+#spots_card_button_container {
+    display: flex;
+    justify-content: space-around;
+}
+
+#spots_card_buttons {
+    background-color: brown;
+    color: white;
+    margin-top: 1em;
 }

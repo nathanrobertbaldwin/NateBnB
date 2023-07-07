@@ -9,7 +9,7 @@ import "./ManageSpots.css";
 
 // ============================= EXPORTS =============================== //
 
-export function ManageSpots() {
+export default function ManageSpots() {
   const dispatch = useDispatch();
   const spotsData = useSelector((store) => store.spots);
   const spots = Object.values(spotsData);
@@ -26,11 +26,11 @@ export function ManageSpots() {
       <div id="manage_spots_header">
         <h1>Manage Spots</h1>
         <Link to="/spots/new">
-          <button>Create a new Spot</button>
+          <button className="button_small">Create a new Spot</button>
         </Link>
       </div>
       {spots.map((spot) => {
-        return <ManageSpotsCard key={spot.id} spot={spot} />;
+        return <ManageSpotsCard spot={spot} key={spot.id} />;
       })}
     </div>
   );

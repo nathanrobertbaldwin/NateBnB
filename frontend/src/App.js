@@ -6,7 +6,8 @@ import Navigation from "./components/Navigation";
 import SpotsIndex from "./components/SpotsIndex";
 import SpotDetails from "./components/SpotDetails";
 import NewSpotForm from "./components/NewSpotForm";
-import { ManageSpots } from "./components/ManageSpots";
+import ManageSpots from "./components/ManageSpots";
+import UpdateASpotForm from "./components/UpdateASpotForm";
 
 function App() {
   const dispatch = useDispatch();
@@ -29,8 +30,14 @@ function App() {
           <Route exact path="/spots/current">
             <ManageSpots />
           </Route>
+          <Route exact path="/spots/:spotId/edit">
+            <UpdateASpotForm />
+          </Route>
           <Route exact path="/spots/:spotId">
             <SpotDetails />
+          </Route>
+          <Route path="*">
+            <h3 className="error_message">"Error, please return to Home"</h3>
           </Route>
         </Switch>
       )}
