@@ -1,17 +1,17 @@
-.spot_card_container {
+#spot_card_container {
   border-radius: 1em;
   display: flex;
   flex-direction: column;
   gap: .5em;
 }
 
-.spot_card_image_container {
+#spot_card_image_container {
   display: flex;
-  width: 225px;
-  height: 150px;
+  width: 210px;
+  height: 160px;
 }
 
-.spot_card_image {
+#spot_card_image {
   width: 100%;
   position: relative;
   min-width: 200px;
@@ -19,13 +19,13 @@
   border-radius: 1em;
 }
 
-.city_state_stars{
+#city_state_stars{
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.review_stars {
+#review_stars {
   color: gold;
   font-size: large;
   margin-right: .5em;

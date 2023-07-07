@@ -1,9 +1,41 @@
+#spot_card_container {
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+}
+
+#spot_preview_image_container {
+  display: flex;
+  width: 210px;
+  height: 160px;
+  margin-bottom: 1em;
+}
+
+#spot_card_preview_image {
+  width: 100%;
+  object-fit: cover;
+  border-radius: 1em;
+}
+
+#city_state_stars{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#review_stars {
+  color: gold;
+  font-size: large;
+  margin-right: .5em;
+}
+
 #spots_card_button_container {
     display: flex;
     justify-content: space-around;
 }
 
-.spots_card_buttons {
+#spots_card_buttons {
     background-color: brown;
     color: white;
     margin-top: 1em;

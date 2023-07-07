@@ -13,7 +13,7 @@ export default function Navigation({ isLoaded }) {
       <div id="logo_container">
         <img id="logo" />
       </div>
-      <ul className="navigation">
+      <ul className="navigation_list">
         {sessionUser && (
           <Link to="/spots/new">
             <button class="button_small">Create A New Spot</button>

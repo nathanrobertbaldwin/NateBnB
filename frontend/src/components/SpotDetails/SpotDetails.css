@@ -12,7 +12,7 @@
   display: flex;
   height: 400px;
   gap: 1em;
-  padding-bottom: 1em;
+  padding-bottom: 1.5em;
   border-bottom: 1px solid lightgray;
 }
 
@@ -88,7 +88,8 @@
 }
 
 #reviews_title_post_review_container{
-  display:flex
+  display:flex;
+  align-items: center;
 }
 
 #review_title{

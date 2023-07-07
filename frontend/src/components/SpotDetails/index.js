@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getSpotDetailsThunk } from "../../store/spots";
 
 import OpenModalButton from "../OpenModalButton";
@@ -18,7 +18,6 @@ export default function SpotDetails() {
   const { spotId } = useParams();
   const dispatch = useDispatch();
   const sessionData = useSelector((state) => state.session);
-  console.log(sessionData);
   const spot = useSelector((store) => store.spots);
   const reviewsData = useSelector((state) => state.spots.Reviews);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -85,6 +84,7 @@ export default function SpotDetails() {
               </div>
             ) : (
               <OpenModalButton
+                className="orange_modal_button"
                 buttonText="Login to Create Booking"
                 modalComponent={<LoginFormModal />}
               />
@@ -105,11 +105,13 @@ export default function SpotDetails() {
         </h3>
         {sessionData.user ? (
           <OpenModalButton
+            className="orange_modal_button"
             buttonText="Post Your Review"
             modalComponent={<PostReviewModal spot={spot} />}
           />
         ) : (
           <OpenModalButton
+            className="orange_modal_button"
             buttonText="Login to Post Review"
             modalComponent={<LoginFormModal />}
           />

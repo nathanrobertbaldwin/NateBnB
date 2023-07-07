@@ -707,6 +707,7 @@ router.put(
     // Grab spot.
 
     const spotId = parseInt(req.params.spotId);
+    
     const spot = await Spot.findByPk(spotId);
 
     if (!spot) return next(new noResourceExistsError("Spot couldn't be found"));

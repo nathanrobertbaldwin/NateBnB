@@ -43,10 +43,10 @@ function ProfileButton({ user }) {
 
   return (
     <>
-      <button className="nav_button_large" onClick={openMenu}>
+      <button className="button_large" onClick={openMenu}>
         <i className="fas fa-user-circle" />
       </button>
-      <ul className={`${ulClassName} navigation}`} ref={ulRef}>
+      <ul className={`${ulClassName} navigation`} ref={ulRef}>
         {user ? (
           <>
             <div id="navigation_profile_button_section">
