@@ -32,14 +32,10 @@ export default function Reviews() {
                   <h3 id="name_header">{review.User.firstName}</h3>
                   {sessionData.user &&
                     sessionData.user.id === review.User.id && (
-                      <Link to="/spots/${spot.id}/}">
-                        <OpenModalButton
-                          buttonText="Delete"
-                          modalComponent={
-                            <DeleteAReviewModal review={review} />
-                          }
-                        />
-                      </Link>
+                      <OpenModalButton
+                        buttonText="Delete"
+                        modalComponent={<DeleteAReviewModal review={review} />}
+                      />
                     )}
                 </div>
                 <h5>{`${reviewMonthString}, ${yearNumber}`}</h5>

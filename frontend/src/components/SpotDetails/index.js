@@ -32,6 +32,8 @@ export default function SpotDetails() {
 
   const reviewsCount = Object.values(reviewsData).length;
 
+  const avgStarRating = spot.avgStarRating.toFixed(2);
+  
   const previewImage = spot.SpotImages.filter(
     (image) => image.preview === true
   );
@@ -39,8 +41,6 @@ export default function SpotDetails() {
   const otherImages = spot.SpotImages.filter(
     (image) => image.preview === false
   );
-
-  const avgStarRating = spot.avgStarRating.toFixed(2);
 
   return (
     <div id="spot_details">
@@ -95,16 +95,16 @@ export default function SpotDetails() {
         </div>
       </div>
       <div id="reviews_title_post_review_container">
-        <h3 id="review_title">
+        <div id="review_title">
           {reviewsCount === 0 ? (
-            "New!"
+            <h3>"New!"</h3>
           ) : (
             <h3>
               <FaStar id="review_stars" />
               {` ${avgStarRating} | ${reviewsCount} Reviews`}
             </h3>
           )}
-        </h3>
+        </div>
         {sessionData.user ? (
           <OpenModalButton
             className="orange_modal_button"

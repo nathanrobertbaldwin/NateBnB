@@ -16,7 +16,7 @@ export default function Navigation({ isLoaded }) {
       <ul className="navigation_list">
         {sessionUser && (
           <Link to="/spots/new">
-            <button class="button_small">Create A New Spot</button>
+            <button className="button_small">Create A New Spot</button>
           </Link>
         )}
         <li className="nav_links">
