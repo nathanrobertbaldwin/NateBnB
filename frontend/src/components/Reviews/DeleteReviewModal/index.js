@@ -31,7 +31,7 @@ export default function DeleteAReviewModal({ review }) {
   return (
     <div id="delete_review_modal_container">
       <h1 id="delete_review_modal_form_h1">Confirm Delete</h1>
-      <di id="delete_review_modal_button_container">
+      <div id="delete_review_modal_button_container">
         <button
           type="button"
           className="button_small"
@@ -43,7 +43,7 @@ export default function DeleteAReviewModal({ review }) {
         <button type="button" className="button_small" onClick={handleDenial}>
           No (Keep Review)
         </button>
-      </di>
+      </div>
     </div>
   );
 }

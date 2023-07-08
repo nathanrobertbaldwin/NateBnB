@@ -22,6 +22,10 @@
   gap: 2em;
 }
 
+#logo_text{
+  padding-right: 2em;
+}
+
 #logo {
   content: url("https://png.pngtree.com/png-clipart/20190520/original/pngtree-home-vector-icon-png-image_4237056.jpg");
   width: 50px;
