@@ -1,12 +1,10 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
 import OpenModalButton from "../OpenModalButton";
 import DeleteAReviewModal from "./DeleteReviewModal";
 import "./Reviews.css";
 
 export default function Reviews() {
-  const spot = useSelector((state) => state.spots);
   const sessionData = useSelector((state) => state.session);
   const reviewsData = useSelector((state) => state.spots.Reviews);
   const reviewsArray = Object.values(reviewsData);

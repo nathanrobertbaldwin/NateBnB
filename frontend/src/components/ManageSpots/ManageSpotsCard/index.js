@@ -16,7 +16,7 @@ export function ManageSpotsCard({ spot }) {
           <img alt="" id="spot_card_preview_image" src={spot.previewImage} />
         </div>
         <div id="city_state_stars">
-          <h3>{`${spot.city}, ${spot.state}`}</h3>{" "}
+          <h4>{`${spot.city}, ${spot.state}`}</h4>{" "}
           <h3>
             <FaStar id="review_stars" />
             {spot.avgStarRating ? spot.avgStarRating.toFixed(1) : "New!"}
