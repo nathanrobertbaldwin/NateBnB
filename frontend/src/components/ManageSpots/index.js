@@ -17,13 +17,7 @@ export default function ManageSpots() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      dispatch(getAllSpotsByOwnerIdThunk()).then(() => setIsLoaded(true));
-    } catch (err) {
-      console.log(err);
-    } finally {
-      history.push("/");
-    }
+    dispatch(getAllSpotsByOwnerIdThunk()).then(() => setIsLoaded(true));
   }, [dispatch]);
 
   if (!isLoaded) return <></>;

@@ -51,38 +51,38 @@ function ProfileButton({ user }) {
       <ul className={`${ulClassName} navigation`} ref={ulRef}>
         {user ? (
           <div id="navigation_profile_container">
-            <div id="navigation_profile_button_section">
-              <li className="nav_links">{user.username}</li>
-              <li className="nav_links">
-                {user.firstName} {user.lastName}
-              </li>
-              <li className="nav_links">{user.email}</li>
-            </div>
-            <div id="navigation_profile_button_section">
-              <li>
-                <Link to="/spots/current">Manage Spots</Link>
-              </li>
-            </div>
+            <li className="nav_links">{`Hello, ${user.firstName}!`}</li>
+            <li className="nav_links">{user.username}</li>
+            <li className="nav_links">{user.email}</li>
             <li className="nav_links">
-              <button onClick={logout}>Log Out</button>
+              <Link to="/spots/current">Manage Spots</Link>
+            </li>
+            <li className="nav_links">
+              <div id="nav_links_button_container">
+                <button className="button_small" onClick={logout}>
+                  Log Out
+                </button>
+              </div>
             </li>
           </div>
         ) : (
           <div id="navigation_profile_container">
-            <li className="nav_links">
-              <OpenModalButton
-                buttonText="Log In"
-                onButtonClick={closeMenu}
-                modalComponent={<LoginFormModal />}
-              />
-            </li>
-            <li className="nav_links">
-              <OpenModalButton
-                buttonText="Sign Up"
-                onButtonClick={closeMenu}
-                modalComponent={<SignupFormModal />}
-              />
-            </li>
+            <div id="nav_links_button_container">
+              <li className="nav_links">
+                <OpenModalButton
+                  buttonText="Log In"
+                  onButtonClick={closeMenu}
+                  modalComponent={<LoginFormModal />}
+                />
+              </li>
+              <li className="nav_links">
+                <OpenModalButton
+                  buttonText="Sign Up"
+                  onButtonClick={closeMenu}
+                  modalComponent={<SignupFormModal />}
+                />
+              </li>
+            </div>
           </div>
         )}
       </ul>

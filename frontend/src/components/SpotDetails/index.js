@@ -17,6 +17,7 @@ import "./SpotDetails.css";
 export default function SpotDetails() {
   const { spotId } = useParams();
   const dispatch = useDispatch();
+  const userData = useSelector((state) => state.session);
   const sessionData = useSelector((state) => state.session);
   const spot = useSelector((store) => store.spots);
   const reviewsData = useSelector((state) => state.spots.Reviews);
@@ -28,12 +29,20 @@ export default function SpotDetails() {
     });
   }, [dispatch]);
 
+  const handleAlert = (e) => {
+    window.alert("Feature Coming Soon!");
+  };
+
   if (!isLoaded) return <></>;
 
-  const reviewsCount = Object.values(reviewsData).length;
+  const reviews = Object.values(reviewsData);
 
-  const avgStarRating = spot.avgStarRating.toFixed(2);
-  
+  const reviewsCount = reviews.length;
+
+  const avgStarRating = spot.avgStarRating
+    ? spot.avgStarRating.toFixed(2)
+    : "New!";
+
   const previewImage = spot.SpotImages.filter(
     (image) => image.preview === true
   );
@@ -42,11 +51,43 @@ export default function SpotDetails() {
     (image) => image.preview === false
   );
 
+  let loginButton;
+  let postYourReview;
+
+  if (!sessionData.user) {
+    loginButton = (
+      <OpenModalButton
+        className="orange_modal_button"
+        buttonText="Login to Post Review"
+        modalComponent={<LoginFormModal />}
+      />
+    );
+  } else {
+    let userCanPostReview =
+      sessionData.user.id !== spot.ownerId &&
+      reviews.every((review) => userData.user.id !== review.userId);
+    if (userCanPostReview) {
+      postYourReview = (
+        <OpenModalButton
+          className="orange_modal_button"
+          buttonText="Post Your Review"
+          modalComponent={<PostReviewModal spot={spot} />}
+        />
+      );
+    } else postYourReview = "";
+  }
+
   return (
     <div id="spot_details">
-      <h2>{spot.address}</h2>
+      <h2>
+        {spot.address}, {spot.state}, {spot.country}
+      </h2>
       <div id="spot_details_images_container">
-        <img alt="" id="spot_details_preview_image" src={previewImage[0].url} />
+        <img
+          alt="spot"
+          id="spot_details_preview_image"
+          src={previewImage[0].url}
+        />
         <div id="spot_details_other_images_container">
           {otherImages.map((image) => {
             return (
@@ -74,7 +115,12 @@ export default function SpotDetails() {
                   <div id="spot_details_booking_card_review_info">
                     <FaStar id="review_stars" />
                     <p id="reviews_stars_container">
-                      {`${avgStarRating} | ${reviewsCount} Reviews`}
+                      {`${avgStarRating} `}
+                      {reviewsCount === 0
+                        ? ""
+                        : reviewsCount === 1
+                        ? ` ${reviewsCount} Review`
+                        : ` ${reviewsCount} Reviews`}
                     </p>
                   </div>
                 )}
@@ -82,7 +128,9 @@ export default function SpotDetails() {
             </div>
             {sessionData.user ? (
               <div id="spot_details_booking_button_container">
-                <button className="button_small">Book This Spot!</button>
+                <button className="button_small" onClick={handleAlert}>
+                  Book This Spot!
+                </button>
               </div>
             ) : (
               <OpenModalButton
@@ -97,30 +145,30 @@ export default function SpotDetails() {
       <div id="reviews_title_post_review_container">
         <div id="review_title">
           {reviewsCount === 0 ? (
-            <h3>"New!"</h3>
+            <h3>New!</h3>
           ) : (
             <h3>
               <FaStar id="review_stars" />
-              {` ${avgStarRating} | ${reviewsCount} Reviews`}
+              {` ${avgStarRating} `}
+              <span>&#183;</span>
+              {reviewsCount === 1
+                ? ` ${reviewsCount} Review`
+                : ` ${reviewsCount} Reviews`}
             </h3>
           )}
         </div>
-        {sessionData.user ? (
-          <OpenModalButton
-            className="orange_modal_button"
-            buttonText="Post Your Review"
-            modalComponent={<PostReviewModal spot={spot} />}
-          />
-        ) : (
-          <OpenModalButton
-            className="orange_modal_button"
-            buttonText="Login to Post Review"
-            modalComponent={<LoginFormModal />}
-          />
-        )}
+        {postYourReview}
+        {loginButton}
       </div>
       <div id="reviews_container">
-        <Reviews spot={spot} />
+        {reviewsCount === 0 ? (
+          <div>
+            <p></p>
+            <h4>Be the first to review this spot!</h4>
+          </div>
+        ) : (
+          <Reviews spot={spot} />
+        )}
       </div>
     </div>
   );
