@@ -3,6 +3,7 @@
 // ============================== IMPORTS ============================== //
 
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import * as sessionActions from "../../store/session";
 import { useDispatch } from "react-redux";
 import { useModal } from "../../context/Modal";
@@ -12,6 +13,7 @@ import "./LoginForm.css";
 
 function LoginFormModal() {
   const dispatch = useDispatch();
+  const history = useHistory();
   const [credential, setCredential] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
@@ -22,7 +24,10 @@ function LoginFormModal() {
     setErrors({});
 
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
+      .then(() => {
+        closeModal();
+        history.push("/");
+      })
       .catch(async (res) => {
         const data = await res.json();
         if (data && data.errors) {
@@ -34,7 +39,10 @@ function LoginFormModal() {
   const handleDemoUser = () => {
     dispatch(
       sessionActions.login({ credential: "Demolition", password: "password" })
-    ).then(closeModal);
+    ).then(() => {
+      closeModal();
+      history.push("/");
+    });
   };
 
   return (
@@ -59,9 +67,15 @@ function LoginFormModal() {
             required
           />
         </label>
-        {errors.credential && <p>{errors.credential}</p>}
+        {errors.credential && (
+          <p className="error_message">{errors.credential}</p>
+        )}
         <div id="login_form_button_container">
-          <button className="button_small" type="submit">
+          <button
+            className="button_small"
+            type="submit"
+            disabled={!(credential.length > 3 && password.length > 5)}
+          >
             Log In
           </button>
           <button className="button_small" onClick={handleDemoUser}>

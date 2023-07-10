@@ -4,6 +4,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useParams } from "react-router-dom";
 import { editASpotBySpotIdThunk, getSpotDetailsThunk } from "../../store/spots";
+import { countries } from "./locations";
+import { states } from "./locations";
 
 import "./UpdateASpotForm.css";
 
@@ -54,11 +56,11 @@ export default function UpdateASpotForm() {
       setPreviewImage(spot.preview);
       const otherImages = spot.SpotImages.filter(
         (image) => image.preview === false
-      );
-      if (otherImages[0]) setImageOne(otherImages[0].url);
-      if (otherImages[1]) setImageOne(otherImages[1].url);
-      if (otherImages[2]) setImageOne(otherImages[2].url);
-      if (otherImages[3]) setImageOne(otherImages[3].url);
+      ).map((image) => image.url);
+      if (otherImages[0]) setImageOne(otherImages[0]);
+      if (otherImages[1]) setImageTwo(otherImages[1]);
+      if (otherImages[2]) setImageThree(otherImages[2]);
+      if (otherImages[3]) setImageFour(otherImages[3]);
     });
   }, [dispatch]);
 
@@ -118,22 +120,27 @@ export default function UpdateASpotForm() {
 
   function _checkForErrors() {
     const errors = {};
-    if (!country) errors.country = "Country is required";
-    if (!streetAddress) errors.streetAddress = "Street Address is required";
-    if (!city) errors.city = "City is required";
-    if (!state || state.length !== 2)
-      errors.state = "A two letter State is required";
+    if (!countries.includes(country))
+      errors.country = "Please enter a valid country (that exists IRL).";
+    if (!streetAddress || !streetAddress.match(/^[a-zA-Z0-9. ]*$/))
+      errors.streetAddress =
+        "Please enter a valid alphanumeric street address.";
+    if (!city || !city.match(/^[a-zA-Z ]*$/))
+      errors.city = "Please enter a valid city.";
+    if (!states.includes(state))
+      errors.state = "Please enter a valid country (that exists IRL).";
     if (latitude < -90 || latitude > 90)
-      errors.latitude = "A numeric latitude between -90 and 90 is required.";
+      errors.latitude = "A numeric latitude between -90 and 90.";
     if (longitude < -180 || longitude > 180)
       errors.longitude =
-        "A numeric longitude between -180 and 180 is required.";
+        "Please enter a numeric longitude between -180 and 180.";
     if (description.length < 30)
       errors.description = "Description needs a minimum of 30 characters";
-    if (!title) errors.title = "Title is required";
-    if (!price) errors.price = "Price is required";
+    if (!title)
+      errors.title = "Please enter a spot title of between 1 - 50 characters";
+    if (!price) errors.price = "Please enter a valid price in US currency.";
     if (!previewImage)
-      errors.previewImage = "Preview Image is required in form of a URL";
+      errors.previewImage = "Please enter a valid preview image url.";
     setValidationErrors(errors);
   }
 

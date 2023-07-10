@@ -12,8 +12,8 @@ export default function Navigation({ isLoaded }) {
     <div id="nav_container">
       <div id="nav_container_inner">
         <Link to="/" id="logo_container">
-          <img id="logo" atl="logo" />
-          <h1>NateBnB</h1>
+          <img alt="logo" id="logo" />
+          <h1 id="logo_text">NateBnB</h1>
         </Link>
         <ul className="navigation_list">
           {sessionUser && (

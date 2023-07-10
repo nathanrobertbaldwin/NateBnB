@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { getAllSpotsByOwnerIdThunk } from "../../store/spots";
 import { ManageSpotsCard } from "./ManageSpotsCard";
 import "./ManageSpots.css";
@@ -11,6 +11,7 @@ import "./ManageSpots.css";
 
 export default function ManageSpots() {
   const dispatch = useDispatch();
+  const history = useHistory();
   const spotsData = useSelector((store) => store.spots);
   const spots = Object.values(spotsData);
   const [isLoaded, setIsLoaded] = useState(false);

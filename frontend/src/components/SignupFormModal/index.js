@@ -55,7 +55,7 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.email && <p>{errors.email}</p>}
+        {errors.email && <p className="error_message">{errors.email}</p>}
         <label id="sign_up_form_label">
           <p>Username</p>
           <input
@@ -65,7 +65,7 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.username && <p>{errors.username}</p>}
+        {errors.username && <p className="error_message">{errors.username}</p>}
         <label id="sign_up_form_label">
           <p>First Name</p>
           <input
@@ -75,7 +75,9 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.firstName && <p>{errors.firstName}</p>}
+        {errors.firstName && (
+          <p className="error_message">{errors.firstName}</p>
+        )}
         <label id="sign_up_form_label">
           <p>Last Name</p>
           <input
@@ -85,7 +87,7 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.lastName && <p>{errors.lastName}</p>}
+        {errors.lastName && <p className="error_message">{errors.lastName}</p>}
         <label id="sign_up_form_label">
           Password
           <input
@@ -95,7 +97,7 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.password && <p>{errors.password}</p>}
+        {errors.password && <p className="error_message">{errors.password}</p>}
         <label id="sign_up_form_label">
           <p>Confirm Password</p>
           <input
@@ -105,9 +107,22 @@ function SignupFormModal() {
             required
           />
         </label>
-        {errors.confirmPassword && <p>{errors.confirmPassword}</p>}
+        {errors.confirmPassword && (
+          <p className="error_message">{errors.confirmPassword}</p>
+        )}
         <div id="sign_up_form_button_container"></div>
-        <button className="button_small" type="submit">
+        <button
+          className="button_small"
+          type="submit"
+          disabled={
+            !email ||
+            !username ||
+            !firstName ||
+            !lastName ||
+            !password ||
+            !confirmPassword
+          }
+        >
           Sign Up
         </button>
       </form>
