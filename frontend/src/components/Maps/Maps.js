@@ -18,6 +18,7 @@ const Maps = ({ apiKey, lat, lng }) => {
   };
 
   console.log("Is this component here?");
+  console.log(lat, lng);
 
   return (
     <>
