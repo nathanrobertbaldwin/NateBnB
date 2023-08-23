@@ -10,9 +10,6 @@ const MapContainer = () => {
   const dispatch = useDispatch();
   const spot = useSelector((state) => state.spots);
 
-  console.log(spot.lat);
-  console.log(spot.lat);
-
   useEffect(() => {
     if (!key) {
       dispatch(getKey());
