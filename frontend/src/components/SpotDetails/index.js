@@ -9,6 +9,7 @@ import OpenModalButton from "../OpenModalButton";
 import LoginFormModal from "../LoginFormModal";
 import PostReviewModal from "./PostReviewModal";
 import Reviews from "../Reviews";
+import MapContainer from "../Maps";
 import { FaStar } from "react-icons/fa";
 import "./SpotDetails.css";
 
@@ -170,6 +171,7 @@ export default function SpotDetails() {
           <Reviews spot={spot} />
         )}
       </div>
+      <MapContainer />
     </div>
   );
 }

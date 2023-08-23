@@ -817,7 +817,6 @@ router.put(
 // -------------------------- Delete a Booking ------------------------- //
 
 router.delete("/:spotId", requireAuth, async (req, res, next) => {
-  console.log("Getting here.");
   const spotId = parseInt(req.params.spotId);
   const spot = await Spot.findByPk(spotId);
 

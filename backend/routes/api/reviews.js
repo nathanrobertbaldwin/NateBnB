@@ -194,7 +194,6 @@ router.delete("/:reviewId", requireAuth, async (req, res, next) => {
       return accum + review.stars;
     }, 0) / newSpot.Reviews.length;
 
-  console.log("AVERAGE STAR RATING", newSpot.avgStarRating);
   newSpot.Owner = newSpot.User;
   newSpot.preview = newSpot.SpotImages.find((image) => {
     return image.preview === true;
