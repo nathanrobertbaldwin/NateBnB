@@ -164,7 +164,6 @@ export const getAllSpotsByOwnerIdThunk = () => async (dispatch) => {
 // Edit A Spot By SpotId
 
 export const editASpotBySpotIdThunk = (data) => async (dispatch) => {
-  console.log(data);
   const spotId = data.spotId;
   const response = await csrfFetch(`/api/spots/${spotId}`, {
     method: "PUT",
@@ -202,7 +201,6 @@ export const postAReviewBySpotIdThunk = (data) => async (dispatch) => {
 
   if (response.ok) {
     const data = await response.json();
-    console.log(data);
     dispatch(postAReviewBySpotId(data));
     return data;
   }
